@@ -1,21 +1,23 @@
-# Libaries and Env Vars
-import os
-import logging
-from pymongo import MongoClient
-from pymongo.errors import ConnectionFailure, OperationFailure
-
+import os 
+import logging 
+# Need to set level (do it now so we can set it as a standard for the rest)
+from pymongo import MongoClient, errors
 MONGODB_PWD = os.environ.get('MONGODB_PWD') # cluster password
 
 # MongoDB Database Client --> 
 class Mongo_Client:
     def __init__(self, host: str):
+        # Setup Logger
+        self.logger = logging.getLogger(__name__)
+        logging.basicConfig(level=logging.INFO)
 
         # Establish connection with mongo cluster
         try:
             self.client = MongoClient(host) # host connection string
             self.client.server_info()  # force connection request for testing 
-            self.logger.info("MongoDB Connection Successful.") #NOTE: Using loger without setting it up (levels)
-        except ConnectionFailure: 
+            self.logger.info("MongoDB Connection Successful.")
+        
+        except errors.ConnectionFailure: 
             self.logger.exception("Could not connect to MongoDB.") # Add the error code    
 
     # Seperate method for connecting (possible server resource management)?

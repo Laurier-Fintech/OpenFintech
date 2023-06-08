@@ -1,1 +1,1 @@
-from .FinMongo import FinMongo
+from .server import FinMongo

@@ -18,7 +18,7 @@ class FinMongo:
             self.logger.info("MongoDB Connection Successful.")
         
         except errors.ConnectionFailure: 
-            self.logger.exception("Could not connect to MongoDB.") # Add the error code    
+            self.logger.exception("Could not connect to MongoDB (Error: Connection Failure).")   
 
     # Seperate method for connecting (possible server resource management)?
     def connect(self):

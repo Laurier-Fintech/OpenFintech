@@ -5,7 +5,7 @@ from pymongo import MongoClient, errors
 MONGODB_PWD = os.environ.get('MONGODB_PWD') # cluster password
 
 # MongoDB Database Client --> 
-class Mongo_Client:
+class FinMongo:
     def __init__(self, host: str):
         # Setup Logger
         self.logger = logging.getLogger(__name__)

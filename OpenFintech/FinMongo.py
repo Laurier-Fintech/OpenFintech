@@ -3,6 +3,8 @@ import logging
 # Need to set level (do it now so we can set it as a standard for the rest)
 from pymongo import MongoClient, errors
 
+# TODO: Add function to create virutal databases (supporting User component)
+
 class FinMongo:
     def __init__(self, host: str):
         # TODO: Setup Logger (look into learning Python logger) for outputting to the terminal (and file?)

@@ -1,3 +1,5 @@
+import pymongo_inmemory
+
 # The user class will be packaged into ____
 # Users of our package can use this class for handling USER CRUD and other features for Fintech applications
 
@@ -7,7 +9,7 @@ class User:
         if db_client==None:
             # Setup a virtual database here using FinMongo
             # Set the virtual database as the db_client
-            pass
+            db_client = pymongo_inmemory.MongoClient()  # No need to provide host
 
         # Pass User ID as a property so users can connect directly to their profile
         self.id = None

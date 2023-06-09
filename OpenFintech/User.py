@@ -1,20 +1,22 @@
-#TODO: 
+# The user class will be packaged into ____
+# Users of our package can use this class for handling USER CRUD and other features for Fintech applications
 
 class User:
     def __init__(self, db_client=None):
+
         if db_client==None:
             # Setup a virtual database here using FinMongo
             # Set the virtual database as the db_client
             pass
 
-        # Pass User ID as a property
+        # Pass User ID as a property so users can connect directly to their profile
         self.id = None
-        # So users can connect directly to their user (entry)
-        #  given a connection and use the component accordingly
+
         return
 
-    @property
+    @property 
     def id(self):
+        # Also used as the getter
         return self._id
     
     @id.setter
@@ -23,14 +25,16 @@ class User:
         # Checks if the value is the right
         return
 
-
-    # General properties of the user
+    # User(s) CRUD functions
     def create(self):
-        # Creates a user and then returns their ID
+        # Creates a user and then returns their ID(s) to the user 
         return
     
     def delete(self):
+        # Given a ID, or a set of IDs, or a JSON with the approprite data, remove the user from the system
+        # Perform any calculations, error handling, raise exceptions as required, 
         return
     
     def update(self):
+        # Update user profile(s) given JSON information
         return

@@ -39,9 +39,19 @@ class FinMongo:
         -----------------------------------------------------------
         - ConnectionFailure: If the connection to the MongoDB server fails.
         """
-        # Setup logger
+        # Setup logger and level
         self.logger = logging.getLogger(__name__)
-        logging.basicConfig(level=logging.INFO)
+        self.logger.setLevel(logging.INFO)
+
+        #Creat the file handler
+        file_handler = logging.FileHandler('FinMongo.log')
+        file_handler.setLevel(logging.ERROR)
+
+        #Creat formatter and add it to the file handler
+        formatter = logging.Formatter('%(asctime)s – %(name)s – %(levelname)s')
+        file_handler.setFormatter(formatter)
+        self.logger.addHandler(file_handler)
+
 
         # Establish connection with mongo cluster
         try:

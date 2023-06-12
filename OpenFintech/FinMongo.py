@@ -1,11 +1,8 @@
 import os 
 import logging 
 from pymongo import MongoClient, errors
-
-# NOTE: These todo points will be converted to tickets and added to the Notion workspace
-# -> TODO: Set logger levels for terminal and file output. Test logger.
 # -> TODO: Implement FinMongo.__str__
-# -> TODO: Add virutal database functionality 
+# -> TODO: Add virutal database functionality to FinMongo (NOTE: creates and returns a virtual database if host is None)
 
 class FinMongo:
     """ 
@@ -39,16 +36,33 @@ class FinMongo:
         -----------------------------------------------------------
         - ConnectionFailure: If the connection to the MongoDB server fails.
         """
-        # Setup logger
+        # Setup logger and level
         self.logger = logging.getLogger(__name__)
-        logging.basicConfig(level=logging.INFO)
+        self.logger.setLevel(logging.INFO)
+
+        # Create the stream handler
+        stream_handler = logging.StreamHandler()
+        stream_handler.setLevel(logging.INFO)
+
+        # Create the file handler
+        file_handler = logging.FileHandler('FinMongo.log')
+        file_handler.setLevel(logging.ERROR)
+
+        # Create formatter and add it to the file and stream handler
+        formatter = logging.Formatter('%(asctime)s/%(name)s/%(levelname)s:: %(message)s')
+        file_handler.setFormatter(formatter)
+        stream_handler.setFormatter(formatter)
+        self.logger.addHandler(file_handler)
+        self.logger.addHandler(stream_handler)
 
         # Establish connection with mongo cluster
         try:
             self.client = MongoClient(host) # host connection string
             self.client.server_info()  # force connection request for testing 
-        except errors.ConnectionFailure: self.logger.exception("Could not connect to MongoDB (Error: Connection Failure).")   
-        else: self.logger.info("MongoDB Connection Successful.")
+        except errors.ConnectionFailure:
+            self.logger.exception("Could not connect to MongoDB (Error: Connection Failure).")   
+        else: 
+            self.logger.info("Successfully connected to MongoDB.")
             
         return
 
@@ -119,8 +133,5 @@ class FinMongo:
 if __name__ == "__main__": 
     MONGODB_PWD = os.environ.get('MONGODB_PWD') 
     # TODO: Need to add the ENV PWD to the URL (was experiencing bugs earlier)
-    handler = FinMongo("mongodb+srv://OpenFintech:yT6KHkhVcvHQ42AX@cluster0.lvkyalc.mongodb.net/?retryWrites=true&w=majority") #TODO: Add ENV var handling functionality
-
-    # TODO: Code to test the DB wrapper
-    
+    handler = FinMongo("mongodb+srv://OpenFintech:yT6KHkhVcvHQ42AX@cluster0.lvkyalc.mongodb.net/?retryWrites=true&w=majority") #TODO: Add ENV var handling functionality    
     handler.disconnect() # Disconnect the handler (and the MongoDB client) after use

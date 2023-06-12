@@ -3,7 +3,6 @@ import logging
 from pymongo import MongoClient, errors
 
 # NOTE: These todo points will be converted to tickets and added to the Notion workspace
-# -> TODO: Set logger levels for terminal and file output. Test logger.
 # -> TODO: Implement FinMongo.__str__
 # -> TODO: Add virutal database functionality 
 
@@ -43,15 +42,14 @@ class FinMongo:
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
 
-        #Creat the file handler
+        # Create the file handler
         file_handler = logging.FileHandler('FinMongo.log')
         file_handler.setLevel(logging.ERROR)
 
-        #Creat formatter and add it to the file handler
+        # Create formatter and add it to the file handler
         formatter = logging.Formatter('%(asctime)s – %(name)s – %(levelname)s')
         file_handler.setFormatter(formatter)
         self.logger.addHandler(file_handler)
-
 
         # Establish connection with mongo cluster
         try:

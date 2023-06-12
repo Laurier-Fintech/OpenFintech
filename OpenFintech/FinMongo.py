@@ -136,10 +136,14 @@ class FinMongo:
 
 
 if __name__ == "__main__": 
-    MONGODB_PWD = os.environ.get('MONGODB_PWD') 
-    # TODO: Need to add the ENV PWD to the URL (was experiencing bugs earlier)
-    #handler = FinMongo("mongodb+srv://OpenFintech:yT6KHkhVcvHQ42AX@cluster0.lvkyalc.mongodb.net/?retryWrites=true&w=majority") #TODO: Add ENV var handling functionality    
-    handler = FinMongo() # in-memory
+    from dotenv import load_dotenv, dotenv_values
+
+    load_dotenv()
+
+    MONGO_USER = os.getenv('MONGO_USER')
+    MONGO_PASS = os.getenv('MONGO_PASS') 
+    handler = FinMongo(f"mongodb+srv://{MONGO_USER}:{MONGO_PASS}@cluster0.lvkyalc.mongodb.net/?retryWrites=true&w=majority") #TODO: Add ENV var handling functionality    
+    #handler = FinMongo() # in-memory
     client = handler.client
     
     # Code to test db, collection, and document creation

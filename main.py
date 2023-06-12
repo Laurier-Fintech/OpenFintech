@@ -1,14 +1,10 @@
-from AlphavantageLFT import Alphavantage
-import pymongo
+from OpenFintech import FinMongo
 
 ALPHAVANTAGE_KEY = "XOW4K6WRTDX8S951"
+CONN = "mongodb+srv://openfintech:<y6SsA8iKefK1T1us>@cluster0.wnrni0p.mongodb.net/?retryWZrites=true&w=majority"
 
-#mongodb+srv://team:<etY3iF17dX3N0z0Y>@cluster0.wnrni0p.mongodb.net/
-
-myclient = pymongo.MongoClient("mongodb+srv://openfintech:<y6SsA8iKefK1T1us>@cluster0.wnrni0p.mongodb.net/?retryWZrites=true&w=majority")
-mydb = myclient["openfintech"] # create db
+"""
 mycol = mydb["price"] # create collection
-
 sample_data = {
     "2023-06-02": {
         "1. open": "129.5600",
@@ -25,11 +21,12 @@ sample_data = {
         "5. volume": "21029979"
     }
 }
-
 data = []
 for key in sample_data: 
     sample_data[key].update({"0. date": key})
     data.append(sample_data[key])
 print(data)
 mycol.insert_many(data)
+
+"""
 

@@ -1,8 +1,8 @@
-import os 
 import logging 
 import pymongo_inmemory
 from pymongo import MongoClient, errors
 # -> TODO: Implement FinMongo.__str__
+# TODO: Modify FinMongo to take logger as a optional parameter, if its not given, we just setup a stream handler
 
 class FinMongo:
     """ 
@@ -36,6 +36,7 @@ class FinMongo:
         -----------------------------------------------------------
         - ConnectionFailure: If the connection to the MongoDB server fails.
         """
+        
         # Setup logger and level
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
@@ -136,16 +137,16 @@ class FinMongo:
 
 
 if __name__ == "__main__": 
-    from dotenv import load_dotenv, dotenv_values
-
+    import os 
+    from dotenv import load_dotenv
     load_dotenv()
-
+    
     MONGO_USER = os.getenv('MONGO_USER')
     MONGO_PASS = os.getenv('MONGO_PASS') 
     handler = FinMongo(f"mongodb+srv://{MONGO_USER}:{MONGO_PASS}@cluster0.lvkyalc.mongodb.net/?retryWrites=true&w=majority") #TODO: Add ENV var handling functionality    
     #handler = FinMongo() # in-memory
     client = handler.client
-    
+
     # Code to test db, collection, and document creation
     # In MongoDB, db's and collections are not created untill they have data added to them
     mydb = client["mydatabase"]

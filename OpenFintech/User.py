@@ -1,42 +1,83 @@
 from FinMongo import FinMongo
-
-# The user class will be packaged into ____
-# Users of our package can use this class for handling USER CRUD and other features for Fintech applications
+from datetime import datetime as dt
+#TODO: Add logger (take logger as a optional parameter too)
 
 class User:
-    def __init__(self):
-        # Pass User ID and Host as a property so users can connect directly to their profile
-        self._id = None
-        self._host = None
+    def __init__(self, collection=None): 
+
+        # General Attributes:
+        if collection==None: # When no collection is given, create a mongoDB and the required 'users' collection
+            self.mongo = FinMongo()
+            self.database = self.mongo.client['db']
+            self.collection = self.database['users']
+        else: self.collection = collection
+
+        # User Specific Attributes/Properties:
+        self._id = None # This is get/set using getter/setter methods
         return
 
     @property 
-    def id(self):
-        # Also used as the getter
+    def id(self): # NOTE: ID Getter
         return self._id
     
-    @property
-    def host(self):
-        # Can add other layers of checks before returning (such as the user's access level)
-        return self._host
-
-
     @id.setter
-    def id(self, value:int):
+    def id(self, value:int): # NOTE: ID Setter (to switch ID's and run queries?)
         if value<0: raise Exception("Invalid ID. ID should be > 0")
         self._id = value
         return
 
-    @host.setter
-    def host(self,host:str):
-        self._host = FinMongo(host)
-        return
+    def _validate(self, data: dict) -> bool: # Internal function used for validating a data dictionary 
+        valid = True
+        if data['user_id']<0: 
+            valid = not valid
+            raise Exception("Invalid User ID, must be zero or positive.")
+        if data['username']==None or data['username']=="": 
+            valid = not valid
+            raise Exception("Username cannot be empty or none.")
+        return valid
 
     # User(s) CRUD functions
-    def create(self):
-        # Creates a user and then returns their ID(s) to the user 
-        return
+    def create(self, data=None): # This functoin creates a user document and then returns the document ID(s) to the user 
+        
+        if data==None: # If no data was given, use input statements to get the required information from the user
+            
+            # Get inputs from user
+            user_id = int(input("User ID: "))
+            if user_id<0: raise Exception("Invalid User ID, must be zero or positive.")
+            username = input("Username: ")
+            if username=="" or username==None: raise Exception("Usename cannot be empty or none.")
+            major = input("Major: ")
+            year = int(input("Year: "))
+            
+            # Pack inputs into a dictionary (i.e., document to add to the collection)
+            data = {
+                "date_created": dt.now(),
+                "user_id": user_id, "username": username,
+                "major":major, "year": year,
+            }
+
+        else: 
+            # For validating multiple documents (given in a list)
+            if isinstance(data, list): 
+                for user_data in data:
+                    print(user_data)
+                    try: self._validate(user_data) # Validates data and raises exceptions     
+                    except Exception as e: print(e)
+
+            # For validating one document (given as a dict)
+            else: self._validate(data) 
+
+        return self.collection.insert_one(data).inserted_id
     
+    def read(self, query):
+        if self._id!=None and query!=None:
+            query = {"user_id": self._id}
+            result = self.collection.find(query)
+            print(type(result), result)
+            # Get all the records for this ID, return the JSON's (optionally print and return Pandas DF)
+        else: print(self.collection.find(query))
+        return
+
     def delete(self):
         # Given a ID, or a set of IDs, or a JSON with the approprite data, remove the user from the system
         # Perform any calculations, error handling, raise exceptions as required, 
@@ -48,23 +89,31 @@ class User:
     
 
 if __name__=='__main__':
-    handler = User()
-    # Set host as None to create a in-memory Finmongo DB.
-    # This allows users to test the package without creating a server for the DB
-    handler.host=None
-
-    # Code to test the user component
-
-    # Create the required collections sample data
+    import os 
+    from dotenv import load_dotenv
+    # Load ENV Variables
+    load_dotenv()
+    MONGO_USER = os.getenv('MONGO_USER')
+    MONGO_PASS = os.getenv('MONGO_PASS') 
+    # Setup MongoDB Handler
+    db_handler = FinMongo(f"mongodb+srv://{MONGO_USER}:{MONGO_PASS}@cluster0.lvkyalc.mongodb.net/?retryWrites=true&w=majority") #TODO: Add ENV var handling functionality    
+    #db_handler = FinMongo() # in-memory
+    # Connect to DB and Collection
+    client = db_handler.client
+    database = client["mydatabase"]
+    collection = database["users"]
+    # Initialize an instance of User with the appropriate collection
+    user_handler = User(collection) 
+    # Initialize the required sample data
     sample_data = {
-        "date_created": None,
-        "user_id": 0, "username": "Harri",
+        "date_created": dt.now(),
+        "user_id": 1, "username": "David",
         # For analytical purposes
         "major":"CS", "year": 3,
         "email": None, "password": None
     }
-
-
-
-
-    handler.host.disconnect()
+    # Add sample_data to user  (can also handle creating multiple users)
+    user_handler.create(sample_data)
+    # Disconnect the MongoDB handler
+    #user_handler.mongo.disconnect() # For in-memory
+    db_handler.disconnect()

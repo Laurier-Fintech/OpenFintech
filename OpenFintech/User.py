@@ -2,6 +2,7 @@ from FinMongo import FinMongo
 from datetime import datetime as dt
 #TODO: Add logger (take logger as a optional parameter too)
 #TODO: Add functionality to insert many in user create
+#TODO: Add pandas DF handling to the read? (or to finmongo)
 #TODO: Support multi field query (e.x., user_id : x or y) (<- this is just changing the query dictionary that is passed)
 #TODO: Finish delete and update
 #TODO: Writing testing code in main
@@ -79,10 +80,15 @@ class User:
         result = list(self.collection.find(query))
         return result
 
-    def delete(self):
-        # Given a ID, or a set of IDs, or a JSON with the approprite data, remove the user from the system
-        # Perform any calculations, error handling, raise exceptions as required, 
-        return
+    def delete(self, query:dict={}, many=False):
+        # Set query
+        if len(query)<=0:
+            if self._id!=None: {"user_id": self._id}
+            else: raise Exception("No deletion condition, please provide a query for deleting or set the user_id.")
+        # Call appropriate pymongo delete function
+        if many==False: deleted = self.collection.delete_one(query)
+        else: deleted = self.collection.delete_one(query)
+        return deleted.deleted_count
     
     def update(self):
         # Update user profile(s) given JSON information
@@ -114,9 +120,10 @@ if __name__=='__main__':
         "email": None, "password": None
     }
     # Add sample_data to user (can also handle creating multiple users)
-    #user_handler.create(sample_data)
+    # user_handler.create(sample_data)
     # Disconnect the MongoDB handler
     result = user_handler.read()
     print(result)
+
     #user_handler.mongo.disconnect() # For in-memory
     db_handler.disconnect()

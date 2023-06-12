@@ -3,6 +3,8 @@ import pymongo_inmemory
 from pymongo import MongoClient, errors
 # -> TODO: Implement FinMongo.__str__
 # TODO: Modify FinMongo to take logger as a optional parameter, if its not given, we just setup a stream handler
+# TODO: Add CRUD to function with Pandas DF (not sure if we would use this, or if it makes it slower, but its neater)
+
 
 class FinMongo:
     """ 

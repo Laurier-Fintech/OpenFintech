@@ -2,6 +2,9 @@ from FinMongo import FinMongo
 from datetime import datetime as dt
 #TODO: Add logger (take logger as a optional parameter too)
 #TODO: Add functionality to insert many in user create
+#TODO: Support multi field query (e.x., user_id : x or y) (<- this is just changing the query dictionary that is passed)
+#TODO: Finish delete and update
+#TODO: Writing testing code in main
 
 class User:
     def __init__(self, collection=None): 
@@ -70,14 +73,11 @@ class User:
             
         return self.collection.insert_one(data).inserted_id
     
-    def read(self, query):
-        if self._id!=None and query!=None:
-            query = {"user_id": self._id}
-            result = self.collection.find(query)
-            print(type(result), result)
-            # Get all the records for this ID, return the JSON's (optionally print and return Pandas DF)
-        else: print(self.collection.find(query))
-        return
+    def read(self, query:dict={}) -> list: # Get all the records for this ID, return the JSON's (optionally print and return Pandas DF)
+        # Compose a query to read the current user's info if self._id is set and no query was given
+        if len(query)==0 and self._id!=None: query = {"user_id": self._id}
+        result = list(self.collection.find(query))
+        return result
 
     def delete(self):
         # Given a ID, or a set of IDs, or a JSON with the approprite data, remove the user from the system
@@ -108,13 +108,15 @@ if __name__=='__main__':
     # Initialize the required sample data
     sample_data = {
         "date_created": dt.now(),
-        "user_id": 1, "username": "David",
+        "user_id": 0, "username": "Harri",
         # For analytical purposes
         "major":"CS", "year": 3,
         "email": None, "password": None
     }
-    # Add sample_data to user  (can also handle creating multiple users)
-    user_handler.create(sample_data)
+    # Add sample_data to user (can also handle creating multiple users)
+    #user_handler.create(sample_data)
     # Disconnect the MongoDB handler
+    result = user_handler.read()
+    print(result)
     #user_handler.mongo.disconnect() # For in-memory
     db_handler.disconnect()

@@ -16,6 +16,7 @@ pkginfo==1.9.6
 Pygments==2.15.1
 pymongo==4.3.3
 pymongo-inmemory==0.2.13
+python-dotenv==1.0.0
 readme-renderer==37.3
 requests==2.31.0
 requests-toolbelt==1.0.0

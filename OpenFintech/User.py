@@ -51,8 +51,20 @@ if __name__=='__main__':
     handler = User()
     # Set host as None to create a in-memory Finmongo DB.
     # This allows users to test the package without creating a server for the DB
-    handler.host=None 
+    handler.host=None
+
+    # Code to test the user component
+
+    # Create the required collections sample data
+    sample_data = {
+        "date_created": None,
+        "user_id": 0, "username": "Harri",
+        # For analytical purposes
+        "major":"CS", "year": 3,
+        "email": None, "password": None
+    }
+
+
+
+
     handler.host.disconnect()
-
-
-    print("Disconnected")

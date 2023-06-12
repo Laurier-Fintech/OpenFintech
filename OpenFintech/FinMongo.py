@@ -1,7 +1,7 @@
 import os 
 import logging 
-from pymongo import MongoClient, errors
 import pymongo_inmemory
+from pymongo import MongoClient, errors
 # -> TODO: Implement FinMongo.__str__
 
 class FinMongo:
@@ -139,6 +139,25 @@ if __name__ == "__main__":
     MONGODB_PWD = os.environ.get('MONGODB_PWD') 
     # TODO: Need to add the ENV PWD to the URL (was experiencing bugs earlier)
     #handler = FinMongo("mongodb+srv://OpenFintech:yT6KHkhVcvHQ42AX@cluster0.lvkyalc.mongodb.net/?retryWrites=true&w=majority") #TODO: Add ENV var handling functionality    
-    #handler = FinMongo() # in-memory
-    #print(handler)
-    #handler.disconnect() # Disconnect the handler (and the MongoDB client) after use
+    handler = FinMongo() # in-memory
+    client = handler.client
+    
+    # Code to test db, collection, and document creation
+    # In MongoDB, db's and collections are not created untill they have data added to them
+    mydb = client["mydatabase"]
+    mycol = mydb["users"]
+    sample_data = {
+        "date_created": None,
+        "user_id": 0, "username": "Harri",
+        # For analytical purposes
+        "major":"CS", "year": 3,
+        "email": None, "password": None
+    }
+
+    x = mycol.insert_one(sample_data)
+
+    print(client.list_database_names())
+    print(mydb.list_collection_names())
+    print(x.inserted_id)
+    
+    handler.disconnect() # Disconnect the handler (and the MongoDB client) after use

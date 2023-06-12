@@ -1,6 +1,7 @@
 from FinMongo import FinMongo
 from datetime import datetime as dt
 #TODO: Add logger (take logger as a optional parameter too)
+#TODO: Add functionality to insert many in user create
 
 class User:
     def __init__(self, collection=None): 
@@ -63,10 +64,10 @@ class User:
                     print(user_data)
                     try: self._validate(user_data) # Validates data and raises exceptions     
                     except Exception as e: print(e)
-
+                    else: pass 
             # For validating one document (given as a dict)
             else: self._validate(data) 
-
+            
         return self.collection.insert_one(data).inserted_id
     
     def read(self, query):

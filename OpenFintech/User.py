@@ -6,6 +6,8 @@ from datetime import datetime as dt
 #TODO: Support multi field query (e.x., user_id : x or y) (<- this is just changing the query dictionary that is passed)
 #TODO: Finish delete and update
 #TODO: Writing testing code in main
+#TODO: Email format validation needs to be added to the _validate and udpate function (unless we extend _validate for updates to drop the empty ones)
+#TODO: Finish __str__ to return a user profile summary (string) basically
 
 class User:
     def __init__(self, collection=None): 
@@ -42,7 +44,7 @@ class User:
         return valid
 
     # User(s) CRUD functions
-    def create(self, data=None): # This functoin creates a user document and then returns the document ID(s) to the user 
+    def create(self, data=None) -> int: # This functoin creates a user document and then returns the document ID(s) to the user 
         
         if data==None: # If no data was given, use input statements to get the required information from the user
             
@@ -80,20 +82,46 @@ class User:
         result = list(self.collection.find(query))
         return result
 
-    def delete(self, query:dict={}, many=False):
+    def delete(self, query:dict={}, many=False) -> int:
         # Set query
         if len(query)<=0:
-            if self._id!=None: {"user_id": self._id}
+            if self._id!=None: query = {"user_id": self._id}
             else: raise Exception("No deletion condition, please provide a query for deleting or set the user_id.")
         # Call appropriate pymongo delete function
         if many==False: deleted = self.collection.delete_one(query)
         else: deleted = self.collection.delete_one(query)
         return deleted.deleted_count
     
-    def update(self):
-        # Update user profile(s) given JSON information
-        return
+    def update(self, query={}, values={}, many=False) -> int:
+        # Set/Get query and values for updating
+        if len(query)<=0:
+            if self._id==None: raise Exception("To call user.update without query or values, user._id needs to be set using the setter function.")
+            query = {"user_id": self._id}
+
+        if len(values)<=0:
+            values = {}
+            # Get update values from the user
+            print("Leave it blank to skip ")
+            username = input("Username: ")
+            if username!="": values["username"] = username
+            major = input("Major: ")
+            if major !="": values["major"] = major
+            year = input("Year: ")
+            if year!="": values["year"] = int(year)
+            email = input("Email: ")
+            if email!="": values["email"] = email 
+            password = input("Password: ")
+            if password!="": values["password"] = password
+            values = {"$set": values} # Reformat to fit pymongo
+            
+        # Call appropriate pymongo update function
+        if many==False: updated = self.collection.update_many(query, values)
+        else: updated = self.collection.update_one(query, values)
+        
+        return updated.modified_count
     
+    def __str__(self):
+        return
 
 if __name__=='__main__':
     import os 
@@ -121,9 +149,11 @@ if __name__=='__main__':
     }
     # Add sample_data to user (can also handle creating multiple users)
     # user_handler.create(sample_data)
-    # Disconnect the MongoDB handler
-    result = user_handler.read()
-    print(result)
+    user_handler.id = 0
+    user_handler.update()
 
+    print(user_handler.read())
+
+    # Disconnect the MongoDB handler
     #user_handler.mongo.disconnect() # For in-memory
     db_handler.disconnect()

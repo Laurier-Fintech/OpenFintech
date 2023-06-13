@@ -43,7 +43,7 @@ class Model:
 
     def close(self):
         self.market.close()
-        
+        if self.inmemory==True: self.mongo.disconnect()     
         return
 
     # Prints the market overview specific to the model and configurations.

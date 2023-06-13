@@ -16,8 +16,10 @@ class Market: # Provides simulated backtesting and real-time testing functionali
         
         if logger==None: logger=create_logger("market")
 
+        self.inmemory = False
         if database==None:
             self.mongo = FinMongo()
+            self.inmemory = True
             database = self.mongo.client["db"]
 
         self.database = database
@@ -53,8 +55,8 @@ class Market: # Provides simulated backtesting and real-time testing functionali
     
     # Close database and cleanup
     def close(self):
-        success = self.mongo.disconnect()
-        return success
+        if self.inmemory==True: self.mongo.disconnect()
+        return
     
     # For providing an overview of the market
     def __str__(self):
@@ -63,7 +65,7 @@ class Market: # Provides simulated backtesting and real-time testing functionali
 
 
 if __name__=='__main__':
-    trade = {
+    sample_trade = {
         "date_created":None, 
         "trade_dt":None,
         # Composite primary key for identifying this document (for future reference)

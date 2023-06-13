@@ -8,8 +8,10 @@ class Model:
         
         if logger==None: logger=create_logger("model")
 
+        self.inmemory = False
         if database==None:
             self.mongo = FinMongo()
+            self.inmemory = True
             database = self.mongo.client["db"]
 
         self.database = database
@@ -38,9 +40,16 @@ class Model:
         # Similar to “test_configuration” but for real-time (simulated market) testing. 
         return
 
+
+    def close(self):
+        self.market.close()
+        
+        return
+
     # Prints the market overview specific to the model and configurations.
     def __str__(self):
-        return
+        return "working"
+
 
 if __name__=='__main__':
 
@@ -77,3 +86,6 @@ if __name__=='__main__':
     "avg_change_in_balance_per_trade":None, 
     }
 
+    model = Model()
+    print(model)
+    model.close()

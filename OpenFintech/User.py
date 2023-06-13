@@ -18,9 +18,11 @@ class User:
         if logger==None: logger = create_logger("user")
         self.logger = logger
 
+        self.inmemory = False
         # General Attributes:
         if collection==None: # When no collection is given, create a mongoDB and the required 'users' collection
             self.mongo = FinMongo()
+            self.inmemory = True
             self.database = self.mongo.client['db']
             self.collection = self.database['users']
         else: self.collection = collection
@@ -126,6 +128,10 @@ class User:
         
         return updated.modified_count
     
+    def close(self):
+        if self.inmemory==True:self.mongo.disconnect()
+        return
+
     def __str__(self):
         return
 
@@ -147,7 +153,7 @@ if __name__=='__main__':
     user_handler = User(collection) 
     # Initialize the required sample data
     sample_data = {
-        "date_created": dt.now(),
+        "date_created": None,
         "user_id": 0, "username": "Harri",
         # For analytical purposes
         "major":"CS", "year": 3,

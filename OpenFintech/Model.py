@@ -17,30 +17,60 @@ class Model:
         self.database = database
         self.market = Market(self.database,logger)
         self.configs = self.database["configurations"]
+        self.setting = self.database["setting"]
         return
 
     def create_config(self):
+        # TODO:
+        # Check the values of the configuration to make sure they are valid, raise exceptions where required <- Possible validation function
+        # Log success or faliure
+        # Check if the configuration is not in configurations already
+        # If no data is given, take the required values from the users from the terminal
+        # Add the configuration to the database
+        # Return the configuration ID that was assigned to the one that was added
         return
     
     def read_config(self):
         return
 
     def update_config(self):
+        # Would be relying on the same validation function for configuration
         return
     
     def delete_config(self):
         return
 
     # The testing and running of configuation relies on the Market model.
-    def test_config(self):
+    def test_config(self, setting:dict = {}, configuration:dict={}) -> dict:
         # Each test is also a session of its own. This session ID is what's used with the market component for tracking trades. 
+        # Outside of the configuration, this also requires the appropriate setting data
+        # Setting can be a seperate collection
+
+
+        # Code to test the configuration with the setting
+        # This will also include code that uses the Alphavantage wrapper Laurier Fintech offers
+        # We will be customizing the Alphavantage wrapper for this usecase as well
+        # This will require a restructure and modification
+        # We could potentially store the data the wrapper collects.
+        # The goal would be to reduce key usage by using existing data and refreshing stored data preemptively.
+        # We should move the Alphavantage wrapper in here and pack in with a new name and redesign it to suit this system
+
+        # Code to save the performance of the test with the configuration and the setting
+
+
+        # Return the performance as a dictionary        
+        # If it fails, return the failure as a dictionary
+
+        # NOTE:
+        # Have a optional variable to get the history (data) as well.
+        # This would be something we'd have to get from the database
         return
     
     def run_config(self):
         # Similar to “test_configuration” but for real-time (simulated market) testing. 
         return
 
-
+    # Database disconnecting, marketing handling, and cleanup where required
     def close(self):
         self.market.close()
         if self.inmemory==True: self.mongo.disconnect()     
@@ -55,19 +85,14 @@ if __name__=='__main__':
 
     sample_configuration = {	
     "date_created":None, 
-
     # Composite Primary Key
     "user_id":None, "config_id":None, 
-
     # General Configuration 
     "stop_loss":None, "take_profit":None, "AUM":None, 
-
     # SMA Strat. Config.
     "MaPeriod1":None, "MaPeriod2":None,
-
     # MACD Strat. Config.
     "EmaPeriod1":None, "EmaPeriod2":None,
-
     # RSI Strat. Config.
     "RsiLength":None, "MaLength":None
     }

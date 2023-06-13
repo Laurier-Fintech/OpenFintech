@@ -1,12 +1,3 @@
-"""
-Pre-text Information:
-Additionally, it can also provide our own market 
-analysis and reports based on position and trade 
-information.
-
-Requires Model.py to be built out as it needs 
-to handle configuration information.
-"""
 from utilities import create_logger
 from FinMongo import FinMongo
 
@@ -24,6 +15,7 @@ class Market: # Provides simulated backtesting and real-time testing functionali
 
         self.database = database
         self.positions = self.database["positions"]
+        self.buffer = {} # NOTE: {{open_position: awaiting signal,..} -> Replaced with associated closing position before being registered as a trade # NOTE: This is something to take into consideration when designing the ERD for the system/software
         self.trades = self.database["trades"]
         return
 

@@ -15,12 +15,15 @@ class Model:
             database = self.mongo.client["db"]
 
         self.database = database
-        self.market = Market(self.database,logger)
-        self.configs = self.database["configurations"]
-        self.setting = self.database["setting"]
+        self.market = Market(self.database,logger) # The market object provides our model package with the ability to close/open positions and register trades
+        # NOTE: For the collections we create, we have to manually maintain referential integrity where/when needed.
+        self.configs = self.database["configurations"] # This collection will contain information such as the lengths and periods of the indicators for the models we provide.
+        self.setting = self.database["setting"] # This collection will contain information such as the date range, chart frequency, and the stop-loss/take-profit for a test/run relative to a configuration. 
+        self.history = self.database["history"]
+        self.performance = self.database["performance"] 
         return
 
-    def create_config(self):
+    def create_config(self): # Save information such as the length and period 
         # TODO:
         # Check the values of the configuration to make sure they are valid, raise exceptions where required <- Possible validation function
         # Log success or faliure
@@ -42,46 +45,31 @@ class Model:
 
     # The testing and running of configuation relies on the Market model.
     def test_config(self, setting:dict = {}, configuration:dict={}) -> dict:
-        # Each test is also a session of its own. This session ID is what's used with the market component for tracking trades. 
-        # Outside of the configuration, this also requires the appropriate setting data
-        # Setting can be a seperate collection
 
+        # Tests for configurations are performed with settings.
+        # Each test requires a settings which i.e. represents a session.
+        # Settings need to be stored relative to a configuration.
+        # Settings are collections in and of itself.
 
-        # NOTE: Code to test the configuration with the setting
-        # This will also include code that uses the Alphavantage wrapper Laurier Fintech offers
-        # We will be customizing the Alphavantage wrapper for this usecase as well
-        # This will require a restructure and modification
-        # We could potentially store the data the wrapper collects.
-        # The goal would be to reduce key usage by using existing data and refreshing stored data preemptively.
-        # We should move the Alphavantage wrapper in here and pack in with a new name and redesign it to suit this system
-        # and we would have to reference the wrapper in the Market component.
-
-        # NOTE: Algorithm/Loop to test the configuration
-        # Get the price data for the equity/crypto and range of the setting
-        # Get the price data as a pandas df
-        # Add the indicators to the pandas df
+        # NOTE: Algorithm/Loop to test the configuration 
+        # Provide the setting to the market to get the required (price) data as a pandas df
+        # Perform the required calculations and add the required indicators (for the given configuration) to the pandas df
         # Add the pandas df to the database (to the appropriate collection)
         # Iterate over the pandas df (that contains the price and indicator data)
         # When a signal for opening is hit (based on the configuration)
         #   Open a position
-        #   Add trade to a buffer and add signal:position pair to a list for close checking
-        # When a signal for closing is hit (based on the config)
+        #   Add trade to the buffer and add signal:position pair to a list for close checking
+        # When a signal for closing is hit (based on the config and positions)
         #   Close the associated open position
         #   Register the trade
         # Clear open positions and prepare trade log
 
-        
-        # Code to save the performance of the test with the configuration and the setting
-        # Calculate, compile, and compose the performance data
 
-        # Return the performance data along with the trades as dict's      
-        # If it fails, return the failure as a dictionary
+        # Given the trade and market data, calculate the performance data
 
-        # NOTE:
-        # Have a optional variable to get the history (market data) as well.
-        # This would be something we'd have to get from the database
-        # It can be something we pack into the market
-        # What would the return datatype be?
+
+        # Return the market, positions, trades, and performance data.
+        # Some of these can be returned optionally.
         return
     
     def run_config(self):

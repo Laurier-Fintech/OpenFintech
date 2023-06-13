@@ -1,31 +1,10 @@
-import logging 
+import logging
+from utilites import create_logger
 import pymongo_inmemory
 from pymongo import MongoClient, errors
 # -> TODO: Implement FinMongo.__str__
-# TODO: Modify FinMongo to take logger as a optional parameter, if its not given, we just setup a stream handler
 # TODO: Add CRUD to function with Pandas DF (not sure if we would use this, or if it makes it slower, but its neater)
 
-def create_logger(filename:str=None):
-    if filename==None: filename = "FinMongo.log"
-    # Setup logger and level
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.INFO)
-
-    # Create the stream handler
-    stream_handler = logging.StreamHandler()
-    stream_handler.setLevel(logging.INFO)
-
-    # Create the file handler
-    file_handler = logging.FileHandler(filename)
-    file_handler.setLevel(logging.ERROR)
-
-    # Create formatter and add it to the file and stream handler
-    formatter = logging.Formatter('%(asctime)s/%(name)s/%(levelname)s:: %(message)s')
-    file_handler.setFormatter(formatter)
-    stream_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
-    logger.addHandler(stream_handler)
-    return logger
 
 class FinMongo:
     """ 
@@ -60,7 +39,7 @@ class FinMongo:
         - ConnectionFailure: If the connection to the MongoDB server fails.
         """
         if logger!=None: self.logger=logger
-        else: raise Exception("Logger required.")
+        else: self.logger=create_logger()
                 
         if host==None:
             # If no host connection str was given, create and return an in-memory database
@@ -141,15 +120,13 @@ class FinMongo:
         # TODO: (Alternative) Can show other information like the databases, collections, collection metrics (num of documents) and so on
         return str(self.client.server_info())
 
-
 if __name__ == "__main__": 
     import os 
     from dotenv import load_dotenv
     load_dotenv()
-    logger = create_logger()
     MONGO_USER = os.getenv('MONGO_USER')
     MONGO_PASS = os.getenv('MONGO_PASS') 
-    handler = FinMongo(f"mongodb+srv://{MONGO_USER}:{MONGO_PASS}@cluster0.lvkyalc.mongodb.net/?retryWrites=true&w=majority",logger) #TODO: Add ENV var handling functionality    
+    handler = FinMongo(f"mongodb+srv://{MONGO_USER}:{MONGO_PASS}@cluster0.lvkyalc.mongodb.net/?retryWrites=true&w=majority")     
     #handler = FinMongo() # in-memory
     client = handler.client
 

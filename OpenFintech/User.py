@@ -8,6 +8,7 @@ from datetime import datetime as dt
 #TODO: Writing testing code in main
 #TODO: Email format validation needs to be added to the _validate and udpate function (unless we extend _validate for updates to drop the empty ones)
 #TODO: Finish __str__ to return a user profile summary (string) basically
+#TODO: Add logging statements
 
 class User:
     def __init__(self, collection=None): 

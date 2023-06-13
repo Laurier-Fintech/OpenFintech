@@ -1,5 +1,7 @@
+import logging
 from FinMongo import FinMongo
 from datetime import datetime as dt
+from utilities import create_logger
 #TODO: Add logger (take logger as a optional parameter too)
 #TODO: Add functionality to insert many in user create
 #TODO: Add pandas DF handling to the read? (or to finmongo)
@@ -8,10 +10,14 @@ from datetime import datetime as dt
 #TODO: Writing testing code in main
 #TODO: Email format validation needs to be added to the _validate and udpate function (unless we extend _validate for updates to drop the empty ones)
 #TODO: Finish __str__ to return a user profile summary (string) basically
-#TODO: Add logging statements
+#TODO: Add logging statements (HS: I've set it up already)
 
 class User:
-    def __init__(self, collection=None): 
+    def __init__(self, collection=None, logger:logging.Logger=None): 
+
+        # Setting logger
+        if logger==None: logger = create_logger("user.log")
+        self.logger = logger
 
         # General Attributes:
         if collection==None: # When no collection is given, create a mongoDB and the required 'users' collection

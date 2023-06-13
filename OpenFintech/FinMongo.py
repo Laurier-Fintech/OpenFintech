@@ -1,7 +1,7 @@
 import logging
-from utilites import create_logger
 import pymongo_inmemory
 from pymongo import MongoClient, errors
+from utilities import create_logger
 # -> TODO: Implement FinMongo.__str__
 # TODO: Add CRUD to function with Pandas DF (not sure if we would use this, or if it makes it slower, but its neater)
 
@@ -38,8 +38,8 @@ class FinMongo:
         -----------------------------------------------------------
         - ConnectionFailure: If the connection to the MongoDB server fails.
         """
-        if logger!=None: self.logger=logger
-        else: self.logger=create_logger()
+        if logger==None: logger = create_logger("FinMongo.log")
+        self.logger=logger
                 
         if host==None:
             # If no host connection str was given, create and return an in-memory database

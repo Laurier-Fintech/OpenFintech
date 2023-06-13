@@ -16,7 +16,7 @@ class User:
     def __init__(self, collection=None, logger:logging.Logger=None): 
 
         # Setting logger
-        if logger==None: logger = create_logger("user.log")
+        if logger==None: logger = create_logger(f"{dt.now()} user.log")
         self.logger = logger
 
         # General Attributes:

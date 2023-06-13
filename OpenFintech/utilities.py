@@ -1,4 +1,6 @@
 import logging 
+# TODO: Implement code within create_logger to clean logs
+
 
 def create_logger(filename:str=None, format:str='%(asctime)s/%(name)s/%(levelname)s:: %(message)s'):
     if filename==None: raise Exception("Filename required.")

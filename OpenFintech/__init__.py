@@ -1,3 +1,5 @@
+from .utilites import *
 from .FinMongo import FinMongo
 from .User import User
-from .utilites import *
+from .Market import Market
+from .Model import Model

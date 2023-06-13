@@ -2,24 +2,12 @@ import logging
 import pymongo_inmemory
 from pymongo import MongoClient, errors
 from utilities import create_logger
-# TODO: Finish __str__
-# TODO: Add CRUD features (with returns optionally in Pandas DF's)
-
+# TODO: 
+# Finish __str__
+# Add CRUD features (with returns optionally in Pandas DF's)
+# Add custom error message returns (dict/JSON like an API would)
 
 class FinMongo:
-    """ 
-    -----------------------------------------------------------
-    Purpose
-    -----------------------------------------------------------
-    - A class used to represent a MongoDB connection handler.
-    
-    -----------------------------------------------------------
-    Attributes
-    -----------------------------------------------------------
-    - host (str): a string containing the host connection string for MongoDB
-    - logger (Logger): a logger object used for logging connection and disconnection events
-    - client (MongoClient): a MongoClient object that maintains the connection to the MongoDB server
-    """
 
     def __init__(self, host: str = None, logger:logging.Logger = None):
 
@@ -47,27 +35,6 @@ class FinMongo:
         return
 
     def disconnect(self):
-        """
-        -----------------------------------------------------------
-        Purpose
-        -----------------------------------------------------------
-        - Closes the connection to the MongoDB server.
-
-        -----------------------------------------------------------
-        Parameters
-        -----------------------------------------------------------
-        - None
-
-        -----------------------------------------------------------
-        Returns
-        -----------------------------------------------------------
-        - Success (bool): True if the connection was successfully closed, False otherwise.
-
-        -----------------------------------------------------------
-        Raises
-        -----------------------------------------------------------
-        - Exception: If an exception occurred while closing the connection.
-        """
         success = False
         if self.client: 
             try: self.client.close()
@@ -78,22 +45,6 @@ class FinMongo:
         return success
 
     def __str__(self): # Print the status (connection overview) and other information
-        """
-        -----------------------------------------------------------
-        Purpose
-        -----------------------------------------------------------
-        - Returns a string representation of the MongoDB server's status and other information.
-        
-        -----------------------------------------------------------
-        Parameters
-        -----------------------------------------------------------
-        - None
-        
-        -----------------------------------------------------------
-        Returns
-        -----------------------------------------------------------
-        - str: A string with the MongoDB server's information.
-        """
         # sample_info_server_not_in_memory = {'version': '6.0.6', 'gitVersion': '26b4851a412cc8b9b4a18cdb6cd0f9f642e06aa7', 'modules': ['enterprise'], 'allocator': 'tcmalloc', 'javascriptEngine': 'mozjs', 'sysInfo': 'deprecated', 'versionArray': [6, 0, 6, 0], 'bits': 64, 'debug': False, 'maxBsonObjectSize': 16777216, 'storageEngines': ['devnull', 'ephemeralForTest', 'inMemory', 'queryable_wt', 'wiredTiger'], 'ok': 1.0, '$clusterTime': {'clusterTime': Timestamp(1686251487, 4), 'signature': {'hash': b'\x0b\xcc*\xc1\x81\xd9\xebv\x06\xcc\xc05\x9e+\t\xfe&\x1d\xab)', 'keyId': 7204913445559336962}}, 'operationTime': Timestamp(1686251487, 4)}
         # TODO: Take the sample info and create a string with the important sections for the user
         # TODO: (Alternative) Can show other information like the databases, collections, collection metrics (num of documents) and so on

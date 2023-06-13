@@ -1,15 +1,12 @@
 import logging
 from FinMongo import FinMongo
 from utilities import create_logger
-#TODO: Add logger (take logger as a optional parameter too)
-#TODO: Add functionality to insert many in user create
-#TODO: Add pandas DF handling to the read? (or to finmongo)
-#TODO: Support multi field query (e.x., user_id : x or y) (<- this is just changing the query dictionary that is passed)
-#TODO: Finish delete and update
-#TODO: Writing testing code in main
-#TODO: Email format validation needs to be added to the _validate and udpate function (unless we extend _validate for updates to drop the empty ones)
-#TODO: Finish __str__ to return a user profile summary (string) basically
-#TODO: Add logging statements (HS: I've set it up already)
+# TODO:
+# Create documentation
+# Add functionality to insert many users (data in create_users could be a list of dict's)
+# Improve data validation (e.x., email format validation) 
+# Finish __str__ to return a user profile summary (string) basically
+# Use self.logger and add logging statements to the package
 
 class User:
     def __init__(self, collection=None, logger:logging.Logger=None): 

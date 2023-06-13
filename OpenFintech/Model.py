@@ -28,6 +28,7 @@ class Model:
     def delete_config(self):
         return
 
+    # The testing and running of configuation relies on the Market model.
     def test_config(self):
         # Each test is also a session of its own. This session ID is what's used with the market component for tracking trades. 
         return
@@ -36,6 +37,42 @@ class Model:
         # Similar to “test_configuration” but for real-time (simulated market) testing. 
         return
 
+    # Prints the market overview specific to the model and configurations.
+    def __str__(self):
+        return
 
 if __name__=='__main__':
-    pass
+
+    sample_configuration = {	
+    "date_created":None, 
+
+    # Composite Primary Key
+    "user_id":None, "config_id":None, 
+
+    # General Configuration 
+    "stop_loss":None, "take_profit":None, "AUM":None, 
+
+    # SMA Strat. Config.
+    "MaPeriod1":None, "MaPeriod2":None,
+
+    # MACD Strat. Config.
+    "EmaPeriod1":None, "EmaPeriod2":None,
+
+    # RSI Strat. Config.
+    "RsiLength":None, "MaLength":None
+    }
+
+    sample_performance = {
+	"date_created":None, 
+	
+	"config_id":None, "session_id":None, 
+	
+	"chart_frequency":None, "date_range":None,
+
+	"starting_aum":None, "ending_aum":None, 
+	"percent_change":None, "dollar_change":None, 
+    "num_trades":None, "avg_hold_time":None,
+
+    "avg_change_in_balance_per_trade":None, 
+    }
+

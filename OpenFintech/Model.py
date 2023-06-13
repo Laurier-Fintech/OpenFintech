@@ -1,6 +1,11 @@
 from utilities import create_logger
 from FinMongo import FinMongo
 from Market import Market
+# TODO:
+# Configuration CRUD functions
+# Add referential integrity validation where required (possibly create a _validate function)
+# Implement test_config based on the provided notes
+# Implement the __str__ function
 
 class Model:
 
@@ -72,7 +77,7 @@ class Model:
         # Some of these can be returned optionally.
         return
     
-    def run_config(self):
+    def run_config(self): # NOTE: We can worry about this after we build test_config
         # Similar to “test_configuration” but for real-time (simulated market) testing. 
         # This would use realtime price data which would be added to (or retrived from) the appropriate collection or database or dataframe in market
         # It would perform the required calculations based on the confiurations

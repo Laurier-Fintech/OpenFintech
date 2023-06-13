@@ -54,6 +54,7 @@ class Model:
         # We could potentially store the data the wrapper collects.
         # The goal would be to reduce key usage by using existing data and refreshing stored data preemptively.
         # We should move the Alphavantage wrapper in here and pack in with a new name and redesign it to suit this system
+        # and we would have to reference the wrapper in the Market component.
 
         # Code to save the performance of the test with the configuration and the setting
 
@@ -64,10 +65,19 @@ class Model:
         # NOTE:
         # Have a optional variable to get the history (data) as well.
         # This would be something we'd have to get from the database
+        # It can be something we pack into the market
+        # What would the return datatype be
         return
     
     def run_config(self):
         # Similar to “test_configuration” but for real-time (simulated market) testing. 
+        # This would use realtime price data which would be added to (or retrived from) the appropriate collection or database or dataframe in market
+        # It would perform the required calculations based on the confiurations
+        
+        # Realtime (simualted) testing code here
+
+        # This would take a setting and a configuration as well
+        # It should output performance and market data (including price data) as pandas df or a list of dictionaries?
         return
 
     # Database disconnecting, marketing handling, and cleanup where required

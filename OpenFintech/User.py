@@ -1,6 +1,5 @@
 import logging
 from FinMongo import FinMongo
-from datetime import datetime as dt
 from utilities import create_logger
 #TODO: Add logger (take logger as a optional parameter too)
 #TODO: Add functionality to insert many in user create
@@ -16,7 +15,7 @@ class User:
     def __init__(self, collection=None, logger:logging.Logger=None): 
 
         # Setting logger
-        if logger==None: logger = create_logger(f"{dt.now()} user.log")
+        if logger==None: logger = create_logger("user")
         self.logger = logger
 
         # General Attributes:

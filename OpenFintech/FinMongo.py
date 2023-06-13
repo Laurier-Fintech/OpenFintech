@@ -1,7 +1,6 @@
 import logging
 import pymongo_inmemory
 from pymongo import MongoClient, errors
-from datetime import datetime as dt
 from utilities import create_logger
 # -> TODO: Implement FinMongo.__str__
 # TODO: Add CRUD to function with Pandas DF (not sure if we would use this, or if it makes it slower, but its neater)
@@ -39,7 +38,7 @@ class FinMongo:
         -----------------------------------------------------------
         - ConnectionFailure: If the connection to the MongoDB server fails.
         """
-        if logger==None: logger = create_logger(f"{dt.now()} finmongo.log")
+        if logger==None: logger = create_logger("finmongo")
         self.logger=logger
                 
         if host==None:
@@ -137,9 +136,9 @@ if __name__ == "__main__":
     mycol = mydb["users"]
     sample_data = {
         "date_created": None,
-        "user_id": 0, "username": "Harri",
+        "user_id": 3, "username": "Brown",
         # For analytical purposes
-        "major":"CS", "year": 3,
+        "major":"CS", "year": 30,
         "email": None, "password": None
     }
 

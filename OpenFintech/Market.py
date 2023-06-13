@@ -7,7 +7,6 @@ information.
 Requires Model.py to be built out as it needs 
 to handle configuration information.
 """
-from datetime import datetime as dt
 from utilities import create_logger
 from FinMongo import FinMongo
 
@@ -15,7 +14,7 @@ class Market: # Provides simulated backtesting and real-time testing functionali
 
     def __init__(self, database=None, logger=None):
         
-        if logger==None: logger=create_logger(f"{dt.now()} market.log")
+        if logger==None: logger=create_logger("market")
 
         if database==None:
             self.mongo = FinMongo()

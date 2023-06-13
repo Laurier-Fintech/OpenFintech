@@ -2,8 +2,8 @@ import logging
 import pymongo_inmemory
 from pymongo import MongoClient, errors
 from utilities import create_logger
-# -> TODO: Implement FinMongo.__str__
-# TODO: Add CRUD to function with Pandas DF (not sure if we would use this, or if it makes it slower, but its neater)
+# TODO: Finish __str__
+# TODO: Add CRUD features (with returns optionally in Pandas DF's)
 
 
 class FinMongo:
@@ -22,22 +22,7 @@ class FinMongo:
     """
 
     def __init__(self, host: str = None, logger:logging.Logger = None):
-        """
-        -----------------------------------------------------------
-        Purpose
-        -----------------------------------------------------------
-        - Constructs a new 'FinMongo' object and establishes a connection to the MongoDB server.
-        
-        -----------------------------------------------------------
-        Parameters
-        -----------------------------------------------------------
-        - host (str): The host connection string for MongoDB.
-        
-        -----------------------------------------------------------
-        Raises
-        -----------------------------------------------------------
-        - ConnectionFailure: If the connection to the MongoDB server fails.
-        """
+
         if logger==None: logger = create_logger("finmongo")
         self.logger=logger
                 
@@ -58,13 +43,7 @@ class FinMongo:
         return
 
     def connect(self):
-        """
-        -----------------------------------------------------------
-        Purpose
-        -----------------------------------------------------------
-        - A placeholder for handling multiple connections. 
-        - This method is not yet implemented.
-        """
+        # This function would be built to switch hosts or handle multiple connections
         return
 
     def disconnect(self):

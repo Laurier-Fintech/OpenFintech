@@ -1,0 +1,1 @@
+# Unique (customized) impelmentation of the Alphavantage wrapper to support OpenFintech

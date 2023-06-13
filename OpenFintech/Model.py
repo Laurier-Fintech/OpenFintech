@@ -47,7 +47,7 @@ class Model:
         # Setting can be a seperate collection
 
 
-        # Code to test the configuration with the setting
+        # NOTE: Code to test the configuration with the setting
         # This will also include code that uses the Alphavantage wrapper Laurier Fintech offers
         # We will be customizing the Alphavantage wrapper for this usecase as well
         # This will require a restructure and modification
@@ -56,17 +56,32 @@ class Model:
         # We should move the Alphavantage wrapper in here and pack in with a new name and redesign it to suit this system
         # and we would have to reference the wrapper in the Market component.
 
+        # NOTE: Algorithm/Loop to test the configuration
+        # Get the price data for the equity/crypto and range of the setting
+        # Get the price data as a pandas df
+        # Add the indicators to the pandas df
+        # Add the pandas df to the database (to the appropriate collection)
+        # Iterate over the pandas df (that contains the price and indicator data)
+        # When a signal for opening is hit (based on the configuration)
+        #   Open a position
+        #   Add trade to a buffer and add signal:position pair to a list for close checking
+        # When a signal for closing is hit (based on the config)
+        #   Close the associated open position
+        #   Register the trade
+        # Clear open positions and prepare trade log
+
+        
         # Code to save the performance of the test with the configuration and the setting
+        # Calculate, compile, and compose the performance data
 
-
-        # Return the performance as a dictionary        
+        # Return the performance data along with the trades as dict's      
         # If it fails, return the failure as a dictionary
 
         # NOTE:
-        # Have a optional variable to get the history (data) as well.
+        # Have a optional variable to get the history (market data) as well.
         # This would be something we'd have to get from the database
         # It can be something we pack into the market
-        # What would the return datatype be
+        # What would the return datatype be?
         return
     
     def run_config(self):

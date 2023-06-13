@@ -1,5 +1,6 @@
 from utilities import create_logger
 from FinMongo import FinMongo
+from Market import Market
 
 class Model:
 
@@ -12,8 +13,8 @@ class Model:
             database = self.mongo.client["db"]
 
         self.database = database
-        self.positions = self.database["positions"]
-        self.trades = self.database["trades"]
+        self.market = Market(self.database,logger)
+        self.configs = self.database["configurations"]
         return
 
     def create_config(self):

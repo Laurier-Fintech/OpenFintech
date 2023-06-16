@@ -41,9 +41,11 @@ class User:
         valid = True
         if data['user_id']<0: 
             valid = not valid
+            self.logger.error("Invalid User ID, must be zero or positive.")
             raise Exception("Invalid User ID, must be zero or positive.")
         if data['username']==None or data['username']=="": 
             valid = not valid
+            self.logger.error("Username cannot be empty or none.")
             raise Exception("Username cannot be empty or none.")
         return valid
 
@@ -54,9 +56,13 @@ class User:
             
             # Get inputs from user
             user_id = int(input("User ID: "))
-            if user_id<0: raise Exception("Invalid User ID, must be zero or positive.")
+            if user_id<0:
+                self.logger.error("Invalid User ID, must be zero or positive.")
+                raise Exception("Invalid User ID, must be zero or positive.")
             username = input("Username: ")
-            if username=="" or username==None: raise Exception("Usename cannot be empty or none.")
+            if username=="" or username==None: 
+                self.logger.error("Usename cannot be empty or none.")
+                raise Exception("Usename cannot be empty or none.")
             major = input("Major: ")
             year = int(input("Year: "))
             
@@ -90,7 +96,9 @@ class User:
         # Set query
         if len(query)<=0:
             if self._id!=None: query = {"user_id": self._id}
-            else: raise Exception("No deletion condition, please provide a query for deleting or set the user_id.")
+            else: 
+                self.logger.error("No deletion condition, please provide a query for deleting or set the user_id.")
+                raise Exception("No deletion condition, please provide a query for deleting or set the user_id.")
         # Call appropriate pymongo delete function
         if many==False: deleted = self.collection.delete_one(query)
         else: deleted = self.collection.delete_many(query)

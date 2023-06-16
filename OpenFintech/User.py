@@ -93,7 +93,7 @@ class User:
             else: raise Exception("No deletion condition, please provide a query for deleting or set the user_id.")
         # Call appropriate pymongo delete function
         if many==False: deleted = self.collection.delete_one(query)
-        else: deleted = self.collection.delete_one(query)
+        else: deleted = self.collection.delete_many(query)
         return deleted.deleted_count
     
     def update(self, query={}, values={}, many=False) -> int:

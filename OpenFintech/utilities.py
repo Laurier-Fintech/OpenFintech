@@ -10,11 +10,11 @@ def create_logger(name:str=None, format:str='%(asctime)s/%(name)s/%(levelname)s:
 
     # Create the stream handler
     stream_handler = logging.StreamHandler()
-    stream_handler.setLevel(logging.INFO)
+    stream_handler.setLevel(logging.ERR0R)
 
     # Create the file handler
     file_handler = logging.FileHandler(f"{name}.log")
-    file_handler.setLevel(logging.ERROR)
+    file_handler.setLevel(logging.INFO)
 
     # Create formatter and add it to the file and stream handler
     formatter = logging.Formatter(format)

@@ -1,7 +1,6 @@
 from utilities import create_logger
 from FinMongo import FinMongo
 # TODO:
-# Create a ERD (focus on creating the required collections to support test_config)
 # Position CRUD Functions
 # Trade CRUD Functions
 # NOTE: (Required) Integrate FinData (Alphavantage Wrapper Package) into Market to get the required Trade and Position Data. The Market package should also be able to return this data when requested.

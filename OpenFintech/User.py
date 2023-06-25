@@ -136,7 +136,9 @@ class User:
         return
 
     def __str__(self):
-        return
+        data = self.read(self.id)
+        str = 'User ID: {}\n'.format(data['user_id']) + 'Username: {}\n'.format(data['username']) + 'Date Created: {}\n'.format(data['date_created']) + 'Major: {}\n'.format(data['major']) + 'Year: {}\n'.format(data['year']) + 'Email: {}\n'.format(data['email'])
+        return str
 
 if __name__=='__main__':
     import os 

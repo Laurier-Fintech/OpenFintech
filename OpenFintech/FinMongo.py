@@ -45,10 +45,25 @@ class FinMongo:
         return success
 
     def __str__(self): # Print the status (connection overview) and other information
-        # sample_info_server_not_in_memory = {'version': '6.0.6', 'gitVersion': '26b4851a412cc8b9b4a18cdb6cd0f9f642e06aa7', 'modules': ['enterprise'], 'allocator': 'tcmalloc', 'javascriptEngine': 'mozjs', 'sysInfo': 'deprecated', 'versionArray': [6, 0, 6, 0], 'bits': 64, 'debug': False, 'maxBsonObjectSize': 16777216, 'storageEngines': ['devnull', 'ephemeralForTest', 'inMemory', 'queryable_wt', 'wiredTiger'], 'ok': 1.0, '$clusterTime': {'clusterTime': Timestamp(1686251487, 4), 'signature': {'hash': b'\x0b\xcc*\xc1\x81\xd9\xebv\x06\xcc\xc05\x9e+\t\xfe&\x1d\xab)', 'keyId': 7204913445559336962}}, 'operationTime': Timestamp(1686251487, 4)}
-        # TODO: Take the sample info and create a string with the important sections for the user
-        # TODO: (Alternative) Can show other information like the databases, collections, collection metrics (num of documents) and so on
-        return str(self.client.server_info())
+        databases = self.client.list_database_names() # databases in cluster
+        database_info = []
+        for db_name in databases:
+            db_info = {
+                'database': db_name,
+                'collections': []
+            }
+            db = self.client[db_name]
+            collections = db.list_collection_names()
+            for c_name in collections:
+                collection = db[c_name]
+                docs = collection.count_documents({})
+                c_info = {
+                    'collection': c_name,
+                    'doc_count': docs
+                }
+                db_info["collections"].append(c_info)
+            database_info.append(db_info)
+        return str(database_info)
 
 if __name__ == "__main__": 
     import os 
@@ -56,8 +71,8 @@ if __name__ == "__main__":
     load_dotenv()
     MONGO_USER = os.getenv('MONGO_USER')
     MONGO_PASS = os.getenv('MONGO_PASS') 
-    handler = FinMongo(f"mongodb+srv://{MONGO_USER}:{MONGO_PASS}@cluster0.lvkyalc.mongodb.net/?retryWrites=true&w=majority")     
-    #handler = FinMongo() # in-memory
+    #handler = FinMongo(f"mongodb+srv://{MONGO_USER}:{MONGO_PASS}@cluster0.lvkyalc.mongodb.net/?retryWrites=true&w=majority")     
+    handler = FinMongo() # in-memory
     client = handler.client
 
     # Code to test db, collection, and document creation
@@ -72,10 +87,13 @@ if __name__ == "__main__":
         "email": None, "password": None
     }
 
-    x = mycol.insert_one(sample_data)
-
-    print(client.list_database_names())
-    print(mydb.list_collection_names())
-    print(x.inserted_id)
+    #x = mycol.insert_one(sample_data)
+    #print(client.list_database_names())
+    #print(mydb.list_collection_names())
+    #print(x.inserted_id)
     
+    # Debug:
+    print("------------Printing Handler--------------")
+    print(handler)
+    print("Attempting to disconnect handler")
     handler.disconnect() # Disconnect the handler (and the MongoDB client) after use

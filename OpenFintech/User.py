@@ -3,7 +3,6 @@ from FinMongo import FinMongo
 from utilities import create_logger
 # TODO:
 # Add functionality to insert many users (data in create_users could be a list of dict's)
-# Finish __str__ to return a user profile summary (string) basically
 # Improve data validation (e.x., email format validation) 
 
 class User:

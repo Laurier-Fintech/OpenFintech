@@ -1,4 +1,11 @@
-from OpenFintech import FinData
+import os 
+from dotenv import load_dotenv
+from OpenFintech import FinMongo, FinData
+
+load_dotenv()
+MONGO_USER = os.getenv('MONGO_USER')
+MONGO_PASS = os.getenv('MONGO_PASS') 
+
 
 ALPHAVANTAGE_KEY = "XOW4K6WRTDX8S951"
 CONN = "mongodb+srv://openfintech:<y6SsA8iKefK1T1us>@cluster0.wnrni0p.mongodb.net/?retryWZrites=true&w=majority"
@@ -33,7 +40,9 @@ mycol.insert_many(data)
 
 # NOTE: Currently facing one error (no module named pymongo-inmemory). Possible solution is to explictily mention it in setup.py
 
-handler = FinData(key=ALPHAVANTAGE_KEY)
-handler.overview("TSLA")
-handler.close()
+finmongo = FinMongo(f"mongodb+srv://{MONGO_USER}:{MONGO_PASS}@cluster0.lvkyalc.mongodb.net/?retryWrites=true&w=majority")     
+findata = FinData(key=ALPHAVANTAGE_KEY,database=finmongo.client["mydatabase"])
+findata.overview("TSLA")
+findata.close()
+finmongo.disconnect()
 #

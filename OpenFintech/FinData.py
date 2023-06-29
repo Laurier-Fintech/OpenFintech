@@ -38,15 +38,21 @@ class FinData:
 
         return
     
+    # TODO:
     # Write a function for each "endpoint"
     # Each function would check the collection for the data, if available and within x period, send the data
     # Else, use the sattic get_key() and the static request method to get the data
     # If an error occured, send the old data and handle the key
 
+    # Equity overview's refresh rate should defaultly be set to 30 days (roughly a month) (TODO: Add to __init__)
+    def overview(self): # NOTE: Currently works for equities only as supported by Alphavantage
+        key = self.get_key(self.keys)
+        # Check the collection for the data, if available and within x period, send the data
+        
 
-    # Required endpoints:
-    # Company overview (our own get equity function) <- possibly have a equity object
-    # Crypto Overview (???????)
+        # Else, use the sattic get_key() and the static request method to get the data
+        # If an error occured, send the old data and handle the key
+        return
 
     @staticmethod
     def get_key(keys:dict):

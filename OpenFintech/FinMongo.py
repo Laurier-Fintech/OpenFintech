@@ -3,6 +3,7 @@ import pymongo_inmemory
 from pymongo import MongoClient, errors
 from .utilities import create_logger
 # TODO: 
+# Finish __str__
 # Add CRUD features (with returns optionally in Pandas DF's)
 # Add custom error message returns (dict/JSON like an API would)
 

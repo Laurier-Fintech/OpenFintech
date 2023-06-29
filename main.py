@@ -1,4 +1,4 @@
-from OpenFintech import FinMongo
+from OpenFintech import FinData
 
 ALPHAVANTAGE_KEY = "XOW4K6WRTDX8S951"
 CONN = "mongodb+srv://openfintech:<y6SsA8iKefK1T1us>@cluster0.wnrni0p.mongodb.net/?retryWZrites=true&w=majority"
@@ -31,9 +31,8 @@ mycol.insert_many(data)
 """
 
 
-# NOTE: Currently facing two errors (no module named pymongo-inmemory and no module named utilites)
-key = ALPHAVANTAGE_KEY
-keys=[]
-keys = {key: 0 for key in keys} 
-if len(keys)==0 and key!="": keys[key]=0
-print(keys)
+# NOTE: Currently facing one error (no module named pymongo-inmemory). Possible solution is to explictily mention it in setup.py
+
+handler = FinData(key=ALPHAVANTAGE_KEY)
+handler.overview("TSLA")
+handler.close()

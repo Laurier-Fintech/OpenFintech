@@ -1,3 +1,4 @@
+import requests
 from .utilities import create_logger
 from .FinMongo import FinMongo
 
@@ -35,7 +36,6 @@ class FinData:
         self.keys = {key: 0 for key in keys} 
         if len(self.keys)==0 and self.key=="": raise Exception("Please provide an Alphavantage key or a list of Alphavantage keys.")
         if len(self.keys)==0 and self.key!="": self.keys[self.key]=0 # NOTE: From this point on, only self.keys will be used.
-
         return
     
     # TODO:
@@ -44,16 +44,28 @@ class FinData:
     # Else, use the sattic get_key() and the static request method to get the data
     # If an error occured, send the old data and handle the key
 
+
     # Equity overview's refresh rate should defaultly be set to 30 days (roughly a month) (TODO: Add to __init__)
-    def overview(self): # NOTE: Currently works for equities only as supported by Alphavantage
+    def overview(self, ticker:str): # NOTE: Currently works for equities only as supported by Alphavantage
         key = self.get_key(self.keys)
         # Check the collection for the data, if available and within x period, send the data
-        
+        result = self.equities.find_one({"ticker": ticker})
+        if result==None:
+            url = f"https://www.alphavantage.co/query?function=OVERVIEW&symbol={ticker}&apikey={key}"
+            response = self._request(url)
+            print(response)
+            # Add the entry to the collection
+            # If it fails, loop back
+        # Check if its over the limit, if so then request data
 
-        # Else, use the sattic get_key() and the static request method to get the data
-        # If an error occured, send the old data and handle the key
         return
 
+    # Close database and cleanup
+    def close(self):
+        if self.inmemory==True: self.mongo.disconnect()
+        return
+
+    # Internal utility functions (can be used externally as well as they are esentially independent from the package (no self parm.))
     @staticmethod
     def get_key(keys:dict):
         if len(keys)==0: raise Exception("No keys given.")
@@ -64,8 +76,15 @@ class FinData:
     @staticmethod 
     def _request(url:str): 
         # Has error handling for our own request module 
-        return
-
-if __name__=="__main__":
-    # Load OS variables for DB
-    print("In Main")
+        response = requests.get(url)
+        # Check if the request's response is valid/if it failed
+        if response.status_code==200: # Check if the request worked 
+            try: response = response.json()
+            except: 
+                raise Exception("Failed to convert response to JSON.")
+            else:
+                if "Note" not in response.keys(): 
+                    return response
+                else: 
+                    raise Exception("Exceeded request limit")
+        raise Exception(f"Request Failed {response.status_code}")

@@ -36,3 +36,4 @@ mycol.insert_many(data)
 handler = FinData(key=ALPHAVANTAGE_KEY)
 handler.overview("TSLA")
 handler.close()
+#

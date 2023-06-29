@@ -1,5 +1,5 @@
-from utilities import create_logger
-from FinMongo import FinMongo
+from .utilities import create_logger
+from .FinMongo import FinMongo
 
 # Data required for Model.test_config is pulled from the market
 # Esentially, FinData give data to the market which is then used by models?

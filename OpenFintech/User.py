@@ -1,6 +1,6 @@
 import logging
-from FinMongo import FinMongo
-from utilities import create_logger
+from .FinMongo import FinMongo
+from .utilities import create_logger
 # TODO:
 # Add functionality to insert many users (data in create_users could be a list of dict's)
 # Improve data validation (e.x., email format validation) 

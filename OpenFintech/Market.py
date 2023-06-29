@@ -1,5 +1,5 @@
-from utilities import create_logger
-from FinMongo import FinMongo
+from .utilities import create_logger
+from .FinMongo import FinMongo
 # TODO:
 # Position CRUD Functions
 # Trade CRUD Functions

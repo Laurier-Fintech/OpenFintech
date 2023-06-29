@@ -1,6 +1,6 @@
-from utilities import create_logger
-from FinMongo import FinMongo
-from Market import Market
+from .utilities import create_logger
+from .FinMongo import FinMongo
+from .Market import Market
 # TODO:
 # Configuration CRUD functions
 # Add referential integrity validation where required (possibly create a _validate function)

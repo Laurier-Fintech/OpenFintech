@@ -9,6 +9,8 @@ import requests
     # Handling edge cases (where error occurs when the DB has no data, how to loop and get the data and sucessfully handle the method call)
     # Crypto overview and intraday methods (would require seperate logic for handling keys)
     # Static methods that extend any given timeseries price data pandas DF with indicator data
+    # Verify that Pymongo find_one is returning the last record of the collection (by ticker)
+
 
 class FinData:
     def __init__(self, database=None, logger=None, key="", keys=[], refresh=30):
@@ -63,21 +65,14 @@ class FinData:
             url = f"https://api.coincap.io/v2/assets/{ticker}"
             response = self._request(url) # If it fails, loop back
             document = {
-                "id": response["id"],
-                "date_created": dt.now(),
-                "symbol": response["symbol"],
-                "name": response["name"],
-                "supply": response["supply"],
-                "maxSupply": response["maxSupply"],
-                "marketCapUsd": response["marketCapUsd"],
+                "date_created": dt.now(),"symbol": response["symbol"],
+                "name": response["name"], "supply": response["supply"],
+                "maxSupply": response["maxSupply"], "marketCapUsd": response["marketCapUsd"],
             }
             self.crypto.insert_one(document) # Add the entry to the collection
-            result = document
-        else: 
-            print("Already exists")
-            print(result)
-            print(result["date_created"])
-        return
+            result = self.equities.find_one({"ticker": ticker}) 
+        return result
+    
     # Close database and cleanup
     def close(self):
         if self.inmemory==True: self.mongo.disconnect()

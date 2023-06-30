@@ -1,5 +1,6 @@
 import requests
 from .utilities import create_logger
+from datetime import datetime as dt
 from .FinMongo import FinMongo
 
 # Data required for Model.test_config is pulled from the market
@@ -44,20 +45,33 @@ class FinData:
     # Else, use the sattic get_key() and the static request method to get the data
     # If an error occured, send the old data and handle the key
 
-
     # Equity overview's refresh rate should defaultly be set to 30 days (roughly a month) (TODO: Add to __init__)
     def overview(self, ticker:str): # NOTE: Currently works for equities only as supported by Alphavantage
         key = self.get_key(self.keys)
         # Check the collection for the data, if available and within x period, send the data
-        result = self.equities.find_one({"ticker": ticker})
-        if result==None:
+        result = self.equities.find_one({"ticker": ticker}) # Check if the given ticker exists in the equities collection
+        if result==None: # If the data is not available in the equities collection (or if the data is outdated)
             url = f"https://www.alphavantage.co/query?function=OVERVIEW&symbol={ticker}&apikey={key}"
-            response = self._request(url)
-            print(response)
-            # Add the entry to the collection
-            # If it fails, loop back
-        # Check if its over the limit, if so then request data
-
+            response = self._request(url) # If it fails, loop back
+            document = {
+                "ticker": response["Symbol"],
+                "date_created": dt.now(),
+                "CIK": response["CIK"],
+                "description": response["Description"],
+                "name": response["Name"],
+                "country": response["Country"],
+                "currency": response["Currency"],
+                "exchange": response["Exchange"],
+                "address": response["Address"],
+                "industry": response["Industry"],
+                "sector":response["Sector"]
+            }
+            self.equities.insert_one(document) # Add the entry to the collection
+            result = document
+        else: 
+            print("Already exists")
+            print(result)
+            print(result["date_created"])
         return
 
     # Close database and cleanup

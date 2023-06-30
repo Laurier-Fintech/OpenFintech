@@ -48,9 +48,9 @@ class FinData:
     # Equity overview's refresh rate should defaultly be set to 30 days (roughly a month) (TODO: Add to __init__)
     def overview(self, ticker:str): # NOTE: Currently works for equities only as supported by Alphavantage
         key = self.get_key(self.keys)
-        # Check the collection for the data, if available and within x period, send the data
         result = self.equities.find_one({"ticker": ticker}) # Check if the given ticker exists in the equities collection
-        if result==None: # If the data is not available in the equities collection (or if the data is outdated)
+        if (result==None) or (result!=None and ((dt.now() - result["date_created"]).days > 30)): # If the data is not available in the equities collection (or if the data is outdated)
+            # Request data, create new document, and insert into the DB
             url = f"https://www.alphavantage.co/query?function=OVERVIEW&symbol={ticker}&apikey={key}"
             response = self._request(url) # If it fails, loop back
             document = {
@@ -67,12 +67,8 @@ class FinData:
                 "sector":response["Sector"]
             }
             self.equities.insert_one(document) # Add the entry to the collection
-            result = document
-        else: 
-            print("Already exists")
-            print(result)
-            print(result["date_created"])
-        return
+            result = self.equities.find_one({"ticker": ticker}) # Call find_one again? 
+        return result
 
     # Close database and cleanup
     def close(self):

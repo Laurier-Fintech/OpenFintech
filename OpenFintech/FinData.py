@@ -2,6 +2,7 @@ import requests
 from .utilities import create_logger
 from datetime import datetime as dt
 from .FinMongo import FinMongo
+from coincap import CoinCap
 
 # Data required for Model.test_config is pulled from the market
 # Esentially, FinData give data to the market which is then used by models?
@@ -74,6 +75,28 @@ class FinData:
             print(result["date_created"])
         return
 
+    def crypto_overview(self, ticker:str):
+        # Check the collection for the data, if available and within x period, send the data
+        result = self.crypto.find_one({"ticker": ticker}) # Check if the given ticker exists in the crypto collection
+        if result==None: # If the data is not available in the crypto collection (or if the data is outdated)
+            url = f"https://api.coincap.io/v2/assets/{ticker}"
+            response = self._request(url) # If it fails, loop back
+            document = {
+                "id": response["id"],
+                "date_created": dt.now(),
+                "symbol": response["symbol"],
+                "name": response["name"],
+                "supply": response["supply"],
+                "maxSupply": response["maxSupply"],
+                "marketCapUsd": response["marketCapUsd"],
+            }
+            self.crypto.insert_one(document) # Add the entry to the collection
+            result = document
+        else: 
+            print("Already exists")
+            print(result)
+            print(result["date_created"])
+        return
     # Close database and cleanup
     def close(self):
         if self.inmemory==True: self.mongo.disconnect()

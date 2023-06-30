@@ -1,6 +1,7 @@
 import os 
 from dotenv import load_dotenv
 from OpenFintech import FinMongo, FinData
+import pandas as pd
 
 load_dotenv()
 MONGO_USER = os.getenv('MONGO_USER')
@@ -41,6 +42,9 @@ mycol.insert_many(data)
 
 finmongo = FinMongo(f"mongodb+srv://{MONGO_USER}:{MONGO_PASS}@cluster0.lvkyalc.mongodb.net/?retryWrites=true&w=majority")     
 findata = FinData(key=ALPHAVANTAGE_KEY,database=finmongo.client["mydatabase"])
-findata.overview("TSLA")
+df = FinData.equity_intraday(ticker="AAPL",key=FinData.get_key(findata.keys), start="2023-06-29 19:00:00", end="2023-06-29 19:30:00")
+
+print(df.head())
+
 findata.close()
 finmongo.disconnect()

@@ -45,4 +45,3 @@ findata = FinData(key=ALPHAVANTAGE_KEY,database=finmongo.client["mydatabase"])
 findata.overview("TSLA")
 findata.close()
 finmongo.disconnect()
-#

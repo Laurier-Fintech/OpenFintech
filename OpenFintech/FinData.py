@@ -37,7 +37,7 @@ class FinData:
         self.refresh = refresh
         return
     
-    def overview(self, ticker:str): # NOTE: Currently works for equities only 
+    def overview(self, ticker:str): # NOTE: Currently works for equities only, stores overviews in our DB too 
         key = self.get_key(self.keys)
         result = self.equities.find_one({"ticker": ticker}) # Check if the given ticker exists in the equities collection
         if (result==None) or (result!=None and ((dt.now() - result["date_created"]).days > self.refresh)): # If the data is not available in the equities collection (or if the data is outdated)
@@ -98,5 +98,3 @@ class FinData:
             filtered_df = df[(df['0. timestamp'] >= start_date) & (df['0. timestamp'] <= end_date)].reset_index(drop=True)
             df = filtered_df
         return df
-
-    # Static methods that add a indicator to a given pandas timeseries price DF

@@ -5,11 +5,11 @@ from coincap import CoinCap
 import pandas as pd
 import requests
 
-# TODO: 
-    # Handling edge cases (where error occurs when the DB has no data, how to loop and get the data and sucessfully handle the method call)
-    # Crypto overview and intraday methods (would require seperate logic for handling keys)
+# TODO:     
     # Static methods that extend any given timeseries price data pandas DF with indicator data
+    # Crypto Intraday method (can be pulled from Alphavantage)
     # Verify that Pymongo find_one is returning the last record of the collection (by ticker)
+    # Handling edge cases (where error occurs when the DB has no data, how to loop and get the data and sucessfully handle the method call)
 
 
 class FinData:

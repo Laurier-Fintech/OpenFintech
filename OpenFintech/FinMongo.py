@@ -3,9 +3,7 @@ import pymongo_inmemory
 from pymongo import MongoClient, errors
 from .utilities import create_logger
 # TODO: 
-# Finish __str__
-# Add CRUD features (with returns optionally in Pandas DF's)
-# Add custom error message returns (dict/JSON like an API would)
+# Add static function that, given a collection, returns the last record that was entered into it (carrying any other filter as given)
 
 class FinMongo:
 
@@ -64,36 +62,3 @@ class FinMongo:
                 db_info["collections"].append(c_info)
             database_info.append(db_info)
         return str(database_info)
-
-if __name__ == "__main__": 
-    import os 
-    from dotenv import load_dotenv
-    load_dotenv()
-    MONGO_USER = os.getenv('MONGO_USER')
-    MONGO_PASS = os.getenv('MONGO_PASS') 
-    #handler = FinMongo(f"mongodb+srv://{MONGO_USER}:{MONGO_PASS}@cluster0.lvkyalc.mongodb.net/?retryWrites=true&w=majority")     
-    handler = FinMongo() # in-memory
-    client = handler.client
-
-    # Code to test db, collection, and document creation
-    # In MongoDB, db's and collections are not created untill they have data added to them
-    mydb = client["mydatabase"]
-    mycol = mydb["users"]
-    sample_data = {
-        "date_created": None,
-        "user_id": 3, "username": "Brown",
-        # For analytical purposes
-        "major":"CS", "year": 30,
-        "email": None, "password": None
-    }
-
-    #x = mycol.insert_one(sample_data)
-    #print(client.list_database_names())
-    #print(mydb.list_collection_names())
-    #print(x.inserted_id)
-    
-    # Debug:
-    print("------------Printing Handler--------------")
-    print(handler)
-    print("Attempting to disconnect handler")
-    handler.disconnect() # Disconnect the handler (and the MongoDB client) after use

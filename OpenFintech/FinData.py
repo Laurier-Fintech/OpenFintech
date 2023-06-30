@@ -2,16 +2,12 @@ import requests
 from .utilities import create_logger
 from datetime import datetime as dt
 from .FinMongo import FinMongo
+import pandas as pd
 
-# Data required for Model.test_config is pulled from the market
-# Esentially, FinData give data to the market which is then used by models?
-
-# For testing config, we mainly need the following data
-    # Price Data for company x for y date range in z chart frequency
-
-# We could potentially store the data the wrapper collects in a database/collection
-# The goal would be to reduce key usage by using existing data and refreshing stored data preemptively.
-# We should move the Alphavantage wrapper in here and pack it in with a new name and redesign it to suit this system (for the classes/functions mentioned above)
+# TODO: 
+    # Handling edge cases (where error occurs when the DB has no data, how to loop and get the data and sucessfully handle the method call)
+    # Crypto overview and intraday methods (would require seperate logic for handling keys)
+    # Static methods that extend any given timeseries price data pandas DF with indicator data
 
 class FinData:
     def __init__(self, database=None, logger=None, key="", keys=[], refresh=30):
@@ -41,12 +37,6 @@ class FinData:
         self.refresh = refresh
         return
     
-    # TODO:
-    # Write a function for each "endpoint"
-    # Each function would check the collection for the data, if available and within x period, send the data
-    # Else, use the sattic get_key() and the static request method to get the data
-    # If an error occured, send the old data and handle the key
-
     def overview(self, ticker:str): # NOTE: Currently works for equities only 
         key = self.get_key(self.keys)
         result = self.equities.find_one({"ticker": ticker}) # Check if the given ticker exists in the equities collection
@@ -95,9 +85,18 @@ class FinData:
         raise Exception(f"Request Failed {response.status_code}")
     
     @staticmethod
-    def equity_intraday(key:str,ticker:str, interval:int=5): # Default interval is 5 mins        
+    def equity_intraday(key:str, ticker:str, start:str="", end:str="", interval:int=5): # Default interval is 5 mins        
+        if (start!="" and end=="") or (start=="" and end!=""): raise Exception("Please provide the missing date range value")
+
         endpoint = f"https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={ticker}&interval={interval}min&apikey={key}"
         response = FinData._request(endpoint)
-        # Load price data into a Pandas DF
-        # Trim range and return data
-        return response
+        df = pd.DataFrame(response["Time Series (5min)"]).T.reset_index().rename(columns={"index":"0. timestamp"}) # Transpose, reset index, and set index col name as date
+        df['0. timestamp'] = pd.to_datetime(df['0. timestamp'])
+        if start!="" and end!="": # Convert the start and end dates for the desired date range into a pandas dt and return the filtered df
+            start_date = pd.to_datetime(start)
+            end_date = pd.to_datetime(end)
+            filtered_df = df[(df['0. timestamp'] >= start_date) & (df['0. timestamp'] <= end_date)].reset_index(drop=True)
+            df = filtered_df
+        return df
+
+    # Static methods that add a indicator to a given pandas timeseries price DF

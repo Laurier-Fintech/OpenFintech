@@ -41,7 +41,7 @@ mycol.insert_many(data)
 
 finmongo = FinMongo(f"mongodb+srv://{MONGO_USER}:{MONGO_PASS}@cluster0.lvkyalc.mongodb.net/?retryWrites=true&w=majority")     
 findata = FinData(key=ALPHAVANTAGE_KEY,database=finmongo.client["mydatabase"])
-result = findata.overview("AAPL")
+result = findata.equity_intraday(ticker="AAPL",key=ALPHAVANTAGE_KEY)
 print(result)
 findata.close()
 finmongo.disconnect()

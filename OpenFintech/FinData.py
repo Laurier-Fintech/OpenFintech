@@ -14,8 +14,8 @@ from .FinMongo import FinMongo
 # We should move the Alphavantage wrapper in here and pack it in with a new name and redesign it to suit this system (for the classes/functions mentioned above)
 
 class FinData:
-    def __init__(self, database=None, logger=None, key="", keys=[]):
-        
+    def __init__(self, database=None, logger=None, key="", keys=[], refresh=30):
+
         # Setup logger if required
         if logger==None: logger=create_logger("market")
         self.logger = logger
@@ -37,6 +37,8 @@ class FinData:
         self.keys = {key: 0 for key in keys} 
         if len(self.keys)==0 and self.key=="": raise Exception("Please provide an Alphavantage key or a list of Alphavantage keys.")
         if len(self.keys)==0 and self.key!="": self.keys[self.key]=0 # NOTE: From this point on, only self.keys will be used.
+        
+        self.refresh = refresh
         return
     
     # TODO:
@@ -45,26 +47,19 @@ class FinData:
     # Else, use the sattic get_key() and the static request method to get the data
     # If an error occured, send the old data and handle the key
 
-    # Equity overview's refresh rate should defaultly be set to 30 days (roughly a month) (TODO: Add to __init__)
-    def overview(self, ticker:str): # NOTE: Currently works for equities only as supported by Alphavantage
+    def overview(self, ticker:str): # NOTE: Currently works for equities only 
         key = self.get_key(self.keys)
         result = self.equities.find_one({"ticker": ticker}) # Check if the given ticker exists in the equities collection
-        if (result==None) or (result!=None and ((dt.now() - result["date_created"]).days > 30)): # If the data is not available in the equities collection (or if the data is outdated)
+        if (result==None) or (result!=None and ((dt.now() - result["date_created"]).days > self.refresh)): # If the data is not available in the equities collection (or if the data is outdated)
             # Request data, create new document, and insert into the DB
             url = f"https://www.alphavantage.co/query?function=OVERVIEW&symbol={ticker}&apikey={key}"
             response = self._request(url) # If it fails, loop back
             document = {
-                "ticker": response["Symbol"],
-                "date_created": dt.now(),
-                "CIK": response["CIK"],
-                "description": response["Description"],
-                "name": response["Name"],
-                "country": response["Country"],
-                "currency": response["Currency"],
-                "exchange": response["Exchange"],
-                "address": response["Address"],
-                "industry": response["Industry"],
-                "sector":response["Sector"]
+                "ticker": response["Symbol"],"date_created": dt.now(),"CIK": response["CIK"],
+                "description": response["Description"],"name": response["Name"],
+                "country": response["Country"],"currency": response["Currency"],
+                "exchange": response["Exchange"], "address": response["Address"],
+                "industry": response["Industry"],"sector":response["Sector"]
             }
             self.equities.insert_one(document) # Add the entry to the collection
             result = self.equities.find_one({"ticker": ticker}) # Call find_one again? 
@@ -98,3 +93,11 @@ class FinData:
                 else: 
                     raise Exception("Exceeded request limit")
         raise Exception(f"Request Failed {response.status_code}")
+    
+    @staticmethod
+    def equity_intraday(key:str,ticker:str, interval:int=5): # Default interval is 5 mins        
+        endpoint = f"https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={ticker}&interval={interval}min&apikey={key}"
+        response = FinData._request(endpoint)
+        # Load price data into a Pandas DF
+        # Trim range and return data
+        return response

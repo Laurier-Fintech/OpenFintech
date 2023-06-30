@@ -1,5 +1,5 @@
-from utilities import create_logger
-from FinMongo import FinMongo
+from .utilities import create_logger
+from .FinMongo import FinMongo
 # TODO:
 # Position CRUD Functions
 # Trade CRUD Functions
@@ -11,6 +11,7 @@ class Market: # Provides simulated backtesting and real-time testing functionali
     def __init__(self, database=None, logger=None):
         
         if logger==None: logger=create_logger("market")
+        self.logger = logger
 
         self.inmemory = False
         if database==None:

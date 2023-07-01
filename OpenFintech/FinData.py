@@ -1,7 +1,6 @@
 from .utilities import create_logger
 from .FinMongo import FinMongo
 from datetime import datetime as dt
-from coincap import CoinCap
 import pandas as pd
 import requests
 

@@ -6,8 +6,6 @@ import pandas as pd
 load_dotenv()
 MONGO_USER = os.getenv('MONGO_USER')
 MONGO_PASS = os.getenv('MONGO_PASS') 
-
-
 ALPHAVANTAGE_KEY = "XOW4K6WRTDX8S951"
 
 """
@@ -40,11 +38,12 @@ mycol.insert_many(data)
 
 # NOTE: Currently facing one error (no module named pymongo-inmemory). Possible solution is to explictily mention it in setup.py
 
-finmongo = FinMongo(f"mongodb+srv://{MONGO_USER}:{MONGO_PASS}@cluster0.lvkyalc.mongodb.net/?retryWrites=true&w=majority")     
-findata = FinData(key=ALPHAVANTAGE_KEY,database=finmongo.client["mydatabase"])
-df = FinData.equity_intraday(ticker="AAPL",key=FinData.get_key(findata.keys), start="2023-06-29 19:00:00", end="2023-06-29 19:30:00")
+#finmongo = FinMongo(f"mongodb+srv://{MONGO_USER}:{MONGO_PASS}@cluster0.lvkyalc.mongodb.net/?retryWrites=true&w=majority")     
+#findata = FinData(key=ALPHAVANTAGE_KEY,database=finmongo.client["mydatabase"])
 
-print(df.head())
+df = FinData.equity_intraday(ticker="AAPL",key=ALPHAVANTAGE_KEY, start="2023-06-29 19:55:00", end="2023-06-29 19:35:00")
 
-findata.close()
-finmongo.disconnect()
+print(df)
+
+#findata.close()
+#finmongo.disconnect()

@@ -2,6 +2,7 @@ asgiref==3.6.0
 bleach==6.0.0
 certifi==2023.5.7
 charset-normalizer==3.1.0
+coincap==1.0
 Django==4.2
 dnspython==2.3.0
 docutils==0.20.1
@@ -12,11 +13,15 @@ keyring==23.13.1
 markdown-it-py==2.2.0
 mdurl==0.1.2
 more-itertools==9.1.0
+numpy==1.25.0
+pandas==2.0.3
 pkginfo==1.9.6
 Pygments==2.15.1
 pymongo==4.3.3
 pymongo-inmemory==0.2.13
+python-dateutil==2.8.2
 python-dotenv==1.0.0
+pytz==2023.3
 readme-renderer==37.3
 requests==2.31.0
 requests-toolbelt==1.0.0
@@ -25,6 +30,7 @@ rich==13.4.1
 six==1.16.0
 sqlparse==0.4.3
 twine==4.0.2
+tzdata==2023.3
 urllib3==2.0.2
 webencodings==0.5.1
 zipp==3.15.0

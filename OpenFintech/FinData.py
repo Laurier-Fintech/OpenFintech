@@ -115,3 +115,18 @@ class FinData:
             filtered_df = df[(df['0. timestamp'] >= start_date) & (df['0. timestamp'] <= end_date)].reset_index(drop=True)
             df = filtered_df
         return df
+    
+    @staticmethod
+    def lookup(key:str, ticker:str, check=False, full=False):
+        if key==None or ticker==None: raise Exception("Please provide a ticker and a key to use the lookup function")
+        if check==True and full==True: raise Exception("Please avoid having both check and full set to true simultaneously.")
+
+        endpoint = f"https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords={ticker}&apikey={key}"
+        response = FinData._request(endpoint)
+
+        if full==False:
+            response = [ticker['1. symbol'] for ticker in response['bestMatches']] # Extract tickers from the response
+            if check==True: # Set variable to return as a boolean (true if user ticker exists in symbols)
+                response = ticker.lower() in [ticker.lower() for ticker in response]
+
+        return response

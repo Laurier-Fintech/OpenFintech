@@ -41,7 +41,7 @@ mycol.insert_many(data)
 #finmongo = FinMongo(f"mongodb+srv://{MONGO_USER}:{MONGO_PASS}@cluster0.lvkyalc.mongodb.net/?retryWrites=true&w=majority")     
 #findata = FinData(key=ALPHAVANTAGE_KEY,database=finmongo.client["mydatabase"])
 
-df = FinData.equity_intraday(ticker="AAPL",key=ALPHAVANTAGE_KEY, start="2023-06-29 19:55:00", end="2023-06-29 19:35:00")
+df = FinData.equity_intraday(ticker="AAPL",key=ALPHAVANTAGE_KEY)
 
 print(df)
 

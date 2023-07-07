@@ -57,11 +57,11 @@ class FinData:
             result = self.equities.find_one({"ticker": ticker}) # Call find_one again? 
         return result
 
-    def crypto_overview(self, ticker:str):
+    def crypto_overview(self, name:str):
         # Check the collection for the data, if available and within x period, send the data
-        result = self.crypto.find_one({"ticker": ticker}) # Check if the given ticker exists in the crypto collection
+        result = self.crypto.find_one({"ticker": name}) # Check if the given ticker exists in the crypto collection
         if result==None: # If the data is not available in the crypto collection (or if the data is outdated)
-            url = f"https://api.coincap.io/v2/assets/{ticker}"
+            url = f"https://api.coincap.io/v2/assets/{name}"
             response = self._request(url) # If it fails, loop back
             document = {
                 "date_created": dt.now(),"symbol": response["symbol"],
@@ -69,7 +69,7 @@ class FinData:
                 "maxSupply": response["maxSupply"], "marketCapUsd": response["marketCapUsd"],
             }
             self.crypto.insert_one(document) # Add the entry to the collection
-            result = self.equities.find_one({"ticker": ticker}) 
+            result = self.equities.find_one({"ticker": name}) 
         return result
     
     # Close database and cleanup

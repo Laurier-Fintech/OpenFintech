@@ -75,11 +75,16 @@ class User:
         else: 
             # For validating multiple documents (given in a list)
             if isinstance(data, list): 
+                inserted_ids = []
                 for user_data in data:
                     print(user_data)
                     try: self._validate(user_data) # Validates data and raises exceptions     
                     except Exception as e: print(e)
-                    else: pass 
+                    else: 
+                        result = self.collection.insert_one(user_data)
+                        inserted_ids.append(result.inserted_id)
+                return inserted_ids 
+    
             # For validating one document (given as a dict)
             else: self._validate(data) 
             

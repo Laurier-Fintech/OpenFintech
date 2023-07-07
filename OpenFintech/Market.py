@@ -103,7 +103,7 @@ class Market: # Provides simulated backtesting and real-time testing functionali
                 inserted_ids = []
                 for trade_data in data:
                     try: self._validate(trade_data)
-                    except Exception as e: print(e)
+                    except Exception as e: self.logger.error(str(e))
                     else: 
                         result = self.trades.insert_one(trade_data) # Insert trade_data 
                         inserted_ids.append(result.inserted_id)
@@ -111,7 +111,7 @@ class Market: # Provides simulated backtesting and real-time testing functionali
             
             else:
                 try: self._validate(data)
-                except Exception as e: print(e) 
+                except Exception as e: self.logger.error(str(e))
                 else: 
                     result = self.trades.insert_one(data) # Insert trade data
                     return result.inserted_id
@@ -130,9 +130,10 @@ class Market: # Provides simulated backtesting and real-time testing functionali
 
     def update_tade(self):
 
-
         return
+    
     def delete_trade(self):
+
         return
     
     # Realtime (Provides simulated running functionality) NOTE: Ignore these for now

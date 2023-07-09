@@ -3,6 +3,7 @@ from .FinMongo import FinMongo
 from datetime import datetime as dt
 import pandas as pd
 import requests
+import numpy as np
 
 # TODO:     
     # Static methods that extend any given timeseries price data pandas DF with indicator data
@@ -130,3 +131,33 @@ class FinData:
                 response = ticker.lower() in [ticker.lower() for ticker in response]
 
         return response
+
+    @staticmethod
+    def technical_indicator(indicators: dict, df: pd.DataFrame):
+        for indicator in indicators:
+            if indicator == "SMA":
+                for param in indicators[indicator]:
+                    df[f'{indicator}_{param}'] = df['4. close'].rolling(param).mean()
+            elif indicator == "EMA":
+                for param in indicators[indicator]:
+                    df[f'{indicator}_{param}'] = df["4. close"].ewm(com=param).mean()
+            elif indicator == "RSI":
+                for param in indicators[indicator]:
+                    delta = df["4. close"].astype('float').diff()
+                    delta = delta[1:] 
+                    
+                    up = delta.clip(lower=0)
+                    down =  delta.clip(upper=0).abs()
+                    
+                    roll_up = up.ewm(com=param).mean()
+                    roll_down = down.ewm(com=param).mean()
+
+                    rs = roll_up / roll_down
+                    rsi = 100.0 - (100.0 / (1.0 + rs))
+
+                    rsi[:] = np.select([roll_down == 0, roll_up == 0, True], [100, 0, rsi])
+                    df[f'{indicator}_{param}'] = rsi
+            else:
+                raise Exception("Please provide a valid indicator, such as SMA, EMA, or RSI.")
+        
+        return df

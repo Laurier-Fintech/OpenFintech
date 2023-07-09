@@ -38,17 +38,18 @@ mycol.insert_many(data)
 
 # NOTE: Currently facing one error (no module named pymongo-inmemory) when running the package. Possible solution is to explictily mention it in setup.py
 
-#finmongo = FinMongo(f"mongodb+srv://{MONGO_USER}:{MONGO_PASS}@cluster0.lvkyalc.mongodb.net/?retryWrites=true&w=majority")     
-#findata = FinData(key=ALPHAVANTAGE_KEY,database=finmongo.client["mydatabase"])
+finmongo = FinMongo(f"mongodb+srv://{MONGO_USER}:{MONGO_PASS}@cluster0.lvkyalc.mongodb.net/?retryWrites=true&w=majority")     
+findata = FinData(key=ALPHAVANTAGE_KEY,database=finmongo.client["mydatabase"])
 
-#df = FinData.equity_intraday(ticker="AAPL",key=ALPHAVANTAGE_KEY)
+df = FinData.equity_intraday(ticker="AAPL",key=ALPHAVANTAGE_KEY)
+print(FinData.technical_indicator({"SMA": [10, 1], "EMA": [10, 1], "RSI": [14, 10]}, df))
 
 # Test FinData lookup 
 # Given a user string ticker, this function uses Alphavantage API's Symbol Lookup endpoint
 # Returns the result of symbols that match the string ticker and exist in markets
 
-returned = FinData.lookup(key=ALPHAVANTAGE_KEY, ticker="AAPL", full=True)
-print(returned)
+# returned = FinData.lookup(key=ALPHAVANTAGE_KEY, ticker="AAPL", full=True)
+# print(returned)
 
 #findata.close()
 #finmongo.disconnect()

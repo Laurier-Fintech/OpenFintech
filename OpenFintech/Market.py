@@ -117,20 +117,63 @@ class Market: # Provides simulated backtesting and real-time testing functionali
                     return result.inserted_id
         return 
     
+    # Creates a query given some kind of ID --> reduce redundancy?
+    @staticmethod
+    def create_query(self)->dict:
+        config_id = int(input("Enter Config ID ( > 0):"))
+        return {"config_id": config_id}
+
     def read_trade(self, query: dict={}) -> list:
         # Compose a query to read the current user's info if self._id is set and no query was given
         # If empty query --> create one
         # Add queries with user_id, equity_id, settings_id or indivdually?
         if len(query) == 0:
-            config_id = int(input("Enter Config ID ( > 0):"))
-            query = {"config_id": config_id}
+            query = self.create_query()
 
         result = list(self.trades.find(query))
         return result
 
-    def update_tade(self):
+    def update_trade(self, query:dict={}, values: dict={}, many = False) -> int:
+        if len(query) <= 0:
+            query = self.create_query()
 
-        return
+        # No update values --> create values
+        if len(values) <= 0:
+            values = {}
+            print("Leave it blank to skip")
+
+            ticker = input("Ticker: ")
+            if ticker!="": values["ticker"] = ticker
+
+            price = float(input("Price: "))
+            if price!="": values["price"] = price
+
+            quantity = int(input("Quantity: "))
+            if quantity!="": values["quantity"] = quantity
+
+            type = int(input("Type: "))
+            if type!="": values["type"] = type
+
+            user_id = int(input("User ID: "))
+            if user_id!="": values["user_id"] = user_id
+
+            equity_id = int(input("Equity ID: "))
+            if equity_id!="": values["equity_id"] = equity_id
+
+            config_id = int(input("Config ID: "))
+            if config_id!="": values["config_id"] = config_id
+            
+            setting_id = int(input("Setting ID: "))
+            if setting_id!="": values["setting_id"] = setting_id
+
+            values = {"$set": values} # Reformat to fit pymongo
+
+        # If many --> update all matching docs
+        # Else --> Update one doc
+        if many == False: updated = self.trades.update_many(query, values)
+        else: updated = self.trades.update_one(query, values)
+            
+        return updated.modified_count
     
     def delete_trade(self):
 

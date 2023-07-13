@@ -1,3 +1,4 @@
+import logging
 from .utilities import create_logger
 from datetime import datetime as dt
 from .FinMongo import FinMongo
@@ -121,6 +122,10 @@ class Market: # Provides simulated backtesting and real-time testing functionali
     @staticmethod
     def create_query(self)->dict:
         config_id = int(input("Enter Config ID ( > 0):"))
+        if config_id == None | config_id <0:
+            self.logger.error("Error: Invalid Config ID")
+            raise Exception("Error: Invalid Config ID")
+            
         return {"config_id": config_id}
 
     def read_trade(self, query: dict={}) -> list:
@@ -170,14 +175,19 @@ class Market: # Provides simulated backtesting and real-time testing functionali
 
         # If many --> update all matching docs
         # Else --> Update one doc
-        if many == False: updated = self.trades.update_many(query, values)
-        else: updated = self.trades.update_one(query, values)
+        if many == False: updated = self.trades.update_one(query, values)
+        else: updated = self.trades.update_many(query, values)
             
         return updated.modified_count
     
-    def delete_trade(self):
+    def delete_trade(self, query: dict={}, many = False):
+        if len(query) <= 0:
+            query = self.create_query()
 
-        return
+        if many == False: deleted = self.trades.delete_one(query)
+        else: deleted = self.trades.delete_many(query)
+
+        return deleted.deleted_count
     
     # Realtime (Provides simulated running functionality) NOTE: Ignore these for now
     def open_position(self):

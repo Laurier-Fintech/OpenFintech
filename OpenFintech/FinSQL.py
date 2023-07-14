@@ -65,5 +65,5 @@ if __name__=="__main__":
     SQL_PASS = os.getenv('MYSQL_PASS') 
     host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com"
     handler = FinSQL(host=host,user=SQL_USER,password=SQL_PASS,database="main")
-    handler.curr.execute(queries.create_equity_table)
+    handler.curr.execute(queries.create_config_table)
     handler.disconnect()

@@ -27,10 +27,6 @@ class FinData:
 
         self.db = database
         
-        # Create the required equity and crypto tables if they do not exist already
-        self.db.createTables()
-
-        
         # Setup key/keys
         self.key = key # Is empty if the user provided a list of keys
         self.keys = {key: 0 for key in keys} 

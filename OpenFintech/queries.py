@@ -49,12 +49,16 @@ create_setting_table = """CREATE TABLE settings (
         config_id int NOT NULL,
         date_created DATETIME DEFAULT now(),
 
-        stop_loss int DEFAULT 0,
-        ma_period_2 int DEFAULT 0,
-        ema_period_1 int DEFAULT 0,
-        ema_period_2 int DEFAULT 0,
-        rsi_length int DEFAULT 0,
-        ma_length int DEFAULT 0,
+        ticker varchar(255) NOT NULL,
+
+        stop_loss float DEFAULT NULL,
+        starting_aum float DEFAULT NULL,
+        take_profit float DEFAULT NULL,
+        
+        chart_date_range_start float DEFAULT NULL,
+        chart_date_range_end float DEFAULT NULL,
+        chart_freq float DEFAULT NULL,
+        
         
         PRIMARY KEY (config_id),
         FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE

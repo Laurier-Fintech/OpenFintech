@@ -64,14 +64,11 @@ create_setting_table = """CREATE TABLE settings (
         
         PRIMARY KEY (setting_id),
         FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-        FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-        FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-        FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE
+        FOREIGN KEY (config_id) REFERENCES configs (config_id) ON DELETE CASCADE ON UPDATE CASCADE
 );"""
 
 create_performance_table = """CREATE TABLE performances ( 
         performance_id int NOT NULL AUTO_INCREMENT,
-        config_id int NOT NULL,
         setting_id int NOT NULL,
         date_created DATETIME DEFAULT now(),
 
@@ -80,18 +77,25 @@ create_performance_table = """CREATE TABLE performances (
         ending_aum float DEFAULT 0,
         
         PRIMARY KEY (performance_id),
-        FOREIGN KEY (config_id) REFERENCES configs (config_id) ON DELETE CASCADE ON UPDATE CASCADE,
         FOREIGN KEY (setting_id) REFERENCES settings (setting_id) ON DELETE CASCADE ON UPDATE CASCADE
 );"""
 
-create_trade_table = """CREATE TABLE users (
-        user_id int PRIMARY KEY AUTO_INCREMENT,
+create_trade_table = """CREATE TABLE trades ( 
+        trade_id int NOT NULL AUTO_INCREMENT,
+        user_id int NOT NULL,
+        equity_id int NOT NULL,
+        setting_id int NOT NULL,
         date_created DATETIME DEFAULT now(),
-        username varchar(255) UNIQUE NOT NULL,
-        email varchar(255) UNIQUE DEFAULT NULL,
-        password varchar(255) DEFAULT NULL,
-        year int DEFAULT 0,
-        major varchar(255) DEFAULT NULL,
-        CHECK (year>=1)
-        );"""
 
+        type int NOT NULL,
+        trade_dt DATETIME NOT NULL,
+
+        price float NOT NULL,
+        quantity float NOT NULL,
+        total float NOT NULL,
+        
+        PRIMARY KEY (trade_id),
+        FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+        FOREIGN KEY (equity_id) REFERENCES equities (equity_id) ON DELETE CASCADE ON UPDATE CASCADE,
+        FOREIGN KEY (setting_id) REFERENCES settings (setting_id) ON DELETE CASCADE ON UPDATE CASCADE
+);"""

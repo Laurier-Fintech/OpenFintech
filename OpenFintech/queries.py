@@ -38,7 +38,7 @@ create_performance_table = """CREATE TABLE performances (
         ending_aum float DEFAULT 0,
         
         PRIMARY KEY (performance_id),
-        FOREIGN KEY (config_id) REFERENCES settings (setting_id) ON DELETE CASCADE ON UPDATE CASCADE
+        FOREIGN KEY (config_id) REFERENCES configs (config_id) ON DELETE CASCADE ON UPDATE CASCADE,
         FOREIGN KEY (setting_id) REFERENCES settings (setting_id) ON DELETE CASCADE ON UPDATE CASCADE
 );"""
 

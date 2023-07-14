@@ -5,7 +5,6 @@ import sqlite3
 
 
 class FinSQL:
-    
     def __init__(self, host:str=None, user:str=None, password:str=None):
         self.inmemory = False
         if host!=None:
@@ -39,11 +38,12 @@ class FinSQL:
         return tables
 
 
-load_dotenv()
-SQL_USER = os.getenv('MYSQL_USER')
-SQL_PASS = os.getenv('MYSQL_PASS') 
-host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com"
 
-handler = FinSQL()
-print(handler)
-handler.disconnect()
+if __name__=="__main__":
+    load_dotenv()
+    SQL_USER = os.getenv('MYSQL_USER')
+    SQL_PASS = os.getenv('MYSQL_PASS') 
+    host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com"
+    handler = FinSQL(host=host,user=SQL_USER,password=SQL_PASS)
+    print(handler)
+    handler.disconnect()

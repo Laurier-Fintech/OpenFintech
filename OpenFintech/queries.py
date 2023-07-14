@@ -24,7 +24,7 @@ create_config_table = """CREATE TABLE configs (
         ma_length int DEFAULT 0,
         
         PRIMARY KEY (config_id),
-        FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
+        FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );"""
 
 create_performance_table = """CREATE TABLE configs ( 
@@ -55,13 +55,15 @@ create_setting_table = """CREATE TABLE settings (
         starting_aum float DEFAULT NULL,
         take_profit float DEFAULT NULL,
         
-        chart_date_range_start float DEFAULT NULL,
-        chart_date_range_end float DEFAULT NULL,
-        chart_freq float DEFAULT NULL,
+        chart_date_range_start DATETIME DEFAULT NULL,
+        chart_date_range_end DATETIME DEFAULT NULL,
+        chart_freq_mins BIGINT DEFAULT NULL,
         
-        
-        PRIMARY KEY (config_id),
-        FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
+        PRIMARY KEY (setting_id),
+        FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );"""
 
 create_trade_table = """CREATE TABLE users (

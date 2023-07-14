@@ -22,6 +22,7 @@ class FinSQL:
         return
     
     def createDatabases(self, names):
+        if self.inmemory==True: raise Exception("FinSQL.createDatabases does not support inmemory databases.")
         self.curr.execute("SHOW DATABASES")
         tables = [tableName[0] for tableName in self.curr]
         if not isinstance(names, list): names = [names]
@@ -29,6 +30,18 @@ class FinSQL:
             if name not in tables: self.curr.execute(f"CREATE DATABASE {name}")
         return
     
+    def createTable():
+        return
+
+
+    def insert(self, statement, values=[], many=False):
+        if many:
+            if len(values)==0: raise Exception("Please provide values to insert multiple SQL entires")
+            for value in values: self.curr.executemany(statement,values)
+        else: self.curr.execute(statement)
+        self.conn.commit()
+        return
+
     def disconnect(self)->bool: 
         success = True
         try:
@@ -53,6 +66,6 @@ if __name__=="__main__":
     SQL_USER = os.getenv('MYSQL_USER')
     SQL_PASS = os.getenv('MYSQL_PASS') 
     host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com"
-    handler = FinSQL(host=host,user=SQL_USER,password=SQL_PASS)
-    handler.createDatabases(["main"])
+    handler = FinSQL()#(host=host,user=SQL_USER,password=SQL_PASS,database="main")
+    handler.execute()
     handler.disconnect()

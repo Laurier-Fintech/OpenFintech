@@ -5,10 +5,10 @@ import sqlite3
 
 
 class FinSQL:
-    def __init__(self, host:str=None, user:str=None, password:str=None, database:str=None):
+    def __init__(self, host:str=None, user:str=None, password:str=None, database="sys"):
         self.inmemory = False
         if host!=None:
-            if user==None or password==None or database==None: raise Exception("username, password, or database cannot be none if the host is provided to establish a MySQL connection.")
+            if user==None or password==None: raise Exception("username and password cannot be none if the host is provided to establish a MySQL connection.")
             self.conn = mysql.connector.connect(
                 host=host,
                 user=user,
@@ -19,6 +19,14 @@ class FinSQL:
             self.conn = sqlite3.connect(":memory:")
             self.inmemory=True
         self.curr = self.conn.cursor()
+        return
+    
+    def createDatabases(self, names):
+        self.curr.execute("SHOW DATABASES")
+        tables = [tableName[0] for tableName in self.curr]
+        if not isinstance(names, list): names = [names]
+        for name in names:
+            if name not in tables: self.curr.execute(f"CREATE DATABASE {name}")
         return
     
     def disconnect(self)->bool: 
@@ -46,5 +54,5 @@ if __name__=="__main__":
     SQL_PASS = os.getenv('MYSQL_PASS') 
     host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com"
     handler = FinSQL(host=host,user=SQL_USER,password=SQL_PASS)
-    print(handler)
+    handler.createDatabases(["main"])
     handler.disconnect()

@@ -25,11 +25,11 @@ class FinData:
             self.inmemory = True
             database = FinSQL()
 
-        self.database = database
+        self.db = database
         
-        # Create the required equity and crypto collections if they do not exist already, else simply connect
-        self.equities = self.database["equities"]
-        self.crypto = self.database["crypto"]
+        # Create the required equity and crypto tables if they do not exist already
+        self.db.createTables()
+
         
         # Setup key/keys
         self.key = key # Is empty if the user provided a list of keys

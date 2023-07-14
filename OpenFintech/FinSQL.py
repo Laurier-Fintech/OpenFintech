@@ -70,4 +70,11 @@ if __name__=="__main__":
     #handler.curr.execute(queries.create_setting_table)
     #handler.curr.execute(queries.create_trade_table)
     #handler.curr.execute(queries.create_performance_table)
+    statement = ""
+    values = [
+        (),
+    ]
+    handler.insert(
+
+    )
     handler.disconnect()

@@ -1,3 +1,22 @@
+create_equity_table = """CREATE TABLE equities (
+        equity_id int NOT NULL AUTO_INCREMENT,
+        ticker varchar(255) UNIQUE NOT NULL,
+        date_created DATETIME DEFAULT now(),
+
+        name varchar(255) DEFAULT NULL,
+        description LONGTEXT DEFAULT NULL,
+        cik varchar(255) DEFAULT NULL,
+
+        country varchar(255) DEFAULT NULL,
+        currency varchar(255) DEFAULT NULL,
+        exchange varchar(255) DEFAULT NULL,
+        address varchar(255) DEFAULT NULL,
+        industry varchar(255) DEFAULT NULL,
+        sector varchar(255) DEFAULT NULL,
+        
+        PRIMARY KEY (equity_id)
+);"""
+
 create_users_table = """CREATE TABLE users (
         user_id int NOT NULL AUTO_INCREMENT,
         date_created DATETIME DEFAULT now(),
@@ -9,7 +28,7 @@ create_users_table = """CREATE TABLE users (
 
         PRIMARY KEY (user_id),
         CHECK (year>=1)
-        );"""
+);"""
 
 create_config_table = """CREATE TABLE configs ( 
         config_id int NOT NULL AUTO_INCREMENT,
@@ -25,21 +44,6 @@ create_config_table = """CREATE TABLE configs (
         
         PRIMARY KEY (config_id),
         FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE
-);"""
-
-create_performance_table = """CREATE TABLE performances ( 
-        performance_id int NOT NULL AUTO_INCREMENT,
-        config_id int NOT NULL,
-        setting_id int NOT NULL,
-        date_created DATETIME DEFAULT now(),
-
-        dollar_change float DEFAULT 0,
-        percent_change float DEFAULT 0,
-        ending_aum float DEFAULT 0,
-        
-        PRIMARY KEY (performance_id),
-        FOREIGN KEY (config_id) REFERENCES configs (config_id) ON DELETE CASCADE ON UPDATE CASCADE,
-        FOREIGN KEY (setting_id) REFERENCES settings (setting_id) ON DELETE CASCADE ON UPDATE CASCADE
 );"""
 
 create_setting_table = """CREATE TABLE settings ( 
@@ -65,6 +69,21 @@ create_setting_table = """CREATE TABLE settings (
         FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );"""
 
+create_performance_table = """CREATE TABLE performances ( 
+        performance_id int NOT NULL AUTO_INCREMENT,
+        config_id int NOT NULL,
+        setting_id int NOT NULL,
+        date_created DATETIME DEFAULT now(),
+
+        dollar_change float DEFAULT 0,
+        percent_change float DEFAULT 0,
+        ending_aum float DEFAULT 0,
+        
+        PRIMARY KEY (performance_id),
+        FOREIGN KEY (config_id) REFERENCES configs (config_id) ON DELETE CASCADE ON UPDATE CASCADE,
+        FOREIGN KEY (setting_id) REFERENCES settings (setting_id) ON DELETE CASCADE ON UPDATE CASCADE
+);"""
+
 create_trade_table = """CREATE TABLE users (
         user_id int PRIMARY KEY AUTO_INCREMENT,
         date_created DATETIME DEFAULT now(),
@@ -76,21 +95,3 @@ create_trade_table = """CREATE TABLE users (
         CHECK (year>=1)
         );"""
 
-create_equity_table = """CREATE TABLE equities (
-        equity_id int NOT NULL AUTO_INCREMENT,
-        ticker varchar(255) UNIQUE NOT NULL,
-        date_created DATETIME DEFAULT now(),
-
-        name varchar(255) DEFAULT NULL,
-        description LONGTEXT DEFAULT NULL,
-        cik varchar(255) DEFAULT NULL,
-
-        country varchar(255) DEFAULT NULL,
-        currency varchar(255) DEFAULT NULL,
-        exchange varchar(255) DEFAULT NULL,
-        address varchar(255) DEFAULT NULL,
-        industry varchar(255) DEFAULT NULL,
-        sector varchar(255) DEFAULT NULL,
-        
-        PRIMARY KEY (equity_id)
-        );"""

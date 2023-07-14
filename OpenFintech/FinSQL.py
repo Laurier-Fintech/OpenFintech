@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 import mysql.connector
 import sqlite3
+import queries
 
 
 class FinSQL:
@@ -21,8 +22,8 @@ class FinSQL:
         self.curr = self.conn.cursor()
         return
     
-    def createDatabases(self, names):
-        if self.inmemory==True: raise Exception("FinSQL.createDatabases does not support inmemory databases.")
+    def createDatabase(self, names):
+        if self.inmemory==True: raise Exception("FinSQL.createDatabase does not support inmemory databases.")
         self.curr.execute("SHOW DATABASES")
         tables = [tableName[0] for tableName in self.curr]
         if not isinstance(names, list): names = [names]
@@ -30,11 +31,8 @@ class FinSQL:
             if name not in tables: self.curr.execute(f"CREATE DATABASE {name}")
         return
     
-    def createTable():
-        return
-
-
     def insert(self, statement, values=[], many=False):
+        if self.inmemory==True: raise Exception("FinSQL.insert does not support inmemory databases.")
         if many:
             if len(values)==0: raise Exception("Please provide values to insert multiple SQL entires")
             for value in values: self.curr.executemany(statement,values)
@@ -66,6 +64,6 @@ if __name__=="__main__":
     SQL_USER = os.getenv('MYSQL_USER')
     SQL_PASS = os.getenv('MYSQL_PASS') 
     host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com"
-    handler = FinSQL()#(host=host,user=SQL_USER,password=SQL_PASS,database="main")
-    handler.execute()
+    handler = FinSQL(host=host,user=SQL_USER,password=SQL_PASS,database="main")
+    handler.curr.execute(queries.create_equity_table)
     handler.disconnect()

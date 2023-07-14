@@ -1,5 +1,5 @@
 from .utilities import create_logger
-from .FinMongo import FinMongo
+from .FinSQL import FinSQL
 from datetime import datetime as dt
 import pandas as pd
 import requests
@@ -22,9 +22,9 @@ class FinData:
         # Create a database if required
         self.inmemory = False
         if database==None:
-            self.mongo = FinMongo()
             self.inmemory = True
-            database = self.mongo.client["db"]
+            database = FinSQL()
+
         self.database = database
         
         # Create the required equity and crypto collections if they do not exist already, else simply connect

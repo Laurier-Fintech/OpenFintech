@@ -5,14 +5,15 @@ import sqlite3
 
 
 class FinSQL:
-    def __init__(self, host:str=None, user:str=None, password:str=None):
+    def __init__(self, host:str=None, user:str=None, password:str=None, database:str=None):
         self.inmemory = False
         if host!=None:
-            if user==None or password==None: raise Exception("username and password cannot be none if the host is provided to establish a MySQL connection.")
+            if user==None or password==None or database==None: raise Exception("username, password, or database cannot be none if the host is provided to establish a MySQL connection.")
             self.conn = mysql.connector.connect(
                 host=host,
                 user=user,
-                password=password
+                password=password,
+                database=database
             )
         else:
             self.conn = sqlite3.connect(":memory:")

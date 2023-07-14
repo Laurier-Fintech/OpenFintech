@@ -27,20 +27,19 @@ create_config_table = """CREATE TABLE configs (
         FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );"""
 
-create_performance_table = """CREATE TABLE configs ( 
-        config_id int NOT NULL AUTO_INCREMENT,
-        user_id int NOT NULL,
+create_performance_table = """CREATE TABLE performances ( 
+        performance_id int NOT NULL AUTO_INCREMENT,
+        config_id int NOT NULL,
+        setting_id int NOT NULL,
         date_created DATETIME DEFAULT now(),
 
-        ma_period_1 int DEFAULT 0,
-        ma_period_2 int DEFAULT 0,
-        ema_period_1 int DEFAULT 0,
-        ema_period_2 int DEFAULT 0,
-        rsi_length int DEFAULT 0,
-        ma_length int DEFAULT 0,
+        dollar_change float DEFAULT 0,
+        percent_change float DEFAULT 0,
+        ending_aum float DEFAULT 0,
         
-        PRIMARY KEY (config_id),
-        FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
+        PRIMARY KEY (performance_id),
+        FOREIGN KEY (config_id) REFERENCES settings (setting_id) ON DELETE CASCADE ON UPDATE CASCADE
+        FOREIGN KEY (setting_id) REFERENCES settings (setting_id) ON DELETE CASCADE ON UPDATE CASCADE
 );"""
 
 create_setting_table = """CREATE TABLE settings ( 
@@ -51,9 +50,9 @@ create_setting_table = """CREATE TABLE settings (
 
         ticker varchar(255) NOT NULL,
 
-        stop_loss float DEFAULT NULL,
-        starting_aum float DEFAULT NULL,
-        take_profit float DEFAULT NULL,
+        stop_loss float DEFAULT 0,
+        starting_aum float DEFAULT 0,
+        take_profit float DEFAULT 0,
         
         chart_date_range_start DATETIME DEFAULT NULL,
         chart_date_range_end DATETIME DEFAULT NULL,

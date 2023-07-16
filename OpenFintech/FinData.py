@@ -8,13 +8,9 @@ import numpy as np
     # Crypto Intraday method (can be pulled from Alphavantage)
     # Handling edge cases (where error occurs when the DB has no data, how to loop and get the data and sucessfully handle the method call)
 
-class FinData: # Users can either provide their MySQL database or use our existing one to reduce key usage (this would allow us to collect data and build better models as well, and offer data for open source development)
+class FinData: 
     def __init__(self, database=None, key="", keys=[], refresh=30):
-        
-        if database==None:
-            self.inmemory = True
-            database = FinSQL() # Connect to Laurier Fintech's Database for adding data 
-
+        if database==None: database = FinSQL()
         self.db = database
         
         # Setup key/keys
@@ -23,7 +19,7 @@ class FinData: # Users can either provide their MySQL database or use our existi
         if len(self.keys)==0 and self.key=="": raise Exception("Please provide an Alphavantage key or a list of Alphavantage keys.")
         if len(self.keys)==0 and self.key!="": self.keys[self.key]=0 # NOTE: From this point on, only self.keys will be used.
         
-        self.refresh = refresh
+        self.refresh = refresh # 30 days by default
         return
     
     def overview(self, ticker:str): # NOTE: Currently works for equities only, stores overviews in our DB too 

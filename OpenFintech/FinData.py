@@ -5,9 +5,7 @@ import requests
 import numpy as np
 
 # TODO:     
-    # Static methods that extend any given timeseries price data pandas DF with indicator data
     # Crypto Intraday method (can be pulled from Alphavantage)
-    # Verify that Pymongo find_one is returning the last record of the collection (by ticker)
     # Handling edge cases (where error occurs when the DB has no data, how to loop and get the data and sucessfully handle the method call)
 
 class FinData: # Users can either provide their MySQL database or use our existing one to reduce key usage 

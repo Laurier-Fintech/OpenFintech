@@ -8,12 +8,12 @@ import numpy as np
     # Crypto Intraday method (can be pulled from Alphavantage)
     # Handling edge cases (where error occurs when the DB has no data, how to loop and get the data and sucessfully handle the method call)
 
-class FinData: # Users can either provide their MySQL database or use our existing one to reduce key usage 
+class FinData: # Users can either provide their MySQL database or use our existing one to reduce key usage (this would allow us to collect data and build better models as well, and offer data for open source development)
     def __init__(self, database=None, key="", keys=[], refresh=30):
         
         if database==None:
             self.inmemory = True
-            database = FinSQL() # Connect to Laurier Fintech's Database for adding data
+            database = FinSQL() # Connect to Laurier Fintech's Database for adding data 
 
         self.db = database
         

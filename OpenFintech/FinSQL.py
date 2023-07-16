@@ -6,7 +6,7 @@ import queries
 
 
 class FinSQL:
-    def __init__(self, host:str, user:str, password:str, database="sys"):
+    def __init__(self, host:str, user:str, password:str, database:str):
         self.conn = mysql.connector.connect(
             host=host,
             user=user,

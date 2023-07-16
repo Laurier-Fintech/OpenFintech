@@ -18,6 +18,7 @@ class SQL:
         self.curr = self.conn.cursor()
         return
 
+    # Function that can execute statements with no values, one value, or multiple values (regardless of create, delete, etc as long as it follows MySQL's prepared statement conventions and packs multiple values in a list of sets and single entry values in just a set)
     def execute(self, statement, values=[], multiple=False)-> bool :
         
         success=False
@@ -46,6 +47,7 @@ class SQL:
 
         return success
 
+    # Function that closes the currsor and disconnects the MySQL connection
     def disconnect(self)->bool: 
         success = True
         try:
@@ -54,6 +56,7 @@ class SQL:
         except: success=False
         return success
 
+    # Function that returns the list of tables in the database
     def __str__(self)->str:
         tables = "Tables:\n"
         self.curr.execute("SHOW DATABASES")

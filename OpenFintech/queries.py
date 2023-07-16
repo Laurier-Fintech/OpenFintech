@@ -1,3 +1,5 @@
+# Table Creation Queries
+
 create_equity_table = """CREATE TABLE equities (
         equity_id int NOT NULL AUTO_INCREMENT,
         ticker varchar(255) UNIQUE NOT NULL,
@@ -18,16 +20,16 @@ create_equity_table = """CREATE TABLE equities (
 );"""
 
 create_users_table = """CREATE TABLE users (
-        user_id int NOT NULL AUTO_INCREMENT,
+        user_id int AUTO_INCREMENT,
         date_created DATETIME DEFAULT now(),
         username varchar(255) UNIQUE NOT NULL,
         email varchar(255) UNIQUE DEFAULT NULL,
         password varchar(255) DEFAULT NULL,
-        year int DEFAULT 0,
+        year int DEFAULT NULL,
         major varchar(255) DEFAULT NULL,
 
         PRIMARY KEY (user_id),
-        CHECK (year>=1)
+        CHECK (year>=1 OR NULL)
 );"""
 
 create_config_table = """CREATE TABLE configs ( 
@@ -99,3 +101,7 @@ create_trade_table = """CREATE TABLE trades (
         FOREIGN KEY (equity_id) REFERENCES equities (equity_id) ON DELETE CASCADE ON UPDATE CASCADE,
         FOREIGN KEY (setting_id) REFERENCES settings (setting_id) ON DELETE CASCADE ON UPDATE CASCADE
 );"""
+
+# User insert queries
+insert_simple_user = "INSERT INTO users (username) VALUES (%s)"
+insert_full_user = "INSERT INTO users (username, email, password, year, major) VALUES (%s,%s,%s,%i,%s)"

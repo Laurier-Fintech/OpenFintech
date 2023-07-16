@@ -29,17 +29,23 @@ class FinSQL:
         except Exception as e: pass # TODO: Call destructor with the Exception
         return success
     
-    def insert(self, statement, values=[], many=False)-> bool :
+    def insert(self, statement, values=[], multiple=False)-> bool :
         success=False
         try:
-            if many:
+            if multiple:
                 # If many values are provided, then iterate over the values and execute them with the statement (using executemany)
-                if len(values)==0: raise Exception("Please provide values to insert multiple SQL entires")
-                for value in values: self.curr.executemany(statement,values)
-            else: self.curr.execute(statement) 
+                if len(values)==0: raise Exception("Please provide values to insert multiple SQL entires.")
+                for value in values: self.curr.executemany(statement,value)
+            else: 
+                if len(values)==0: self.curr.execute(statement) 
+                else:
+                    if isinstance(values, tuple)!=True: raise Exception("Given values must be in a set to be executed.")
+                    self.curr.execute(statement,values)
             self.conn.commit() # Commit new insertations/changes
             success=True # Update success status to return True
-        except Exception as e: pass
+        except Exception as e: 
+            print(e)
+            pass
         return success
 
     def disconnect(self)->bool: 
@@ -63,17 +69,14 @@ if __name__=="__main__":
     SQL_PASS = os.getenv('MYSQL_PASS') 
     host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com"
     handler = FinSQL(host=host,user=SQL_USER,password=SQL_PASS,database="main")
-    #handler.curr.execute(queries.create_users_table)
+    handler.curr.execute(queries.create_users_table)
     #handler.curr.execute(queries.create_equity_table)
     #handler.curr.execute(queries.create_config_table)
     #handler.curr.execute(queries.create_setting_table)
     #handler.curr.execute(queries.create_trade_table)
     #handler.curr.execute(queries.create_performance_table)
-    statement = ""
-    values = [
-        (),
-    ]
-    handler.insert( # TODO: Test and validate if its working before modifying FinData and deleting FinMongo.py
-
+    success = handler.insert( # TODO: Validate with inserting users, equities, configs, settings, trades, and performance
+        queries.insert_simple_user, values=("Harri",)
     )
+    print(success)
     handler.disconnect()

@@ -1,7 +1,6 @@
 import os 
 from dotenv import load_dotenv
 import mysql.connector
-import sqlite3
 import queries
 
 

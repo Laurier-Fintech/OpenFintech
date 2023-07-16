@@ -1,4 +1,4 @@
-from .FinSQL import FinSQL
+from .Databases import SQL
 from datetime import datetime as dt
 import pandas as pd
 import requests

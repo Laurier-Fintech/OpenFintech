@@ -3,8 +3,7 @@ from dotenv import load_dotenv
 import mysql.connector
 import queries
 
-
-class FinSQL:
+class SQL:
     def __init__(self, host:str, user:str, password:str, database:str):
         self.conn = mysql.connector.connect(
             host=host,
@@ -14,38 +13,33 @@ class FinSQL:
         )
         self.curr = self.conn.cursor()
         return
-    
-    def createDatabase(self, names)-> bool: # Function that can be used to create either one or many databases (requires connection)
+
+    def execute(self, statement, values=[], multiple=False)-> bool :
+        
         success=False
         try:
-            # Get list of existing databases
-            self.curr.execute("SHOW DATABASES")
-            tables = [tableName[0] for tableName in self.curr] 
-            if not isinstance(names, list): names = [names] # Convert names into a list if its just one name
-            # If a database with the given name does not exist, then create it
-            for name in names:
-                if name not in tables: self.curr.execute(f"CREATE DATABASE {name}")
-            success=True
-        except Exception as e: pass # TODO: Call destructor with the Exception
-        return success
-    
-    def insert(self, statement, values=[], multiple=False)-> bool :
-        success=False
-        try:
+            # For handling multiple values that need to be binded to the prepared (and passed) statement/query before being executed
             if multiple:
                 # If many values are provided, then iterate over the values and execute them with the statement (using executemany)
                 if len(values)==0: raise Exception("Please provide values to insert multiple SQL entires.")
                 for value in values: self.curr.executemany(statement,value)
+            
+            # For handling statements/queries that have no values or one set of values
             else: 
-                if len(values)==0: self.curr.execute(statement) 
+                if len(values)==0: self.curr.execute(statement)  # When no values are given, simply call execute
+                
                 else:
+                    # Check if the given values are in a set (required by MySQL connector)
                     if isinstance(values, tuple)!=True: raise Exception("Given values must be in a set to be executed.")
-                    self.curr.execute(statement,values)
+                    self.curr.execute(statement,values) # Bind values to statement and execute
+
             self.conn.commit() # Commit new insertations/changes
             success=True # Update success status to return True
+            
         except Exception as e: 
-            print(e)
+            print(e) # Can call destructor or handle error differently in the future
             pass
+
         return success
 
     def disconnect(self)->bool: 
@@ -63,19 +57,40 @@ class FinSQL:
         return tables
 
 
+class MongoDB: # Simplified implementation of our FinMongo code
+    def __init__():
+        return
+
+
+class User(SQL):
+    def __init__(self):
+        return
+    
+    def createUser():
+        return
+    
+    def readUser():
+        return
+
+    def updateUser():
+        return
+    
+    def deleteUser():
+        return
+
 if __name__=="__main__":
     load_dotenv()
     SQL_USER = os.getenv('MYSQL_USER')
     SQL_PASS = os.getenv('MYSQL_PASS') 
     host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com"
-    handler = FinSQL(host=host,user=SQL_USER,password=SQL_PASS,database="main")
-    handler.curr.execute(queries.create_users_table)
+    handler = SQL(host=host,user=SQL_USER,password=SQL_PASS,database="main")
+    #handler.curr.execute(queries.create_users_table)
     #handler.curr.execute(queries.create_equity_table)
     #handler.curr.execute(queries.create_config_table)
     #handler.curr.execute(queries.create_setting_table)
     #handler.curr.execute(queries.create_trade_table)
     #handler.curr.execute(queries.create_performance_table)
-    success = handler.insert( # TODO: Validate with inserting users, equities, configs, settings, trades, and performance
+    success = handler.execute( # TODO: Validate with inserting users, equities, configs, settings, trades, and performance
         queries.insert_simple_user, values=("Harri",)
     )
     print(success)

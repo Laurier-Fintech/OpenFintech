@@ -104,4 +104,4 @@ create_trade_table = """CREATE TABLE trades (
 
 # User insert queries
 insert_simple_user = "INSERT INTO users (username) VALUES (%s)"
-insert_full_user = "INSERT INTO users (username, email, password, year, major) VALUES (%s,%s,%s,%i,%s)"
+insert_complete_user = "INSERT INTO users (username, email, password, year, major) VALUES (%s,%s,%s,%s,%s)"

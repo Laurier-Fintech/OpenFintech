@@ -1,5 +1,3 @@
-import os 
-from dotenv import load_dotenv
 import mysql.connector
 import queries
 
@@ -64,6 +62,8 @@ class SQL:
         return tables
 
 if __name__=="__main__":
+    import os 
+    from dotenv import load_dotenv
     load_dotenv()
     SQL_USER = os.getenv('MYSQL_USER')
     SQL_PASS = os.getenv('MYSQL_PASS') 
@@ -75,8 +75,4 @@ if __name__=="__main__":
     #handler.curr.execute(queries.create_setting_table)
     #handler.curr.execute(queries.create_trade_table)
     #handler.curr.execute(queries.create_performance_table)
-    success = handler.execute( # TODO: Validate with inserting users, equities, configs, settings, trades, and performance
-        queries.insert_simple_user, values=("Harri",)
-    )
-    print(success)
     handler.disconnect()

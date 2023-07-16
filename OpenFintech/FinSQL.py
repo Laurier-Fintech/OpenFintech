@@ -30,7 +30,7 @@ class FinSQL:
         except Exception as e: pass # TODO: Call destructor with the Exception
         return success
     
-    def insert(self, statement, values=[], many=False):
+    def insert(self, statement, values=[], many=False)-> bool :
         success=False
         try:
             if many:

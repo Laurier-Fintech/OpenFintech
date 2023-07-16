@@ -11,7 +11,6 @@ import numpy as np
     # Verify that Pymongo find_one is returning the last record of the collection (by ticker)
     # Handling edge cases (where error occurs when the DB has no data, how to loop and get the data and sucessfully handle the method call)
 
-
 class FinData:
     def __init__(self, database=None, logger=None, key="", keys=[], refresh=30):
 
@@ -68,11 +67,6 @@ class FinData:
             self.crypto.insert_one(document) # Add the entry to the collection
             result = self.equities.find_one({"ticker": name}) 
         return result
-    
-    # Close database and cleanup
-    def close(self):
-        if self.inmemory==True: self.mongo.disconnect()
-        return
 
     # Internal utility functions (can be used externally as well as they are esentially independent from the package (no self parm.))
     @staticmethod

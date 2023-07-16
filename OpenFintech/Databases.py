@@ -3,6 +3,10 @@ from dotenv import load_dotenv
 import mysql.connector
 import queries
 
+class MongoDB: # TODO: Simplified implementation of our FinMongo code
+    def __init__():
+        return
+
 class SQL:
     def __init__(self, host:str, user:str, password:str, database:str):
         self.conn = mysql.connector.connect(
@@ -55,28 +59,6 @@ class SQL:
         self.curr.execute("SHOW DATABASES")
         for tableName in self.curr: tables+= f"\t{tableName}\n"
         return tables
-
-
-class MongoDB: # Simplified implementation of our FinMongo code
-    def __init__():
-        return
-
-
-class User(SQL):
-    def __init__(self):
-        return
-    
-    def createUser():
-        return
-    
-    def readUser():
-        return
-
-    def updateUser():
-        return
-    
-    def deleteUser():
-        return
 
 if __name__=="__main__":
     load_dotenv()

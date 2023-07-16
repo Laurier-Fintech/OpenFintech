@@ -52,11 +52,8 @@ class FinSQL:
         return success
 
     def __str__(self)->str:
-        if not self.inmemory: 
-            tables = "Tables:\n"
-            self.curr.execute("SHOW DATABASES")
-        else: 
-            tables = response = f"Connected to in-memory db: {self.conn}"
+        tables = "Tables:\n"
+        self.curr.execute("SHOW DATABASES")
         for tableName in self.curr: tables+= f"\t{tableName}\n"
         return tables
 
@@ -77,7 +74,7 @@ if __name__=="__main__":
     values = [
         (),
     ]
-    handler.insert(
+    handler.insert( # TODO: Test and validate if its working before modifying FinData and deleting FinMongo.py
 
     )
     handler.disconnect()

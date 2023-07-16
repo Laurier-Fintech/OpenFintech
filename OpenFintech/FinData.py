@@ -1,4 +1,3 @@
-from .utilities import create_logger
 from .FinSQL import FinSQL
 from datetime import datetime as dt
 import pandas as pd
@@ -11,18 +10,12 @@ import numpy as np
     # Verify that Pymongo find_one is returning the last record of the collection (by ticker)
     # Handling edge cases (where error occurs when the DB has no data, how to loop and get the data and sucessfully handle the method call)
 
-class FinData:
-    def __init__(self, database=None, logger=None, key="", keys=[], refresh=30):
-
-        # Setup logger if required
-        if logger==None: logger=create_logger("market")
-        self.logger = logger
+class FinData: # Users can either provide their MySQL database or use our existing one to reduce key usage 
+    def __init__(self, database=None, key="", keys=[], refresh=30):
         
-        # Create a database if required
-        self.inmemory = False
         if database==None:
             self.inmemory = True
-            database = FinSQL()
+            database = FinSQL() # Connect to Laurier Fintech's Database for adding data
 
         self.db = database
         

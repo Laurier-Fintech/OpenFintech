@@ -87,7 +87,7 @@ class Alphavantage:
     def equity_intraday(key:str, ticker:str, start:str="", end:str="", interval:int=5): # Default interval is 5 mins        
         if (start!="" and end=="") or (start=="" and end!=""): raise Exception("Please provide the missing date range value")
         endpoint = f"https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={ticker}&interval={interval}min&apikey={key}"
-        response = FinData._request(endpoint)
+        response = Alphavantage._request(endpoint)
         df = pd.DataFrame(response["Time Series (5min)"]).T.reset_index().rename(columns={"index":"0. timestamp"}) # Transpose, reset index, and set index col name as date
         df['0. timestamp'] = pd.to_datetime(df['0. timestamp'])
         if start!="" and end!="": # Convert the start and end dates for the desired date range into a pandas dt and return the filtered df

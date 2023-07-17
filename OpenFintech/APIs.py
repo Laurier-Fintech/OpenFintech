@@ -74,7 +74,7 @@ class Alphavantage:
         if check==True and full==True: raise Exception("Please avoid having both check and full set to true simultaneously.")
 
         endpoint = f"https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords={ticker}&apikey={key}"
-        response = FinData._request(endpoint)
+        response = Alphavantage._request(endpoint)
 
         if full==False:
             response = [ticker['1. symbol'] for ticker in response['bestMatches']] # Extract tickers from the response

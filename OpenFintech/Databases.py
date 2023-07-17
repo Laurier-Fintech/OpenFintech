@@ -5,7 +5,7 @@ class MongoDB: # TODO: Simplified implementation of our FinMongo code
     def __init__():
         return
 
-class SQL:
+class MySQL:
     def __init__(self, host:str, user:str, password:str, database:str):
         self.conn = mysql.connector.connect(
             host=host,
@@ -57,7 +57,7 @@ class SQL:
     # Function that returns the list of tables in the database
     def __str__(self)->str:
         tables = "Tables:\n"
-        self.curr.execute("SHOW DATABASES")
+        self.curr.execute("SHOW TABLES")
         for tableName in self.curr: tables+= f"\t{tableName}\n"
         return tables
 
@@ -68,11 +68,11 @@ if __name__=="__main__":
     SQL_USER = os.getenv('MYSQL_USER')
     SQL_PASS = os.getenv('MYSQL_PASS') 
     host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com"
-    handler = SQL(host=host,user=SQL_USER,password=SQL_PASS,database="main")
-    #handler.curr.execute(queries.create_users_table)
-    #handler.curr.execute(queries.create_equity_table)
-    #handler.curr.execute(queries.create_config_table)
-    #handler.curr.execute(queries.create_setting_table)
-    #handler.curr.execute(queries.create_trade_table)
-    #handler.curr.execute(queries.create_performance_table)
+    handler = MySQL(host=host,user=SQL_USER,password=SQL_PASS,database="main")
+    handler.curr.execute(queries.create_users_table)
+    handler.curr.execute(queries.create_equity_table)
+    handler.curr.execute(queries.create_config_table)
+    handler.curr.execute(queries.create_setting_table)
+    handler.curr.execute(queries.create_trade_table)
+    handler.curr.execute(queries.create_performance_table)
     handler.disconnect()

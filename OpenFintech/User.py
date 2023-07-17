@@ -1,8 +1,8 @@
-from Databases import SQL
+from Databases import MySQL
 import queries
 
 class User(): # Used to handle the interactions with the Users table 
-    def __init__(self, database:SQL):
+    def __init__(self, database:MySQL):
         self.db_handler = database
         return
     
@@ -28,8 +28,9 @@ if __name__=="__main__":
     SQL_USER = os.getenv('MYSQL_USER')
     SQL_PASS = os.getenv('MYSQL_PASS') 
     host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com"
-    db_handler = SQL(host=host,user=SQL_USER,password=SQL_PASS,database="main")
+    db_handler = MySQL(host=host,user=SQL_USER,password=SQL_PASS,database="main")
     user_handler = User(db_handler)
+
     success = user_handler.create(("David","test@mylaurier.ca","12@test", "3","computer science",),simple=False)
     print(success)
     db_handler.disconnect()

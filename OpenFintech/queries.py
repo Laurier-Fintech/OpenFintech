@@ -1,5 +1,4 @@
 # Table Creation Queries
-
 create_equity_table = """CREATE TABLE equities (
         equity_id int NOT NULL AUTO_INCREMENT,
         ticker varchar(255) UNIQUE NOT NULL,
@@ -102,6 +101,6 @@ create_trade_table = """CREATE TABLE trades (
         FOREIGN KEY (setting_id) REFERENCES settings (setting_id) ON DELETE CASCADE ON UPDATE CASCADE
 );"""
 
-# User insert queries
+# User Insertation Queries
 insert_simple_user = "INSERT INTO users (username) VALUES (%s)"
 insert_complete_user = "INSERT INTO users (username, email, password, year, major) VALUES (%s,%s,%s,%s,%s)"

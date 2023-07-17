@@ -1,18 +1,20 @@
 from .Market import Market
 # TODO:
 # Configuration CRUD functions
-# Add referential integrity validation where required (possibly create a _validate function)
 # Implement test_config based on the provided notes
 # Implement the __str__ function
 
 class Model:
-
     def __init__(self, database=None):
+        return
+    
+    def create_model():
+        # Terminal user interface to create the model 
+        # Create configuration and setting based on user input
         return
 
     # The testing and running of configuation relies on the Market model.
     def test_config(self, setting:dict = {}, configuration:dict={}) -> dict:
-
         # Tests for configurations are performed with settings.
         # Each test requires a settings which i.e. represents a session.
         # Settings need to be stored relative to a configuration.

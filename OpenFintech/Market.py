@@ -8,16 +8,16 @@ class Market: # Provides simulated backtesting and real-time testing functionali
     def __init__(self, database=None):
         return
     
-    def create():
+    def createTrade():
         return
     
-    def read():
+    def readTrade():
         return
     
-    def update():
+    def updateTrade():
         return
     
-    def delete():
+    def deleteTrade():
         return
     
     # For providing an overview of the market

@@ -104,3 +104,9 @@ create_trade_table = """CREATE TABLE trades (
 # User Insertation Queries
 insert_simple_user = "INSERT INTO users (username) VALUES (%s)"
 insert_complete_user = "INSERT INTO users (username, email, password, year, major) VALUES (%s,%s,%s,%s,%s)"
+
+# Equity Insertation Query
+insert_equity_complete = "INSERT INTO equities (ticker, name, description, cik, country, currency, exchange, address, industry, sector) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+
+# Equities Selection Queries
+select_ticker_entry = "SELECT 1 FROM equities WHERE ticker=%s"

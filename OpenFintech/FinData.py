@@ -1,4 +1,4 @@
-from .Databases import SQL
+from .Databases import MySQL
 from datetime import datetime as dt
 import pandas as pd
 import requests
@@ -9,10 +9,9 @@ import numpy as np
     # Handling edge cases (where error occurs when the DB has no data, how to loop and get the data and sucessfully handle the method call)
 
 class FinData: 
-    def __init__(self, database=None, key="", keys=[], refresh=30):
-        if database==None: database = FinSQL()
-        self.db = database
-        
+    def __init__(self, database:MySQL, key="", keys=[], refresh=30):
+        self.db_handler = database
+    
         # Setup key/keys
         self.key = key # Is empty if the user provided a list of keys
         self.keys = {key: 0 for key in keys} 
@@ -22,9 +21,12 @@ class FinData:
         self.refresh = refresh # 30 days by default
         return
     
-    def overview(self, ticker:str): # NOTE: Currently works for equities only, stores overviews in our DB too 
+    def overview(self, ticker:str): # NOTE: Currently works for equities only, stores overviews in our DB to reduce key usage 
         key = self.get_key(self.keys)
+
         result = self.equities.find_one({"ticker": ticker}) # Check if the given ticker exists in the equities collection
+        # Get the last equity that's in the database
+        
         if (result==None) or (result!=None and ((dt.now() - result["date_created"]).days > self.refresh)): # If the data is not available in the equities collection (or if the data is outdated)
             # Request data, create new document, and insert into the DB
             url = f"https://www.alphavantage.co/query?function=OVERVIEW&symbol={ticker}&apikey={key}"

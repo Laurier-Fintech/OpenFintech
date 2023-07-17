@@ -1,7 +1,6 @@
-from datetime import datetime as dt
 # TODO:
 # Trade CRUD Functions
-# Implement __str__ to provide an overview of the market
+# Implement __str__ to provide an overview of the market (easier and more useful with MySQL)
 
 class Market: # Provides simulated backtesting and real-time testing functionalities.
 

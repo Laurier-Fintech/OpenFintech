@@ -9,8 +9,6 @@ class Model:
         return
     
     def create():
-        # Terminal user interface to create the model 
-        # Create configuration and setting based on user input
         return
 
     # The testing and running of configuation relies on the Market model.

@@ -1,15 +1,15 @@
-from Databases import MySQL
 import queries
-from datetime import datetime as dt
-import pandas as pd
 import requests
+import pandas as pd
 import numpy as np
+from Databases import MySQL
+from datetime import datetime as dt
 
 # TODO:     
     # Ensure overview is returning the last entry to equity for a given ticker (else update the query in queries.py)
     # Handling edge cases (where error occurs when the DB has no data and API fails ??)
 
-class FinData: 
+class Alphavantage: 
     def __init__(self, database:MySQL, key="", keys=[], refresh=30):
         self.db_handler = database
     
@@ -125,7 +125,6 @@ class FinData:
             else:
                 raise Exception("Please provide a valid indicator, such as SMA, EMA, or RSI.")
         return df
-    
 
 if __name__=="__main__":
     import queries
@@ -137,7 +136,7 @@ if __name__=="__main__":
     host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com"
     handler = MySQL(host=host,user=SQL_USER,password=SQL_PASS,database="main")
     key="NDYBGSF1PGZROO4Q"
-    data = FinData(handler, key="NDYBGSF1PGZROO4Q")
+    data = Alphavantage(handler, key="NDYBGSF1PGZROO4Q")
     result = data.overview("META")
     print(result)
     handler.disconnect()

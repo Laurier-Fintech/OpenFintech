@@ -8,7 +8,7 @@ class Model:
     def __init__(self, database=None):
         return
     
-    def create_model():
+    def create():
         # Terminal user interface to create the model 
         # Create configuration and setting based on user input
         return

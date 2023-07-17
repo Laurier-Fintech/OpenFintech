@@ -14,7 +14,7 @@ class Model:
         return
 
     # The testing and running of configuation relies on the Market model.
-    def test_config(self, setting:dict = {}, configuration:dict={}) -> dict:
+    def backtest(self, setting:dict = {}, configuration:dict={}) -> dict:
         # Tests for configurations are performed with settings.
         # Each test requires a settings which i.e. represents a session.
         # Settings need to be stored relative to a configuration.
@@ -39,7 +39,7 @@ class Model:
         # Some of these can be returned optionally.
         return
     
-    def run_config(self): # NOTE: We can worry about this after we build test_config
+    def simulate(self): # NOTE: We can worry about this after we build backtest
         # Similar to “test_configuration” but for real-time (simulated market) testing. 
         # This would use realtime price data which would be added to (or retrived from) the appropriate collection or database or dataframe in market
         # It would perform the required calculations based on the confiurations

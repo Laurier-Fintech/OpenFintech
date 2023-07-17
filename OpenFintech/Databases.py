@@ -16,8 +16,8 @@ class MySQL:
         return
 
     # Function that can execute statements with no values, one value, or multiple values (regardless of create, delete, etc as long as it follows MySQL's prepared statement conventions and packs multiple values in a list of sets and single entry values in just a set)
-    def execute(self, statement, values=[], multiple=False)-> bool :
-        
+    def execute(self, statement:str, values=[], multiple=False, query=False):
+
         success=False
         try:
             # For handling multiple values that need to be binded to the prepared (and passed) statement/query before being executed
@@ -35,9 +35,12 @@ class MySQL:
                     if isinstance(values, tuple)!=True: raise Exception("Given values must be in a set to be executed.")
                     self.curr.execute(statement,values) # Bind values to statement and execute
 
-            self.conn.commit() # Commit new insertations/changes
-            success=True # Update success status to return True
-            
+            if not query: 
+                self.conn.commit() # Commit new insertations/changes
+                success=True # Update success status to return True
+            else: 
+                success = response = self.curr.fetchall()
+
         except Exception as e: 
             print(e) # Can call destructor or handle error differently in the future
             pass
@@ -142,5 +145,8 @@ if __name__=="__main__":
     )
     print(success)"""
     
+    response = handler.execute(queries.select_ticker_entry, values=("IBM",), query=True)
+    print(type(response))
+    print(response[0][2])
 
     handler.disconnect()

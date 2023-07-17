@@ -1,11 +1,12 @@
-from .Databases import MySQL
+from Databases import MySQL
+import queries
 from datetime import datetime as dt
 import pandas as pd
 import requests
 import numpy as np
 
 # TODO:     
-    # Crypto Intraday method (can be pulled from Alphavantage)
+    # Ensure overview is returning the last entry to equity for a given ticker (else update the query in queries.py)
     # Handling edge cases (where error occurs when the DB has no data, how to loop and get the data and sucessfully handle the method call)
 
 class FinData: 
@@ -22,41 +23,27 @@ class FinData:
         return
     
     def overview(self, ticker:str): # NOTE: Currently works for equities only, stores overviews in our DB to reduce key usage 
-        key = self.get_key(self.keys)
-
-        result = self.equities.find_one({"ticker": ticker}) # Check if the given ticker exists in the equities collection
-        # Get the last equity that's in the database
         
-        if (result==None) or (result!=None and ((dt.now() - result["date_created"]).days > self.refresh)): # If the data is not available in the equities collection (or if the data is outdated)
-            # Request data, create new document, and insert into the DB
-            url = f"https://www.alphavantage.co/query?function=OVERVIEW&symbol={ticker}&apikey={key}"
-            response = self._request(url) # If it fails, loop back
-            document = {
-                "ticker": response["Symbol"],"date_created": dt.now(),"CIK": response["CIK"],
-                "description": response["Description"],"name": response["Name"],
-                "country": response["Country"],"currency": response["Currency"],
-                "exchange": response["Exchange"], "address": response["Address"],
-                "industry": response["Industry"],"sector":response["Sector"]
-            }
-            self.equities.insert_one(document) # Add the entry to the collection
-            result = self.equities.find_one({"ticker": ticker}) # Call find_one again? 
-        return result
+        result = self.db_handler.execute(queries.select_ticker_entry, values=(ticker,), query=True) # Check if the given ticker exists in the equities table        
+        
+        if (isinstance(result, list)==True):
+            if (len(result)==0 or ((dt.now() - result[0][2]).days > self.refresh)): # If the data is not available in the equities table (or if the data is outdated)
+                # Request data from Alphavantage API, create new entry, and insert into the DB
+                url = f"https://www.alphavantage.co/query?function=OVERVIEW&symbol={ticker}&apikey={self.get_key(self.keys)}"
+                response = self._request(url)
+                self.db_handler.execute(queries.insert_equity_complete, values=
+                    (
+                        response["Symbol"],
+                        response["Name"],response["Description"],response["CIK"],
+                        response["Country"],response["Currency"],response["Exchange"],
+                        response["Address"],response["Industry"],response["Sector"],
+                    )
+                )
+                result = self.db_handler.execute(queries.select_ticker_entry, values=(ticker,), query=True)[0]
+            else: result = result[0] # If no refresh is required, grab the latest one to return
 
-    def crypto_overview(self, name:str):
-        # Check the collection for the data, if available and within x period, send the data
-        result = self.crypto.find_one({"ticker": name}) # Check if the given ticker exists in the crypto collection
-        if result==None: # If the data is not available in the crypto collection (or if the data is outdated)
-            url = f"https://api.coincap.io/v2/assets/{name}"
-            response = self._request(url) # If it fails, loop back
-            document = {
-                "date_created": dt.now(),"symbol": response["symbol"],
-                "name": response["name"], "supply": response["supply"],
-                "maxSupply": response["maxSupply"], "marketCapUsd": response["marketCapUsd"],
-            }
-            self.crypto.insert_one(document) # Add the entry to the collection
-            result = self.equities.find_one({"ticker": name}) 
         return result
-
+    
     # Internal utility functions (can be used externally as well as they are esentially independent from the package (no self parm.))
     @staticmethod
     def get_key(keys:dict):
@@ -140,3 +127,18 @@ class FinData:
                 raise Exception("Please provide a valid indicator, such as SMA, EMA, or RSI.")
         
         return df
+    
+
+if __name__=="__main__":
+    import queries
+    import os 
+    from dotenv import load_dotenv
+    load_dotenv()
+    SQL_USER = os.getenv('MYSQL_USER')
+    SQL_PASS = os.getenv('MYSQL_PASS') 
+    host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com"
+    handler = MySQL(host=host,user=SQL_USER,password=SQL_PASS,database="main")
+    data = FinData(handler, key="NDYBGSF1PGZROO4Q")
+    result = data.overview("META")
+    print(result)
+    handler.disconnect()

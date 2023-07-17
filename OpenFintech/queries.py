@@ -109,4 +109,4 @@ insert_complete_user = "INSERT INTO users (username, email, password, year, majo
 insert_equity_complete = "INSERT INTO equities (ticker, name, description, cik, country, currency, exchange, address, industry, sector) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 
 # Equities Selection Queries
-select_ticker_entry = "SELECT 1 FROM equities WHERE ticker=%s"
+select_ticker_entry = "SELECT * FROM equities WHERE ticker=%s" # Enforce sort by the latest (so we get the last entry)

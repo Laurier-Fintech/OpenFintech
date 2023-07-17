@@ -1,5 +1,4 @@
 import mysql.connector
-import queries
 
 class MongoDB: # TODO: Simplified implementation of our FinMongo code
     def __init__():
@@ -62,6 +61,7 @@ class MySQL:
         return tables
 
 if __name__=="__main__":
+    import queries
     import os 
     from dotenv import load_dotenv
     load_dotenv()
@@ -141,5 +141,6 @@ if __name__=="__main__":
         )
     )
     print(success)"""
+    
 
     handler.disconnect()

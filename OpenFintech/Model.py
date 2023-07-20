@@ -1,4 +1,6 @@
-from .Market import Market
+from Databases import MySQL
+import queries
+
 # TODO:
 # Configuration CRUD functions
 # Implement test_config based on the provided notes
@@ -6,10 +8,14 @@ from .Market import Market
 
 class Model:
     def __init__(self, database=None):
+        self.db_handler = database
         return
     
-    def create():
-        return
+    def create(self, values:set)->int:
+        self.db_handler.execute(queries.insert_configuration_entry, values)
+        query_last = "SELECT LAST_INSERT_ID();"
+        config_id = self.db_handler.execute(query_last, query=True)[0][0]
+        return config_id
 
     # The testing and running of configuation relies on the Market model.
     def backtest(self, setting:dict = {}, configuration:dict={}) -> dict:
@@ -50,4 +56,17 @@ class Model:
 
     # Prints the market overview specific to the model and configurations. (can use SQL complex queries and create visualizations now)
     def __str__(self):
-        return "working"
+        return("working")
+    
+import os 
+from dotenv import load_dotenv
+load_dotenv()
+SQL_USER = os.getenv('MYSQL_USER')
+SQL_PASS = os.getenv('MYSQL_PASS') 
+host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com"
+db_handler = MySQL(host=host,user="admin",password="$5svXm!6NAFIL5U",database="main")
+model_handler = Model(db_handler)
+
+success = model_handler.create(('1', 1, 2, 3, 4, 5, 6, 7))
+print(success)
+db_handler.disconnect()

@@ -11,9 +11,8 @@ host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com" #NOTE: Host addres
 # Initiate all the handlers
 db_handler = MySQL(host=host,user=SQL_USER,password=SQL_PASS,database="main")
 data_handler = Alphavantage(database=db_handler,key=ALPHAVANTAGE_KEY)
-config_handler = Model(database=db_handler)
-market_handler = Market(database=db_handler)
 model_handler = Model(database=db_handler)
+market_handler = Market(database=db_handler)
 print("Loaded ENV variables and successfully initiated the DB, API, Config, and Market handlers")
 
 # Set the user as the system requires (to add relational layer to the data and faciliate the automated creation of reports etc. through complex queries)
@@ -24,7 +23,7 @@ ema_1 = 5 # Config variable 1
 ema_2 = 20 # Config variable 2
 ma_1,ma_2,rsi_1,rsi_2=0,0,0,0 # Set missing values as zero
 config_values = (user_id, ma_1, ma_2, ema_1, ema_2, rsi_1, rsi_2)
-config_id = config_handler.create(config_values) # Create the config using the handler (and store the ID for creating other entries in other related tables)
+config_id = model_handler.create(config_values) # Create the config using the handler (and store the ID for creating other entries in other related tables)
 print(f"Created {config_values} configuration with the ID {config_id}")
 
 # Setup the parameters for the setting
@@ -32,6 +31,8 @@ ticker = 'GOOGL'
 interval = 30 #mins
 # NOTE: Skipping the start and end date ranges for now as they're not required
 
+# Call the backtest function with the setting along with the configuration
+model_handler.backtest()
 
 # Disconnect the database
 db_handler.disconnect()

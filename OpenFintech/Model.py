@@ -24,6 +24,7 @@ class Model:
 
     # The testing and running of configuation relies on the Market model.
     def backtest(self, setting:dict = {}, configuration:dict={}) -> dict:
+        print("\tIn backtest")
         # Tests for configurations are performed with settings.
         # Each test requires a settings which i.e. represents a session.
         # Settings need to be stored relative to a configuration.

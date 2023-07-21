@@ -52,12 +52,7 @@ class Model:
         print(price_data)
 
 
-        # Tests for configurations are performed with settings.
-        # Each test requires a settings which i.e. represents a session.
-        # Settings need to be stored relative to a configuration.
-        # Settings are collections in and of itself.
-
-        # NOTE: Algorithm/Loop to test the configuration 
+        # NOTE: (OLD, go based of your understanding from todays meeting) Algorithm/Loop to test the configuration 
         # Provide the setting to the market to get the required (price) data as a pandas df
         # Perform the required calculations and add the required indicators (for the given configuration) to the pandas df
         # Add the pandas df to the database (to the appropriate collection)

@@ -10,7 +10,7 @@ ALPHAVANTAGE_KEY = os.getenv('ALPHAVANTAGE_KEY')
 host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com" #NOTE: Host address is set to the OpenFintech AWS Server.
 # Initiate all the handlers
 db_handler = MySQL(host=host,user=SQL_USER,password=SQL_PASS,database="main")
-data_handler = Alphavantage(database=db_handler,key=ALPHAVANTAGE_KEY)
+api_handler = Alphavantage(database=db_handler,key=ALPHAVANTAGE_KEY)
 model_handler = Model(database=db_handler)
 market_handler = Market(database=db_handler)
 print("Loaded ENV variables and successfully initiated the DB, API, Config, and Market handlers")
@@ -37,7 +37,7 @@ setting={"user_id": user_id,"starting_aum": starting_aum, "ticker":ticker,"chart
 print(f"Initialized settings as {setting} for passing onto Model.backtest()")
 
 # Call the backtest function with the setting along with the configuration
-model_handler.backtest(setting, configuration)
+model_handler.backtest(setting, configuration, api_handler)
 
 # Disconnect the database
 db_handler.disconnect()

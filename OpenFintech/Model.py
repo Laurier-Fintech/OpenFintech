@@ -1,4 +1,5 @@
 from .Databases import MySQL
+from .APIs import Alphavantage
 from . import queries
 
 # TODO:
@@ -34,7 +35,7 @@ class Model:
         return config_id
 
     # The testing and running of configuation relies on the Market model.
-    def backtest(self, setting:dict, configuration:dict) -> dict:
+    def backtest(self, setting:dict, configuration:dict, api_handler:Alphavantage) -> dict:
         print("\nModel.backtest():")
         # Import the configuration information from the given ID and set it as a dictionary if only the ID was given
         if len(configuration)>1: pass # Create the config and update the dict to just be {"ID": config_id}
@@ -46,9 +47,9 @@ class Model:
         print(f"\tCreated setting with the ID {setting_id}")
         
         # Import the data for given the setting using the given data_handler (Alphavantage object)
-        # Add the 
-
-
+        price_data = api_handler.equity_intraday(api_handler.key,setting["ticker"],interval=setting["chart_freq_mins"])
+        print("\tPrice Data:")
+        print(price_data)
 
 
         # Tests for configurations are performed with settings.

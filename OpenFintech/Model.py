@@ -12,9 +12,14 @@ class Model:
         return
     
     def create(self, values:set)->int:
-        self.db_handler.execute(queries.insert_configuration_entry, values)
-        query_last = "SELECT LAST_INSERT_ID();"
-        config_id = self.db_handler.execute(query_last, query=True)[0][0]
+        try:
+            self.db_handler.execute(queries.insert_configuration_entry, values)
+            query_last = "SELECT LAST_INSERT_ID();"
+            config_id = self.db_handler.execute(query_last, query=True)[0][0]
+        except:
+            print("Error: Could not insert configuration into configuration table. Check if User ID is provided")
+            return None
+        
         return config_id
 
     # The testing and running of configuation relies on the Market model.

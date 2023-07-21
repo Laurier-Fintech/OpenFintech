@@ -101,11 +101,17 @@ create_trade_table = """CREATE TABLE trades (
         FOREIGN KEY (setting_id) REFERENCES settings (setting_id) ON DELETE CASCADE ON UPDATE CASCADE
 );"""
 
-# User Insertation Queries
+# User Insertion Queries
 insert_simple_user = "INSERT INTO users (username) VALUES (%s)"
 insert_complete_user = "INSERT INTO users (username, email, password, year, major) VALUES (%s,%s,%s,%s,%s)"
 
-# Equity Insertation Query
+# Model Insertion Queries
+insert_configuration_entry = """ INSERT INTO configs (
+        user_id, date_created, ma_period_1, ma_period_2, ema_period_1, ema_period_2, rsi_length, ma_length)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s);
+"""
+
+# Equity Insertion Query
 insert_equity_complete = "INSERT INTO equities (ticker, name, description, cik, country, currency, exchange, address, industry, sector) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 
 # Equities Selection Queries

@@ -10,18 +10,16 @@ host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com" #NOTE: Host addres
 db_handler = MySQL(host=host,user=SQL_USER,password=SQL_PASS,database="main")
 
 # Set the user as the system requires (to add relational layer to the data and faciliate the automated creation of reports etc. through complex queries)
-user_handler = User(db_handler)
-
+user_id = 4
 
 # Setup the configuration/model for testing
-
+ema_1 = 5 # Config variable 1
+ema_2 = 20 # Config variable 2
 
 # Setup the parameters for the setting
 ticker = 'GOOGL'
 interval = 30 #min
 # NOTE: Skipping the start and end date ranges for now
-ema_1 = 5 # Config variable 1
-ema_2 = 20 # Config variable 2
 
 
 # Disconnect the database

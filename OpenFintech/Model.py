@@ -18,7 +18,7 @@ class Model:
             config_id = self.db_handler.execute(query_last, query=True)[0][0]
         except:
             print("Error: Could not insert configuration into configuration table. Check if User ID is provided")
-            return None
+            return -1
         
         return config_id
 

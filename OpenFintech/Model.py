@@ -22,13 +22,29 @@ class Model:
         
         return config_id
 
+    def createSetting(self,values):
+        try:
+            self.db_handler.execute(queries.insert_setting_entry, values)
+            query_last = "SELECT LAST_INSERT_ID();"
+            config_id = self.db_handler.execute(query_last, query=True)[0][0]
+        except:
+            print("Error: Could not insert configuration into configuration table. Check if User ID is provided")
+            return -1
+        
+        return config_id
+
     # The testing and running of configuation relies on the Market model.
-    def backtest(self, setting:dict = {}, configuration:dict={},data_handler=None) -> dict:
-        print("\tIn backtest")
+    def backtest(self, setting:dict, configuration:dict) -> dict:
+        print("\nModel.backtest():")
         # Import the configuration information from the given ID and set it as a dictionary if only the ID was given
+        if len(configuration)>1: pass # Create the config and update the dict to just be {"ID": config_id}
 
-
-        # Create a entry to the setting table
+        # Create a entry to the settings table
+        setting_id = self.createSetting(values=(setting["user_id"],configuration["config_id"],setting["ticker"],
+                                   setting["stop_loss"],setting["starting_aum"],setting["take_profit"],
+                                   setting["chart_freq_mins"]))
+        print(f"\tCreated setting with the ID {setting_id}")
+        
         # Import the data for given the setting using the given data_handler (Alphavantage object)
         # Add the 
 

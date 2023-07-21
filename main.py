@@ -24,16 +24,20 @@ ema_2 = 20 # Config variable 2
 ma_1,ma_2,rsi_1,rsi_2=0,0,0,0 # Set missing values as zero
 config_values = (user_id, ma_1, ma_2, ema_1, ema_2, rsi_1, rsi_2)
 config_id = model_handler.create(config_values) # Create the config using the handler (and store the ID for creating other entries in other related tables)
-print(f"Created {config_values} configuration with the ID {config_id}")
+configuration={"config_id":config_id}
+print(f"Created {config_values} configuration as ({configuration})")
 
 # Setup the parameters for the setting NOTE: Skipping the start and end date ranges for now as they're not required
+starting_aum = 1000000 # USD
 ticker = 'GOOGL'
 interval = 30 #mins
 stop_loss = 10 #%
 take_profit = 10 #%
+setting={"user_id": user_id,"starting_aum": starting_aum, "ticker":ticker,"chart_freq_mins":30, "stop_loss":stop_loss,"take_profit":take_profit}
+print(f"Initialized settings as {setting} for passing onto Model.backtest()")
 
 # Call the backtest function with the setting along with the configuration
-model_handler.backtest(setting={"ticker":ticker,"interval":30, "stop_loss":stop_loss,"take_profit":take_profit}, configuration={"ID":config_id})
+model_handler.backtest(setting, configuration)
 
 # Disconnect the database
 db_handler.disconnect()

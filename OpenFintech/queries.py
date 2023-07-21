@@ -110,6 +110,10 @@ insert_configuration_entry = """ INSERT INTO configs (
         user_id, ma_period_1, ma_period_2, ema_period_1, ema_period_2, rsi_length, ma_length)
         VALUES (%s,%s,%s,%s,%s,%s,%s);
 """
+insert_setting_entry = """ INSERT INTO settings (
+        user_id, config_id, ticker, stop_loss, starting_aum, take_profit, chart_freq_mins)
+        VALUES (%s,%s,%s,%s,%s,%s,%s);
+"""
 
 # Equity Insertion Query
 insert_equity_complete = "INSERT INTO equities (ticker, name, description, cik, country, currency, exchange, address, industry, sector) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"

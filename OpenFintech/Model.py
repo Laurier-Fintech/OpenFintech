@@ -23,8 +23,18 @@ class Model:
         return config_id
 
     # The testing and running of configuation relies on the Market model.
-    def backtest(self, setting:dict = {}, configuration:dict={}) -> dict:
+    def backtest(self, setting:dict = {}, configuration:dict={},data_handler=None) -> dict:
         print("\tIn backtest")
+        # Import the configuration information from the given ID and set it as a dictionary if only the ID was given
+
+
+        # Create a entry to the setting table
+        # Import the data for given the setting using the given data_handler (Alphavantage object)
+        # Add the 
+
+
+
+
         # Tests for configurations are performed with settings.
         # Each test requires a settings which i.e. represents a session.
         # Settings need to be stored relative to a configuration.

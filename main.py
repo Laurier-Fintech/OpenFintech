@@ -26,13 +26,14 @@ config_values = (user_id, ma_1, ma_2, ema_1, ema_2, rsi_1, rsi_2)
 config_id = model_handler.create(config_values) # Create the config using the handler (and store the ID for creating other entries in other related tables)
 print(f"Created {config_values} configuration with the ID {config_id}")
 
-# Setup the parameters for the setting
+# Setup the parameters for the setting NOTE: Skipping the start and end date ranges for now as they're not required
 ticker = 'GOOGL'
 interval = 30 #mins
-# NOTE: Skipping the start and end date ranges for now as they're not required
+stop_loss = 10 #%
+take_profit = 10 #%
 
 # Call the backtest function with the setting along with the configuration
-model_handler.backtest()
+model_handler.backtest(setting={"ticker":ticker,"interval":30, "stop_loss":stop_loss,"take_profit":take_profit}, configuration={"ID":config_id})
 
 # Disconnect the database
 db_handler.disconnect()

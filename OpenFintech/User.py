@@ -1,5 +1,5 @@
-from Databases import MySQL
-import queries
+from .Databases import MySQL
+from . import queries
 
 class User(): # Used to handle the interactions with the Users table 
     def __init__(self, database:MySQL):

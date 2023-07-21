@@ -1,5 +1,6 @@
 import os 
 from dotenv import load_dotenv
+from OpenFintech import MySQL, Alphavantage, Market, Model
 
 
 load_dotenv()
@@ -9,6 +10,6 @@ host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com"
 db_handler = MySQL(host=host,user="admin",password="$5svXm!6NAFIL5U",database="main")
 model_handler = Model(db_handler)
 
-success = model_handler.create(('1', 2, 3, 4, 5, 6, 7))
+success = model_handler.create(('1', 25, 3, 4, 5, 6, 7))
 print(success)
 db_handler.disconnect()

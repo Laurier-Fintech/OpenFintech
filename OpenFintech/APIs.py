@@ -1,8 +1,8 @@
-import queries
+from .Databases import MySQL
+from . import queries
 import requests
 import pandas as pd
 import numpy as np
-from Databases import MySQL
 from datetime import datetime as dt
 
 # TODO:     

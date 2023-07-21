@@ -1,5 +1,5 @@
-from Databases import MySQL
-import queries
+from .Databases import MySQL
+from . import queries
 
 # TODO:
 # Configuration CRUD functions

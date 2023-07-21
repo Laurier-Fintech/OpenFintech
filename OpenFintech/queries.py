@@ -107,8 +107,8 @@ insert_complete_user = "INSERT INTO users (username, email, password, year, majo
 
 # Model Insertion Queries
 insert_configuration_entry = """ INSERT INTO configs (
-        user_id, date_created, ma_period_1, ma_period_2, ema_period_1, ema_period_2, rsi_length, ma_length)
-        VALUES (%s,%s,%s,%s,%s,%s,%s,%s);
+        user_id, ma_period_1, ma_period_2, ema_period_1, ema_period_2, rsi_length, ma_length)
+        VALUES (%s,%s,%s,%s,%s,%s,%s);
 """
 
 # Equity Insertion Query

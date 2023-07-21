@@ -13,6 +13,7 @@ db_handler = MySQL(host=host,user=SQL_USER,password=SQL_PASS,database="main")
 data_handler = Alphavantage(database=db_handler,key=ALPHAVANTAGE_KEY)
 config_handler = Model(database=db_handler)
 market_handler = Market(database=db_handler)
+model_handler = Model(database=db_handler)
 print("Loaded ENV variables and successfully initiated the DB, API, Config, and Market handlers")
 
 # Set the user as the system requires (to add relational layer to the data and faciliate the automated creation of reports etc. through complex queries)

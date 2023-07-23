@@ -45,12 +45,15 @@ class Model:
         print(f"\tCreated setting with the ID {setting_id}")
         
         # Import the data for given the setting using the given api_handler (Alphavantage object)
-        price_data = api_handler.equity_intraday(api_handler.key,setting_values["ticker"],interval=setting_values["chart_freq_mins"])
+        df = api_handler.equity_intraday(api_handler.key,setting_values["ticker"],interval=setting_values["chart_freq_mins"])
         print("\tPrice Data:")
-        print(price_data)
+        print(df)
 
         # Modify the price_data based on the given config values
-        
+        indicators = {"SMA":[10],"EMA":[10,20]}
+        df = api_handler.technical_indicator(indicators,df)
+        print("After manipulating the dataframe with technical_indicator() method:")
+        print(df)
 
 
         # NOTE: (OLD, go based of your understanding from todays meeting) Algorithm/Loop to test the configuration 

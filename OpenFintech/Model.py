@@ -32,7 +32,7 @@ class Model:
         self.db_handler.execute(queries.insert_configuration_entry, values)
         query_last = "SELECT LAST_INSERT_ID();"
         config_id = self.db_handler.execute(query_last, query=True)[0][0]
-        
+
         return config_id
 
     def createSetting(self,values:dict):
@@ -66,25 +66,9 @@ class Model:
         df = api_handler.technical_indicator(indicators,df)
         print("After manipulating the dataframe with technical_indicator() method:")
         print(df)
+        #df.to_csv("sample_model_data.csv", encoding='utf-8') 
+        # Check test.py for the implementation
 
-
-        # NOTE: (OLD, go based of your understanding from todays meeting) Algorithm/Loop to test the configuration 
-        # Provide the setting to the market to get the required (price) data as a pandas df
-        # Perform the required calculations and add the required indicators (for the given configuration) to the pandas df
-        # Add the pandas df to the database (to the appropriate collection)
-        # Iterate over the pandas df (that contains the price and indicator data)
-        # When a signal for opening is hit (based on the configuration)
-        #   Open a position
-        #   Add trade to the buffer and add signal:position pair to a list for close checking
-        # When a signal for closing is hit (based on the config and positions)
-        #   Close the associated open position
-        #   Register the trade
-        # Clear open positions and prepare trade log
-
-        # Given the trade and market data, calculate the performance data
-
-        # Return the market, positions, trades, and performance data.
-        # Some of these can be returned optionally.
         return
     
     def simulate(self): # NOTE: We can worry about this after we build backtest

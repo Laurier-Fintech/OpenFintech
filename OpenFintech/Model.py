@@ -8,8 +8,9 @@ from . import queries
 # Implement the __str__ function
 
 class Model:
-    def __init__(self, database=None):
+    def __init__(self, database, market):
         self.db_handler = database
+        self.market_handler = market
         return
     
     def create(self, values:set)->int:

@@ -8,11 +8,12 @@ SQL_USER = os.getenv('MYSQL_USER')
 SQL_PASS = os.getenv('MYSQL_PASS') 
 ALPHAVANTAGE_KEY = os.getenv('ALPHAVANTAGE_KEY') 
 host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com" #NOTE: Host address is set to the OpenFintech AWS Server.
+
 # Initiate all the handlers
 db_handler = MySQL(host=host,user=SQL_USER,password=SQL_PASS,database="main")
 api_handler = Alphavantage(database=db_handler,key=ALPHAVANTAGE_KEY)
-model_handler = Model(database=db_handler)
 market_handler = Market(database=db_handler)
+model_handler = Model(database=db_handler, market=market_handler)
 print("Loaded ENV variables and successfully initiated the DB, API, Config, and Market handlers")
 
 # Set the user as the system requires (to add relational layer to the data and faciliate the automated creation of reports etc. through complex queries)

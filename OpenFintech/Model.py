@@ -23,33 +23,34 @@ class Model:
         
         return config_id
 
-    def createSetting(self,values):
-        try:
-            self.db_handler.execute(queries.insert_setting_entry, values)
-            query_last = "SELECT LAST_INSERT_ID();"
-            config_id = self.db_handler.execute(query_last, query=True)[0][0]
-        except:
-            print("Error: Could not insert configuration into configuration table. Check if User ID is provided")
-            return -1
-        
+    def createSetting(self,values:dict):
+        # Convert values dict to a set
+        values=(values["user_id"],values["config_id"],values["ticker"],
+                                            values["stop_loss"],values["starting_aum"],values["take_profit"],
+                                            values["chart_freq_mins"])
+        self.db_handler.execute(queries.insert_setting_entry, values)
+        query_last = "SELECT LAST_INSERT_ID();"
+        config_id = self.db_handler.execute(query_last, query=True)[0][0]
         return config_id
 
     # The testing and running of configuation relies on the Market model.
-    def backtest(self, setting:dict, configuration:dict, api_handler:Alphavantage) -> dict:
+    def backtest(self, setting_values:dict, config_values:dict, api_handler:Alphavantage) -> dict:
         print("\nModel.backtest():")
-        # Import the configuration information from the given ID and set it as a dictionary if only the ID was given
-        if len(configuration)>1: pass # Create the config and update the dict to just be {"ID": config_id}
+        # Create the configuration entry using this objects method
+        config_id = self.create(config_values)
 
+        setting_values["config_id"] = config_id # Add the config_id to the setting (since these values will be passed onto the database)
         # Create a entry to the settings table
-        setting_id = self.createSetting(values=(setting["user_id"],configuration["config_id"],setting["ticker"],
-                                   setting["stop_loss"],setting["starting_aum"],setting["take_profit"],
-                                   setting["chart_freq_mins"]))
+        setting_id = self.createSetting(setting_values)
         print(f"\tCreated setting with the ID {setting_id}")
         
-        # Import the data for given the setting using the given data_handler (Alphavantage object)
-        price_data = api_handler.equity_intraday(api_handler.key,setting["ticker"],interval=setting["chart_freq_mins"])
+        # Import the data for given the setting using the given api_handler (Alphavantage object)
+        price_data = api_handler.equity_intraday(api_handler.key,setting_values["ticker"],interval=setting_values["chart_freq_mins"])
         print("\tPrice Data:")
         print(price_data)
+
+        # Modify the price_data based on the given config values
+        
 
 
         # NOTE: (OLD, go based of your understanding from todays meeting) Algorithm/Loop to test the configuration 

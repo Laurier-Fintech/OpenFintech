@@ -1,6 +1,7 @@
 # TODO:
 # Trade CRUD Functions
 # Implement __str__ to provide an overview of the market (easier and more useful with MySQL)
+# Implement methods in Market to create performance entires
 
 class Market: # Provides simulated backtesting and real-time testing functionalities.
 

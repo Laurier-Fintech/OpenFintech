@@ -13,14 +13,25 @@ class Model:
         self.market_handler = market
         return
     
-    def create(self, values:set)->int:
-        try:
-            self.db_handler.execute(queries.insert_configuration_entry, values)
-            query_last = "SELECT LAST_INSERT_ID();"
-            config_id = self.db_handler.execute(query_last, query=True)[0][0]
-        except:
-            print("Error: Could not insert configuration into configuration table. Check if User ID is provided")
-            return -1
+    def create(self, values:dict)->int:
+        # Convert the dictionary of values given by the user (which can be variable) into a set for inserting into the database
+        ma_1, ma_2, ema_1, ema_2, rsi_1, rsi_2 = 0,0,0,0,0,0
+        keys = values.keys()
+        if "EMA" in keys:
+            ema_1=values["EMA"][0]
+            if len(values["EMA"])>1: ema_2=values["EMA"][1]
+        if "SMA" in keys:
+            ma_1=values["SMA"][0]
+            if len(values["SMA"])>1: ma_2=values["SMA"][1]
+        if "RSI" in keys:
+            rsi_1=values["RSI"][0]
+            if len(values["RSI"])>1: rsi_2=values["RSI"][1]
+        values = (values["user_id"],ma_1, ma_2, ema_1, ema_2, rsi_1, rsi_2)
+
+        # Execute MySQL statement to insert the configuration values into the AWS RDS
+        self.db_handler.execute(queries.insert_configuration_entry, values)
+        query_last = "SELECT LAST_INSERT_ID();"
+        config_id = self.db_handler.execute(query_last, query=True)[0][0]
         
         return config_id
 

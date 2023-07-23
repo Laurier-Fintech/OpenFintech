@@ -18,7 +18,6 @@ print("Loaded ENV variables and successfully initiated the DB, API, Config, and 
 
 # Set the user as the system requires (to add relational layer to the data and faciliate the automated creation of reports etc. through complex queries)
 user_id = 4 # TODO: Update user_handler.create() to return the created entry's ID
-
 config_values={
     "user_id":user_id,
     "EMA":[5,20]

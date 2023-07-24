@@ -120,3 +120,9 @@ insert_equity_complete = "INSERT INTO equities (ticker, name, description, cik, 
 
 # Equities Selection Queries
 select_ticker_entry = "SELECT * FROM equities WHERE ticker=%s" # Enforce sort by the latest (so we get the last entry)
+
+# User Trade Queries
+insert_trade_entry = """ INSERT INTO trades (
+        user_id, equity_id, setting_id, date_created, type_id, trade_dt, price, quantity, total)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);
+"""

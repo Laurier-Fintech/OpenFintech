@@ -25,11 +25,15 @@ for i, r in df.iloc[1:].iterrows():
         if df.at[i - 1, 'open_position'] == True:
             df.at[i, 'open_position'] = False
             df.at[i, 'profit'] = df['4. close'][i] - open_position_price + df['profit'][i - 1]
-
+        else:
+            df.at[i, 'profit'] = df['profit'][i - 1]
     else:
         df.at[i, 'open_position'] = df.at[i - 1, 'open_position']
         df.at[i, 'signal'] = 'hold'
         df.at[i, 'profit'] = df['profit'][i - 1]
+
+if (df['open_position'][len(df) - 1] == True):
+    df.at[len(df) - 1, 'profit'] = df['profit'][len(df) - 1] + df['4. close'][len(df) - 1] - open_position_price
 
 for i in range(len(df)):
     print(df['profit'][i])

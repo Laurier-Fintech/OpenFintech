@@ -85,7 +85,7 @@ class Model:
         #    if r["SMA_10"] < r["EMA_20"]: # If short term trend dips below long term trend (indicating a dip below the mean)
         #        print("Buy",i,r)
 
-        #df.to_csv("sample_model_data.csv", encoding='utf-8') 
+        df.to_csv("sample_model_data.csv", encoding='utf-8') 
         # Check test.py for the implementation
         return
     

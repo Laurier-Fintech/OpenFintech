@@ -76,7 +76,6 @@ class Model:
         del indicators["user_id"]
         df = api_handler.technical_indicator(indicators,df).dropna()
         print("After manipulating the dataframe with technical_indicator() method:")
-        # Drop the rows where there are none anywhere
         print(df)
         
         # NOTE: Static implementation. TODO: Needs to be made dynamic so that it can work with any of the given settings
@@ -90,13 +89,20 @@ class Model:
                 # TODO: Check for false signals using social media sentiment analysis etc.
                 signals_count+=1
                 print("Buy",i,r)
+                # Open a position with all the AUM (calculate the quantity and create a trade entry)
+
+            # If sell by natural condition, clear the quantities at the current close price and update the balance (create a trade entry)
             
+            # If hold (bought and in the trading range) (NOTE: can be linked back with line 87's second half):
+                # Check for stop loss or take profit conditions to exit trades
 
                 
         print("Total buy signals generated:", signals_count)
 
         #df.to_csv("sample_model_data.csv", encoding='utf-8') 
         # Check test.py for the implementation
+
+        # Calculate performance data and create performance entry
         return
     
     def simulate(self): # NOTE: We can worry about this after we build backtest

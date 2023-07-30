@@ -37,7 +37,7 @@ class Model:
 
     def createSetting(self,values:dict):
         # Convert values dict to a set
-        values=(values["user_id"],values["config_id"],values["ticker"],
+        values=(values["user_id"],values["config_id"],values["equity_id"],
                                             values["stop_loss"],values["starting_aum"],values["take_profit"],
                                             values["chart_freq_mins"])
         self.db_handler.execute(queries.insert_setting_entry, values)
@@ -48,16 +48,25 @@ class Model:
     # The testing and running of configuation relies on the Market model.
     def backtest(self, setting_values:dict, config_values:dict, api_handler:Alphavantage) -> dict:
         print("\nModel.backtest():")
+
         # Create the configuration entry using this objects method
         config_id = self.create(config_values)
+        
+        # Add the config_id to the setting (since these values will be passed onto the database)
+        setting_values["config_id"] = config_id 
 
-        setting_values["config_id"] = config_id # Add the config_id to the setting (since these values will be passed onto the database)
+        # Get the equity_id for the given ticker from db
+        ticker = setting_values.pop("ticker") # Remove ticker from the setting_values dict
+        response = api_handler.overview(ticker) # Retrive its last appropriate entry from the db (or request data from Alphavantage and create entry in DB)
+        setting_values["equity_id"] = response[0] # Add the equity_id to the setting_values dict
+        
         # Create a entry to the settings table
         setting_id = self.createSetting(setting_values)
         print(f"\tCreated setting with the ID {setting_id}")
         
+
         # Import the data for given the setting using the given api_handler (Alphavantage object)
-        df = api_handler.equity_intraday(api_handler.key,setting_values["ticker"],interval=setting_values["chart_freq_mins"])
+        df = api_handler.equity_intraday(api_handler.key,ticker,interval=setting_values["chart_freq_mins"])
         print("\tPrice Data:")
         print(df)
 
@@ -68,7 +77,6 @@ class Model:
         print(df)
         #df.to_csv("sample_model_data.csv", encoding='utf-8') 
         # Check test.py for the implementation
-
         return
     
     def simulate(self): # NOTE: We can worry about this after we build backtest

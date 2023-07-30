@@ -53,7 +53,7 @@ create_setting_table = """CREATE TABLE settings (
         config_id int NOT NULL,
         date_created DATETIME DEFAULT now(),
 
-        ticker varchar(255) NOT NULL,
+        equity_id int NOT NULL,
 
         stop_loss float DEFAULT 0,
         starting_aum float DEFAULT 0,
@@ -65,7 +65,8 @@ create_setting_table = """CREATE TABLE settings (
         
         PRIMARY KEY (setting_id),
         FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-        FOREIGN KEY (config_id) REFERENCES configs (config_id) ON DELETE CASCADE ON UPDATE CASCADE
+        FOREIGN KEY (config_id) REFERENCES configs (config_id) ON DELETE CASCADE ON UPDATE CASCADE,
+        FOREIGN KEY (equity_id) REFERENCES equities (equity_id) ON DELETE CASCADE ON UPDATE CASCADE
 );"""
 
 create_performance_table = """CREATE TABLE performances ( 
@@ -84,7 +85,6 @@ create_performance_table = """CREATE TABLE performances (
 create_trade_table = """CREATE TABLE trades ( 
         trade_id int NOT NULL AUTO_INCREMENT,
         user_id int NOT NULL,
-        equity_id int NOT NULL,
         setting_id int NOT NULL,
         date_created DATETIME DEFAULT now(),
 
@@ -97,7 +97,6 @@ create_trade_table = """CREATE TABLE trades (
         
         PRIMARY KEY (trade_id),
         FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-        FOREIGN KEY (equity_id) REFERENCES equities (equity_id) ON DELETE CASCADE ON UPDATE CASCADE,
         FOREIGN KEY (setting_id) REFERENCES settings (setting_id) ON DELETE CASCADE ON UPDATE CASCADE
 );"""
 
@@ -111,7 +110,7 @@ insert_configuration_entry = """ INSERT INTO configs (
         VALUES (%s,%s,%s,%s,%s,%s,%s);
 """
 insert_setting_entry = """ INSERT INTO settings (
-        user_id, config_id, ticker, stop_loss, starting_aum, take_profit, chart_freq_mins)
+        user_id, config_id, equity_id, stop_loss, starting_aum, take_profit, chart_freq_mins)
         VALUES (%s,%s,%s,%s,%s,%s,%s);
 """
 
@@ -120,7 +119,7 @@ insert_equity_complete = "INSERT INTO equities (ticker, name, description, cik, 
 
 # Trade Insertion Query
 insert_trade_entry = """ INSERT INTO trades (
-        user_id, equity_id, setting_id, type, trade_dt, price, quantity, total) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);
+        user_id, setting_id, type, trade_dt, price, quantity, total) VALUES (%s,%s,%s,%s,%s,%s,%s);
 """
 
 # Equities Selection Queries

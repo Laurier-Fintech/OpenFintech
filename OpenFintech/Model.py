@@ -51,20 +51,22 @@ class Model:
 
         # Create the configuration entry using this objects method
         config_id = self.create(config_values)
+        
         # Add the config_id to the setting (since these values will be passed onto the database)
         setting_values["config_id"] = config_id 
+
         # Get the equity_id for the given ticker from db
-        response = equity_id = api_handler.overview(setting_values["ticker"])
-        print(response)
-        # Replace the setting_values["ticker"] to the equity_id (replace the key as well)
-        return
+        ticker = setting_values.pop("ticker") # Remove ticker from the setting_values dict
+        response = api_handler.overview(ticker) # Retrive its last appropriate entry from the db (or request data from Alphavantage and create entry in DB)
+        setting_values["equity_id"] = response[0] # Add the equity_id to the setting_values dict
+        
         # Create a entry to the settings table
         setting_id = self.createSetting(setting_values)
         print(f"\tCreated setting with the ID {setting_id}")
         
 
         # Import the data for given the setting using the given api_handler (Alphavantage object)
-        df = api_handler.equity_intraday(api_handler.key,setting_values["ticker"],interval=setting_values["chart_freq_mins"])
+        df = api_handler.equity_intraday(api_handler.key,ticker,interval=setting_values["chart_freq_mins"])
         print("\tPrice Data:")
         print(df)
 
@@ -75,7 +77,6 @@ class Model:
         print(df)
         #df.to_csv("sample_model_data.csv", encoding='utf-8') 
         # Check test.py for the implementation
-
         return
     
     def simulate(self): # NOTE: We can worry about this after we build backtest

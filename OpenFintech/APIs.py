@@ -88,14 +88,14 @@ class Alphavantage:
         if (start!="" and end=="") or (start=="" and end!=""): raise Exception("Please provide the missing date range value")
         endpoint = f"https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={ticker}&interval={interval}min&apikey={key}"
         response = Alphavantage._request(endpoint)
-        df = pd.DataFrame(response[f"Time Series ({interval}min)"]).T.reset_index().rename(columns={"index":"0. timestamp"}) # Transpose, reset index, and set index col name as date
+        df = pd.DataFrame(response[f"Time Series ({interval}min)"]).T.iloc[::-1].reset_index().rename(columns={"index":"0. timestamp"}) # Transpose, reset index, and set index col name as date
         df['0. timestamp'] = pd.to_datetime(df['0. timestamp'])
         if start!="" and end!="": # Convert the start and end dates for the desired date range into a pandas dt and return the filtered df
             start_date = pd.to_datetime(start)
             end_date = pd.to_datetime(end)
             filtered_df = df[(df['0. timestamp'] >= start_date) & (df['0. timestamp'] <= end_date)].reset_index(drop=True)
             df = filtered_df
-        return df.iloc[::-1]
+        return df
     
     @staticmethod
     def technical_indicator(indicators: dict, df: pd.DataFrame):

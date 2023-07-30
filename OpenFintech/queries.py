@@ -53,7 +53,7 @@ create_setting_table = """CREATE TABLE settings (
         config_id int NOT NULL,
         date_created DATETIME DEFAULT now(),
 
-        ticker varchar(255) NOT NULL,
+        equity_id int NOT NULL,
 
         stop_loss float DEFAULT 0,
         starting_aum float DEFAULT 0,
@@ -66,6 +66,7 @@ create_setting_table = """CREATE TABLE settings (
         PRIMARY KEY (setting_id),
         FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
         FOREIGN KEY (config_id) REFERENCES configs (config_id) ON DELETE CASCADE ON UPDATE CASCADE
+        FOREIGN KEY (equity_id) REFERENCES equities (equity_id) ON DELETE CASCADE ON UPDATE CASCADE,
 );"""
 
 create_performance_table = """CREATE TABLE performances ( 

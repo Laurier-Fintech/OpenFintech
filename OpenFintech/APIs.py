@@ -95,7 +95,7 @@ class Alphavantage:
             end_date = pd.to_datetime(end)
             filtered_df = df[(df['0. timestamp'] >= start_date) & (df['0. timestamp'] <= end_date)].reset_index(drop=True)
             df = filtered_df
-        return df
+        return df.iloc[::-1]
     
     @staticmethod
     def technical_indicator(indicators: dict, df: pd.DataFrame):

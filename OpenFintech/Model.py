@@ -48,16 +48,20 @@ class Model:
     # The testing and running of configuation relies on the Market model.
     def backtest(self, setting_values:dict, config_values:dict, api_handler:Alphavantage) -> dict:
         print("\nModel.backtest():")
+
         # Create the configuration entry using this objects method
         config_id = self.create(config_values)
-
-        setting_values["config_id"] = config_id # Add the config_id to the setting (since these values will be passed onto the database)
+        # Add the config_id to the setting (since these values will be passed onto the database)
+        setting_values["config_id"] = config_id 
+        # Get the equity_id for the given ticker from db
+        response = equity_id = api_handler.overview(setting_values["ticker"])
+        print(response)
+        # Replace the setting_values["ticker"] to the equity_id (replace the key as well)
+        return
         # Create a entry to the settings table
         setting_id = self.createSetting(setting_values)
         print(f"\tCreated setting with the ID {setting_id}")
         
-
-        # Get the ticker details with the given equity_id
 
         # Import the data for given the setting using the given api_handler (Alphavantage object)
         df = api_handler.equity_intraday(api_handler.key,setting_values["ticker"],interval=setting_values["chart_freq_mins"])

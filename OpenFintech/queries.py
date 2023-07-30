@@ -85,7 +85,6 @@ create_performance_table = """CREATE TABLE performances (
 create_trade_table = """CREATE TABLE trades ( 
         trade_id int NOT NULL AUTO_INCREMENT,
         user_id int NOT NULL,
-        equity_id int NOT NULL,
         setting_id int NOT NULL,
         date_created DATETIME DEFAULT now(),
 
@@ -98,7 +97,6 @@ create_trade_table = """CREATE TABLE trades (
         
         PRIMARY KEY (trade_id),
         FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-        FOREIGN KEY (equity_id) REFERENCES equities (equity_id) ON DELETE CASCADE ON UPDATE CASCADE,
         FOREIGN KEY (setting_id) REFERENCES settings (setting_id) ON DELETE CASCADE ON UPDATE CASCADE
 );"""
 

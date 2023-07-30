@@ -81,11 +81,21 @@ class Model:
         
         # NOTE: Static implementation. TODO: Needs to be made dynamic so that it can work with any of the given settings
         # Iterate over the dataframe
-        #for i, r in df.iloc[1:].iterrows():
-        #    if r["SMA_10"] < r["EMA_20"]: # If short term trend dips below long term trend (indicating a dip below the mean)
-        #        print("Buy",i,r)
+        signals_count = 0
+        for i, r in df.iloc[1:].iterrows():
 
-        df.to_csv("sample_model_data.csv", encoding='utf-8') 
+            # Conditions for buying/opening a new trade
+            if r["EMA_5"] > r["SMA_10"] and df['EMA_5'][i-1] < df['SMA_10'][i-1]: # If "short term trend" dips above long term trend (indicating a dip above the mean) (dip is only when previous wasnt already above)
+                
+                # TODO: Check for false signals using social media sentiment analysis etc.
+                signals_count+=1
+                print("Buy",i,r)
+            
+
+                
+        print("Total buy signals generated:", signals_count)
+
+        #df.to_csv("sample_model_data.csv", encoding='utf-8') 
         # Check test.py for the implementation
         return
     

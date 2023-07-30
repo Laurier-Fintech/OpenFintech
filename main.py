@@ -20,18 +20,18 @@ print("Loaded ENV variables and successfully initiated the DB, API, Config, and 
 user_id = 1 # TODO: Update user_handler.create() to return the created entry's ID
 config_values={
     "user_id":user_id,
-    "EMA":[20],
+    "EMA":[5],
     "SMA":[10]
 }
 
 # Setup the parameters for the setting NOTE: Skipping the start and end date ranges for now as they're not required
 starting_aum = 1000000 # USD
-ticker = 'GOOGL'
+ticker = 'HRL'
 interval = 30 #mins
 stop_loss = 10 #%
 take_profit = 10 #%
 setting_values={"user_id": user_id,"starting_aum": starting_aum, 
-                "ticker":ticker,"chart_freq_mins":30, # NOTE: The ticker here will later be replaced with the equity_id from the equities table when this dict is pased into backtest() as a parm.
+                "ticker":ticker,"chart_freq_mins":interval, # NOTE: The ticker here will later be replaced with the equity_id from the equities table when this dict is pased into backtest() as a parm.
                 "stop_loss":stop_loss,"take_profit":take_profit}
 
 # Call the backtest function with the setting along with the configuration

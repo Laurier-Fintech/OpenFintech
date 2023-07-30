@@ -27,7 +27,7 @@ config_values={
 # Setup the parameters for the setting NOTE: Skipping the start and end date ranges for now as they're not required
 starting_aum = 1000000 # USD
 ticker = 'GOOGL'
-interval = 30 #mins
+interval = 15 #mins
 stop_loss = 10 #%
 take_profit = 10 #%
 setting_values={"user_id": user_id,"starting_aum": starting_aum, 

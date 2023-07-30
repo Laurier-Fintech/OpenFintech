@@ -74,18 +74,18 @@ class Model:
         # Modify the price_data_df based on the given config values indicators section
         indicators = copy.deepcopy(config_values)
         del indicators["user_id"]
-        df = api_handler.technical_indicator(indicators,df)
+        df = api_handler.technical_indicator(indicators,df).dropna()
         print("After manipulating the dataframe with technical_indicator() method:")
+        # Drop the rows where there are none anywhere
         print(df)
         
         # NOTE: Static implementation. TODO: Needs to be made dynamic so that it can work with any of the given settings
         # Iterate over the dataframe
-        for i, r in df.iloc[1:].iterrows():
-            if df['SMA_10'][i] > df['EMA_20'][i] and df['SMA_10'][i - 1] < df['EMA_20'][i - 1]: # if a buy signal is hit
-                print("Buy", i, r)
+        #for i, r in df.iloc[1:].iterrows():
+        #    if r["SMA_10"] < r["EMA_20"]: # If short term trend dips below long term trend (indicating a dip below the mean)
+        #        print("Buy",i,r)
 
-
-        #adf.to_csv("sample_model_data.csv", encoding='utf-8') 
+        #df.to_csv("sample_model_data.csv", encoding='utf-8') 
         # Check test.py for the implementation
         return
     

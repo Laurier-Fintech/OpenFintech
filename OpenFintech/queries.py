@@ -65,8 +65,8 @@ create_setting_table = """CREATE TABLE settings (
         
         PRIMARY KEY (setting_id),
         FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-        FOREIGN KEY (config_id) REFERENCES configs (config_id) ON DELETE CASCADE ON UPDATE CASCADE
-        FOREIGN KEY (equity_id) REFERENCES equities (equity_id) ON DELETE CASCADE ON UPDATE CASCADE,
+        FOREIGN KEY (config_id) REFERENCES configs (config_id) ON DELETE CASCADE ON UPDATE CASCADE,
+        FOREIGN KEY (equity_id) REFERENCES equities (equity_id) ON DELETE CASCADE ON UPDATE CASCADE
 );"""
 
 create_performance_table = """CREATE TABLE performances ( 

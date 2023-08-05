@@ -1,3 +1,10 @@
+# TODO: Find a better test case (using finviz for channel, and altering the EMA and SMA based on a real strategy)
+# TODO: Add the stop loss and take profit systems into place in the holding section of the logic
+# TODO: Update the intraday function in Alphvatange class and add other price data functions as required
+# TODO: Update the indicator function in Alphavnatage class to be simplified and also review the "mapping" implementation that allows for package flexibility
+# TODO: Review for other changes (such as the one based on the note left below) and add visualization as an optional variable (along with this implementation) to the backtest function so the plot is outputted with the terminal data for the user of the package to study and play around with 
+# NOTE: Tracking quantity might be useless now (adding more complexity for the team maybe) because we just buy everything we can and sell everything we can, the AUM and quantity is cool from a user/case study point of view tho (and maybe gives room for more market maker style projects in the future)
+
 import os
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -6,22 +13,22 @@ from OpenFintech import Alphavantage
 
 ALPHAVANTAGE_KEY = os.getenv('ALPHAVANTAGE_KEY') 
 
-ticker = "PWZ"
+ticker = "FDX"
 response = Alphavantage._request(url=f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={ALPHAVANTAGE_KEY}")
 response = response["Time Series (Daily)"]
 
 df = pd.DataFrame.from_dict(response, orient="index", dtype=float).iloc[::-1]
 
-# Create the SMA 30
-df["5. SMA5"] = df["4. close"].rolling(window=5).mean()
-df["6. SMA15"] = df["4. close"].rolling(window=15).mean()
+# Create the required indicators
+df["5. EMA5"] = df["4. close"].ewm(span=3, adjust=False).mean()
+df["6. SMA10"] = df["4. close"].rolling(window=10).mean()
 df.dropna(inplace=True)
 print(df)
 
 plt.figure(figsize=(12.5,4.5))
 plt.plot(df["4. close"], label="Close")
-plt.plot(df["5. SMA5"], label="SMA5")
-plt.plot(df["6. SMA15"], label="SMA15")
+plt.plot(df["5. EMA5"], label="EMA5")
+plt.plot(df["6. SMA10"], label="SMA10")
 plt.legend(loc ="lower right")
 
 
@@ -32,7 +39,7 @@ purchase_price = 0
 sale_price = 0
 for i, r in df.iterrows():
     # Get the data for the current row (datestamp)
-    date, close, base, upper = i, r["4. close"], r["5. SMA5"], r["6. SMA15"]
+    date, close, base, upper = i, r["4. close"], r["5. EMA5"], r["6. SMA10"]
 
     # Check the order of base and upper
     #print(date, close, base, upper)
@@ -59,12 +66,3 @@ for i, r in df.iterrows():
         pass
 
 plt.show()
-
-# buy: simulate the process of creating a trade order (calculating the numbers)
-#   the trade date, closing price, quantity, and total (which is how much we spent on this order)
-#   quantity = quantity of purchase = aum/closing price
-#   total = quantity * closing price
-#   aum -= total # subtract the value of the purchase from the AUM
-
-# sell: simulate the process of selling when a sell signal is hit
-#   update the AUM with the sale value

@@ -29,6 +29,8 @@ plt.legend(loc ="lower right")
 aum = 100000
 open = False 
 quantity = 0 # shares currently holding
+purchase_price = 0
+sale_price = 0
 for i, r in df.iterrows():
     # Get the data for the current row (datestamp)
     date, close, base, upper = i, r["4. close"], r["5. SMA5"], r["6. SMA15"]
@@ -37,16 +39,22 @@ for i, r in df.iterrows():
     #print(date, close, base, upper)
 
     if base>upper and open==False:
-        quantity = aum / close # max purchasable shares
-        total = close * quantity # total cost
+        purchase_price = close
+        quantity = aum / purchase_price # max purchasable shares
+        total = purchase_price * quantity # total cost
         aum -= total # remove cost from balance (should come out to 0 rn by default but leaving formula in)
-        print(i, ": Buy", close, aum)
+        print(i, ": Buy", purchase_price, aum)
         open = True
     elif base<upper and open==True: # NOTE: Should we handle sells that lead to profits or losses differently ?
-        total = quantity * close # Get the total gained from the sale
-        quantity = 0 # Update the quantity NOTE: Since this is our hypothetiacal market, when we sell, we assume we find a perfect buyer for all the shares we own at the closing price
+        sale_price = close
+        total = quantity * sale_price # Get the total gained from the sale
+        quantity = 0 # Update the quantity NOTE: Since this is our hypothetical market, when we sell, we assume we find a perfect buyer for all the shares we own at the closing price
         aum += total # add the total gained from the sale to the total 
-        print(i, ": Sell", close, aum)
+
+        # Differentitate between sales that lead to profits vs losses and handle each case (NOTE: Possible room for future iteration's projects)
+        profitable = False if sale_price<purchase_price else True
+
+        print(i, ": Sell", sale_price, aum, profitable)
         open = False
     else:
         #print(i,": Hold")

@@ -23,14 +23,12 @@ plt.plot(df["4. close"], label="Close")
 plt.plot(df["5. SMA5"], label="SMA5")
 plt.plot(df["6. SMA15"], label="SMA15")
 plt.legend(loc ="lower right")
-plt.show()
-
-aum = 100000
 
 
 # NOTE: Requires us to track the open positions so we can calculate the success of the strategy
-
+aum = 100000
 open = False 
+quantity = 0 # shares currently holding
 for i, r in df.iterrows():
     # Get the data for the current row (datestamp)
     date, close, base, upper = i, r["4. close"], r["5. SMA5"], r["6. SMA15"]
@@ -39,25 +37,22 @@ for i, r in df.iterrows():
     #print(date, close, base, upper)
 
     if base>upper and open==False:
-        print(i, ": Buy")
+        quantity = aum / close # max purchasable shares
+        total = close * quantity # total cost
+        aum -= total # remove cost from balance (should come out to 0 rn by default but leaving formula in)
+        print(i, ": Buy", close, aum)
         open = True
-    elif base<upper and open==True:
-        print(i, ": Sell")
+    elif base<upper and open==True: # NOTE: Should we handle sells that lead to profits or losses differently ?
+        total = quantity * close # Get the total gained from the sale
+        quantity = 0 # Update the quantity NOTE: Since this is our hypothetiacal market, when we sell, we assume we find a perfect buyer for all the shares we own at the closing price
+        aum += total # add the total gained from the sale to the total 
+        print(i, ": Sell", close, aum)
         open = False
     else:
-        print(i,": Hold")
-    
+        #print(i,": Hold")
+        pass
 
-
-
-
-# Implement the mean reversion strategy/trading algorithm to simulate a high-frequency trader
-# If SMA5 > SMA 15
-    # Buy as many shares (on the closing price) as you can with the aum and update the aum
-# If SMA15 < SMA5
-    # Sell
-    # Clear
-
+plt.show()
 
 # buy: simulate the process of creating a trade order (calculating the numbers)
 #   the trade date, closing price, quantity, and total (which is how much we spent on this order)

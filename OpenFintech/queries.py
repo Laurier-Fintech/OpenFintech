@@ -36,12 +36,8 @@ create_config_table = """CREATE TABLE configs (
         user_id int NOT NULL,
         date_created DATETIME DEFAULT now(),
 
-        ma_period_1 int DEFAULT 0,
-        ma_period_2 int DEFAULT 0,
-        ema_period_1 int DEFAULT 0,
-        ema_period_2 int DEFAULT 0,
-        rsi_length int DEFAULT 0,
-        ma_length int DEFAULT 0,
+        short varchar(50) DEFAULT NULL,
+        long varchar(50) DEFAULT NULL,
         
         PRIMARY KEY (config_id),
         FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE

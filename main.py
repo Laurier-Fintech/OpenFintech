@@ -25,7 +25,7 @@ setting_values={"user_id": 1, # TODO: Update user_handler.create() to return the
                 "take_profit": 0.0025} #%
 
 # Call the backtest function with the setting along with the configuration
-#model_handler.backtest(setting_values, api_handler)
+model_handler.backtest(setting_values, api_handler)
 
 # Disconnect the database
 db_handler.disconnect()

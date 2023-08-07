@@ -101,6 +101,8 @@ insert_setting_entry = """ INSERT INTO settings (
 
 # Equity Insertion Query
 insert_equity_complete = "INSERT INTO equities (ticker, name, description, cik, country, currency, exchange, address, industry, sector) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+insert_equity_short = "INSERT INTO equities (ticker) VALUES (%s)"
+
 
 # Trade Insertion Query
 insert_trade_entry = """ INSERT INTO trades (

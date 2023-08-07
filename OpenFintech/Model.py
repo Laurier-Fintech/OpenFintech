@@ -25,43 +25,43 @@ class Model:
         return config_id
 
     # The testing and running of configuation relies on the Market model.
-    def backtest(self, setting_values:dict, config_values:dict, api_handler:Alphavantage) -> dict:
+    def backtest(self, setting_values:dict, api_handler:Alphavantage) -> dict:
         print("\nModel.backtest():")
 
-        # Get the equity_id for the given ticker from db
+        # Replace the ticker with the equity_id
         ticker = setting_values.pop("ticker") # Remove ticker from the setting_values dict
         response = api_handler.overview(ticker) # Retrive its last appropriate entry from the db (or request data from Alphavantage and create entry in DB)
         setting_values["equity_id"] = response[0] # Add the equity_id to the setting_values dict
         
         # Create a entry to the settings table
-        setting_id = self.createSetting(setting_values)
-        print(f"\tCreated setting with the ID {setting_id}")
+        #setting_id = self.createSetting(setting_values)
+        #print(f"\tCreated setting with the ID {setting_id}")
         
 
         # Import the data for given the setting using the given api_handler (Alphavantage object)
-        df = api_handler.equity_intraday(api_handler.key,ticker,interval=setting_values["chart_freq_mins"])
-        print("\tPrice Data:")
-        print(df)
+        #df = api_handler.equity_intraday(api_handler.key,ticker,interval=setting_values["chart_freq_mins"])
+        #print("\tPrice Data:")
+        #print(df)
 
         # Modify the price_data_df based on the given config values indicators section
-        indicators = copy.deepcopy(config_values)
-        del indicators["user_id"]
-        df = api_handler.technical_indicator(indicators,df).dropna()
-        print("After manipulating the dataframe with technical_indicator() method:")
-        print(df)
+        #indicators = copy.deepcopy(config_values)
+        #del indicators["user_id"]
+        #df = api_handler.technical_indicator(indicators,df).dropna()
+        #print("After manipulating the dataframe with technical_indicator() method:")
+        #print(df)
         
         # NOTE: Static implementation. TODO: Needs to be made dynamic so that it can work with any of the given settings
         # Iterate over the dataframe
-        signals_count = 0
-        for i, r in df.iloc[1:].iterrows():
+        #signals_count = 0
+        #for i, r in df.iloc[1:].iterrows():
 
             # Conditions for buying/opening a new trade
-            if r["EMA_5"] > r["SMA_10"] and df['EMA_5'][i-1] < df['SMA_10'][i-1]: # If "short term trend" dips above long term trend (indicating a dip above the mean) (dip is only when previous wasnt already above)
+        #    if r["EMA_5"] > r["SMA_10"] and df['EMA_5'][i-1] < df['SMA_10'][i-1]: # If "short term trend" dips above long term trend (indicating a dip above the mean) (dip is only when previous wasnt already above)
                 
-                # TODO: Check for false signals using social media sentiment analysis etc.
-                signals_count+=1
-                print("Buy",i,r)
-                # Open a position with all the AUM (calculate the quantity and create a trade entry)
+        #        # TODO: Check for false signals using social media sentiment analysis etc.
+        #        signals_count+=1
+        #        print("Buy",i,r)
+        #        # Open a position with all the AUM (calculate the quantity and create a trade entry)
 
             # If sell by natural condition, clear the quantities at the current close price and update the balance (create a trade entry)
             
@@ -69,7 +69,7 @@ class Model:
                 # Check for stop loss or take profit conditions to exit trades
 
                 
-        print("Total buy signals generated:", signals_count)
+        #print("Total buy signals generated:", signals_count)
 
         #df.to_csv("sample_model_data.csv", encoding='utf-8') 
         # Check test.py for the implementation

@@ -31,14 +31,21 @@ class Alphavantage:
                 # Request data from Alphavantage API, create new entry, and insert into the DB
                 url = f"https://www.alphavantage.co/query?function=OVERVIEW&symbol={ticker}&apikey={self.get_key(self.keys)}"
                 response = self._request(url)
-                self.db_handler.execute(queries.insert_equity_complete, values=
-                    (
-                        response["Symbol"],
-                        response["Name"],response["Description"],response["CIK"],
-                        response["Country"],response["Currency"],response["Exchange"],
-                        response["Address"],response["Industry"],response["Sector"],
+                try:
+                    self.db_handler.execute(queries.insert_equity_complete, values=
+                        (
+                            response["Symbol"],
+                            response["Name"],response["Description"],response["CIK"],
+                            response["Country"],response["Currency"],response["Exchange"],
+                            response["Address"],response["Industry"],response["Sector"],
+                        )
                     )
-                )
+                except:
+                    self.db_handler.execute(queries.insert_equity_short, values=
+                        (
+                            ticker,
+                        )
+                    )
                 result = self.db_handler.execute(queries.select_ticker_entry, values=(ticker,), query=True)[0]
             else: result = result[0] # If no refresh is required, grab the latest one to return
 

@@ -11,32 +11,10 @@ import copy
 class Model:
     def __init__(self, database, market):
         self.db_handler = database
-        self.market_handler = market
+        self.market_handler = market # is this still required? Also, this has db_handler so do we really need to ask for extra db_handler?
         return
     
-    def create(self, values:dict)->int:
-        # Convert the dictionary of values given by the user (which can be variable) into a set for inserting into the database
-        ma_1, ma_2, ema_1, ema_2, rsi_1, rsi_2 = 0,0,0,0,0,0
-        keys = values.keys()
-        if "EMA" in keys:
-            ema_1=values["EMA"][0]
-            if len(values["EMA"])>1: ema_2=values["EMA"][1]
-        if "SMA" in keys:
-            ma_1=values["SMA"][0]
-            if len(values["SMA"])>1: ma_2=values["SMA"][1]
-        if "RSI" in keys:
-            rsi_1=values["RSI"][0]
-            if len(values["RSI"])>1: rsi_2=values["RSI"][1]
-        values = (values["user_id"],ma_1, ma_2, ema_1, ema_2, rsi_1, rsi_2)
-
-        # Execute MySQL statement to insert the configuration values into the AWS RDS
-        self.db_handler.execute(queries.insert_configuration_entry, values)
-        query_last = "SELECT LAST_INSERT_ID();"
-        config_id = self.db_handler.execute(query_last, query=True)[0][0]
-
-        return config_id
-
-    def createSetting(self,values:dict):
+    def create(self,values:dict): # Function used to create a settings entry
         # Convert values dict to a set
         values=(values["user_id"],values["config_id"],values["equity_id"],
                                             values["stop_loss"],values["starting_aum"],values["take_profit"],
@@ -49,12 +27,6 @@ class Model:
     # The testing and running of configuation relies on the Market model.
     def backtest(self, setting_values:dict, config_values:dict, api_handler:Alphavantage) -> dict:
         print("\nModel.backtest():")
-
-        # Create the configuration entry using this objects method
-        config_id = self.create(config_values)
-        
-        # Add the config_id to the setting (since these values will be passed onto the database)
-        setting_values["config_id"] = config_id 
 
         # Get the equity_id for the given ticker from db
         ticker = setting_values.pop("ticker") # Remove ticker from the setting_values dict

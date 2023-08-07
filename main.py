@@ -9,34 +9,23 @@ host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com" #NOTE: Host addres
 
 # Initiate all the handlers
 db_handler = MySQL(host=host,user=SQL_USER,password=SQL_PASS,database="main")
+user_handler = User(database=db_handler)
 api_handler = Alphavantage(database=db_handler,key=ALPHAVANTAGE_KEY)
 market_handler = Market(database=db_handler)
 model_handler = Model(database=db_handler, market=market_handler)
 print("Loaded ENV variables and successfully initiated the DB, API, Config, and Market handlers")
 
-# Set the user as the system requires (to add relational layer to the data and faciliate the automated creation of reports etc. through complex queries)
-user_id = 1 # TODO: Update user_handler.create() to return the created entry's ID
-config_values={
-    "user_id":user_id,
-    "short": "EMA5",
-    "long_":"SMA10"
-}
-
-short = "EMA 5"
-long = "SMA 10"
-
-# Setup the parameters for the setting NOTE: Skipping the start and end date ranges for now as they're not required
-starting_aum = 1000000 # USD
-ticker = 'HRL'
-interval = 30 #mins
-stop_loss = 10 #%
-take_profit = 10 #%
-setting_values={"user_id": user_id,"starting_aum": starting_aum, 
-                "ticker":ticker,"chart_freq_mins":interval, # NOTE: The ticker here will later be replaced with the equity_id from the equities table when this dict is pased into backtest() as a parm.
-                "stop_loss":stop_loss,"take_profit":take_profit}
+# Populate settings dictionary to be passed into Model.backtest()
+setting_values={"user_id": 1, # TODO: Update user_handler.create() to return the created entry's ID
+                "starting_aum": 100000, 
+                "short": "EMA 5",
+                "long": "SMA 10",
+                "ticker": "MXI", # NOTE: Popped in backtest
+                "stop_loss": 10, #%
+                "take_profit": 0.0025} #%
 
 # Call the backtest function with the setting along with the configuration
-model_handler.backtest(setting_values, config_values, api_handler)
+#model_handler.backtest(setting_values, api_handler)
 
 # Disconnect the database
 db_handler.disconnect()

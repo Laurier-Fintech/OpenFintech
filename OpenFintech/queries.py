@@ -31,25 +31,15 @@ create_users_table = """CREATE TABLE users (
         CHECK (year>=1 OR NULL)
 );"""
 
-create_config_table = """CREATE TABLE configs ( 
-        config_id int NOT NULL AUTO_INCREMENT,
-        user_id int NOT NULL,
-        date_created DATETIME DEFAULT now(),
-
-        short varchar(50) DEFAULT NULL,
-        long_ varchar(50) DEFAULT NULL,
-        
-        PRIMARY KEY (config_id),
-        FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE
-);"""
-
 create_setting_table = """CREATE TABLE settings ( 
         setting_id int NOT NULL AUTO_INCREMENT,
         user_id int NOT NULL,
-        config_id int NOT NULL,
         date_created DATETIME DEFAULT now(),
 
         equity_id int NOT NULL,
+
+        short varchar(50) DEFAULT NULL,
+        long_ varchar(50) DEFAULT NULL,
 
         stop_loss float DEFAULT 0,
         starting_aum float DEFAULT 0,
@@ -61,7 +51,6 @@ create_setting_table = """CREATE TABLE settings (
         
         PRIMARY KEY (setting_id),
         FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-        FOREIGN KEY (config_id) REFERENCES configs (config_id) ON DELETE CASCADE ON UPDATE CASCADE,
         FOREIGN KEY (equity_id) REFERENCES equities (equity_id) ON DELETE CASCADE ON UPDATE CASCADE
 );"""
 

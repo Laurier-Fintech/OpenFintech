@@ -16,9 +16,9 @@ class Model:
     
     def create(self,values:dict): # Function used to create a settings entry
         # Convert values dict to a set
-        values=(values["user_id"],values["config_id"],values["equity_id"],
-                                            values["stop_loss"],values["starting_aum"],values["take_profit"],
-                                            values["chart_freq_mins"])
+        values=(values["user_id"],values["equity_id"], values["short"], values["long"],
+                values["stop_loss"],values["take_profit"],values["starting_aum"],
+                values["chart_freq_mins"])
         self.db_handler.execute(queries.insert_setting_entry, values)
         query_last = "SELECT LAST_INSERT_ID();"
         config_id = self.db_handler.execute(query_last, query=True)[0][0]
@@ -34,9 +34,8 @@ class Model:
         setting_values["equity_id"] = response[0] # Add the equity_id to the setting_values dict
         
         # Create a entry to the settings table
-        #setting_id = self.createSetting(setting_values)
-        #print(f"\tCreated setting with the ID {setting_id}")
-        
+        setting_id = self.create(setting_values)
+        print(f"\tCreated setting with the ID {setting_id}")
 
         # Import the data for given the setting using the given api_handler (Alphavantage object)
         #df = api_handler.equity_intraday(api_handler.key,ticker,interval=setting_values["chart_freq_mins"])

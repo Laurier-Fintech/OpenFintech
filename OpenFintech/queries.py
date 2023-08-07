@@ -90,13 +90,9 @@ insert_simple_user = "INSERT INTO users (username) VALUES (%s)"
 insert_complete_user = "INSERT INTO users (username, email, password, year, major) VALUES (%s,%s,%s,%s,%s)"
 
 # Model Insertion Queries
-insert_configuration_entry = """ INSERT INTO configs (
-        user_id, ma_period_1, ma_period_2, ema_period_1, ema_period_2, rsi_length, ma_length)
-        VALUES (%s,%s,%s,%s,%s,%s,%s);
-"""
 insert_setting_entry = """ INSERT INTO settings (
-        user_id, config_id, equity_id, stop_loss, starting_aum, take_profit, chart_freq_mins)
-        VALUES (%s,%s,%s,%s,%s,%s,%s);
+        user_id, equity_id, short, long_, stop_loss, take_profit, starting_aum , chart_freq_mins)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s);
 """
 
 # Equity Insertion Query

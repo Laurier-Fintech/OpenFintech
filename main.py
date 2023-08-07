@@ -24,6 +24,9 @@ config_values={
     "SMA":[10]
 }
 
+short = "EMA 5"
+long = "SMA 10"
+
 # Setup the parameters for the setting NOTE: Skipping the start and end date ranges for now as they're not required
 starting_aum = 1000000 # USD
 ticker = 'HRL'

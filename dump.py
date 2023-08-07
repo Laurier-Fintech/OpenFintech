@@ -39,11 +39,11 @@ take_profit = 0.0025#%
 for i, r in df.iterrows():
 
     # Get data from the current row (unit of time)
-    date, close, base, upper = i, r["4. close"], r["5. EMA5"], r["6. SMA10"]
+    date, close, short, long = i, r["4. close"], r["5. EMA5"], r["6. SMA10"]
 
     if open==False: # At the current unit of time, if there are no open positions....
 
-        if base>upper: # Check if the short term mean (base) has passed the long term mean (upper), indicating a upwards change in the price action and a buy signal
+        if short>long: # Check if the short term mean (base) has passed the long term mean (upper), indicating a upwards change in the price action and a buy signal
             purchase_price = close # store the purchase price in a variable initialized outside the loop (for referencing in future iterations)
             quantity = aum / purchase_price # Calculate the maximum purchaseable shares (NOTE: This is a limitation of the current system by design)
             total = purchase_price * quantity # Calculate the total cost of the purchase 
@@ -55,7 +55,7 @@ for i, r in df.iterrows():
         
         sell = False #NOTE: This boolean variable is used as a trigger to avoid creating a sell function and to avoid writing redundant code
 
-        if base<upper: sell = True # If the short term mean has fell underneath the long term mean, indicating a downwards change in the price action, triger the sale of all open positions (NOTE: "all" due to the limitation of the system as discussed earlier)
+        if short<long: sell = True # If the short term mean has fell underneath the long term mean, indicating a downwards change in the price action, triger the sale of all open positions (NOTE: "all" due to the limitation of the system as discussed earlier)
 
         else: # When holding, check if the current price, relative to the purchase price, triggers a stop loss or take profit
             if (close <= (purchase_price - (purchase_price*stop_loss))): sell = True # Conditional statement for stopping loss

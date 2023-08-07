@@ -99,13 +99,17 @@ class Alphavantage:
     
     @staticmethod
     def technical_indicator(indicators: dict, df: pd.DataFrame):
+
         for indicator in indicators:
+            
             if indicator == "SMA":
                 for param in indicators[indicator]:
                     df[f'{indicator}_{param}'] = df['4. close'].rolling(param).mean()
+            
             elif indicator == "EMA":
                 for param in indicators[indicator]:
                     df[f'{indicator}_{param}'] = df["4. close"].ewm(com=param).mean()
+            
             elif indicator == "RSI":
                 for param in indicators[indicator]:
                     delta = df["4. close"].astype('float').diff()
@@ -122,8 +126,10 @@ class Alphavantage:
 
                     rsi[:] = np.select([roll_down == 0, roll_up == 0, True], [100, 0, rsi])
                     df[f'{indicator}_{param}'] = rsi
+            
             else:
                 raise Exception("Please provide a valid indicator, such as SMA, EMA, or RSI.")
+        
         return df
 
 if __name__=="__main__":

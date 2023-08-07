@@ -1,4 +1,3 @@
-# TODO: Update the intraday function in Alphvatange class and add other price data functions as required
 # TODO: Update the indicator function in Alphavnatage class to be simplified and also review the "mapping" implementation that allows for package flexibility
 # TODO: Review for other changes (such as the one based on the note left below) and add visualization as an optional variable (along with this implementation) to the backtest function so the plot is outputted with the terminal data for the user of the package to study and play around with 
 # NOTE: Tracking quantity might be useless now (adding more complexity for the team maybe) because we just buy everything we can and sell everything we can, the AUM and quantity is cool from a user/case study point of view tho (and maybe gives room for more market maker style projects in the future)

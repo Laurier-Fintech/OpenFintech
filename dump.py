@@ -1,4 +1,3 @@
-# TODO: Find a better test case (using finviz for channel, and altering the EMA and SMA based on a real strategy)
 # TODO: Add the stop loss and take profit systems into place in the holding section of the logic
 # TODO: Update the intraday function in Alphvatange class and add other price data functions as required
 # TODO: Update the indicator function in Alphavnatage class to be simplified and also review the "mapping" implementation that allows for package flexibility
@@ -13,7 +12,7 @@ from OpenFintech import Alphavantage
 
 ALPHAVANTAGE_KEY = os.getenv('ALPHAVANTAGE_KEY') 
 
-ticker = "FDX"
+ticker = "MXI"
 response = Alphavantage._request(url=f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={ALPHAVANTAGE_KEY}")
 response = response["Time Series (Daily)"]
 

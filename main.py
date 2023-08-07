@@ -4,9 +4,7 @@ from OpenFintech import MySQL, User, Alphavantage, Market, Model
 
 # Setup the database (and handlers) required for the system
 load_dotenv() # Load ENV variables and set them down below
-SQL_USER = os.getenv('MYSQL_USER')
-SQL_PASS = os.getenv('MYSQL_PASS') 
-ALPHAVANTAGE_KEY = os.getenv('ALPHAVANTAGE_KEY') 
+SQL_USER, SQL_PASS, ALPHAVANTAGE_KEY = os.getenv('MYSQL_USER'), os.getenv('MYSQL_PASS'), os.getenv('ALPHAVANTAGE_KEY') 
 host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com" #NOTE: Host address is set to the OpenFintech AWS Server.
 
 # Initiate all the handlers
@@ -20,8 +18,8 @@ print("Loaded ENV variables and successfully initiated the DB, API, Config, and 
 user_id = 1 # TODO: Update user_handler.create() to return the created entry's ID
 config_values={
     "user_id":user_id,
-    "EMA":[5],
-    "SMA":[10]
+    "short": "EMA5",
+    "long_":"SMA10"
 }
 
 short = "EMA 5"

@@ -1,6 +1,4 @@
-# TODO: Update main.py and backtest.py implementation to match the changes to the database and the new df indicator addition function as seen in test.py 
-# TODO: Update main.py to match the flow of inputs to the backtest algorithm passed here (in test.py)
-# TODO: Update backtest.py implementation to match the flow of inputs from the now update main.py file (relative to test.py)
+# TODO: Update backtest.py implementation based on test.py and to match the flow of inputs from the now update main.py file
 # TODO: Review for other changes (such as the one based on the note left below) and add visualization as an optional variable (along with this implementation) to the backtest function so the plot is outputted with the terminal data for the user of the package to study and play around with 
 # NOTE: Tracking quantity might be useless now (adding more complexity for the team maybe) because we just buy everything we can and sell everything we can, the AUM and quantity is cool from a user/case study point of view tho (and maybe gives room for more market maker style projects in the future)
 

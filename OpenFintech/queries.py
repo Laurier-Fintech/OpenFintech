@@ -37,7 +37,7 @@ create_config_table = """CREATE TABLE configs (
         date_created DATETIME DEFAULT now(),
 
         short varchar(50) DEFAULT NULL,
-        long varchar(50) DEFAULT NULL,
+        long_ varchar(50) DEFAULT NULL,
         
         PRIMARY KEY (config_id),
         FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE

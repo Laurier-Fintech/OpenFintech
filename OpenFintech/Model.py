@@ -28,7 +28,7 @@ class Model:
     def backtest(self, setting_values:dict, api_handler:Alphavantage) -> dict:
         print("\nModel.backtest():")
 
-        # Replace the ticker with the equity_id
+        # Replace ticker with the equity_id
         ticker = setting_values.pop("ticker") # Remove ticker from the setting_values dict
         response = api_handler.overview(ticker) # Retrive its last appropriate entry from the db (or request data from Alphavantage and create entry in DB)
         setting_values["equity_id"] = response[0] # Add the equity_id to the setting_values dict
@@ -38,9 +38,9 @@ class Model:
         print(f"\tCreated setting with the ID {setting_id}")
 
         # Import the data for given the setting using the given api_handler (Alphavantage object)
-        #df = api_handler.equity_intraday(api_handler.key,ticker,interval=setting_values["chart_freq_mins"])
-        #print("\tPrice Data:")
-        #print(df)
+        df = Alphavantage.equity_daily(key=Alphavantage.get_key(api_handler.keys), ticker=ticker)
+        print("\tPrice Data:")
+        print(df)
 
         # Modify the price_data_df based on the given config values indicators section
         #indicators = copy.deepcopy(config_values)

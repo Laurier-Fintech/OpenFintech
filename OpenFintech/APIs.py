@@ -83,6 +83,14 @@ class Alphavantage:
 
         return response
 
+
+    @staticmethod
+    def equity_daily(key:str, ticker:str):
+        response = Alphavantage._request(url=f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={key}")
+        response = response["Time Series (Daily)"]
+        df = pd.DataFrame.from_dict(response, orient="index", dtype=float).iloc[::-1]
+        return df
+
     @staticmethod
     def equity_intraday(key:str, ticker:str, start:str="", end:str="", interval:int=5): # Default interval is 5 mins        
         if (start!="" and end=="") or (start=="" and end!=""): raise Exception("Please provide the missing date range value")

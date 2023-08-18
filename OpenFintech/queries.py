@@ -50,7 +50,7 @@ create_setting_table = """CREATE TABLE settings (
         chart_freq_mins BIGINT DEFAULT NULL,
         
         PRIMARY KEY (setting_id),
-        FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );"""
 
 create_performance_table = """CREATE TABLE performances ( 

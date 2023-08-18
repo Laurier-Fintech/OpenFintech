@@ -23,8 +23,14 @@ class Model:
         config_id = self.db_handler.execute(query_last, query=True)[0][0]
         return config_id
 
-    def buy(self, values:dict):
-        self.db_handler.execute(queries.insert_trade_entry, ())
+    def buy(self, values:dict): # NOTE: Can add aditional features later on
+        self.db_handler.execute(queries.insert_trade_entry, (
+            values["setting_id"],
+            values["type"],
+            values["trade_dt"],
+            values["price"],
+            values["quantity"],
+            values["total"]))
         return
     
     def sell(self):

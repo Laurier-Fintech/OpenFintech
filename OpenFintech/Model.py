@@ -1,11 +1,6 @@
-from .Databases import MySQL
-from .APIs import Alphavantage
 from . import queries
-import copy
 
 # TODO:
-# Configuration CRUD functions
-# Implement test_config based on the provided notes
 # Implement the __str__ function
 
 class Model:
@@ -36,7 +31,7 @@ class Model:
         return
 
     # The testing and running of configuation relies on the Market model.
-    def backtest(self, setting_values:dict, api_handler:Alphavantage) -> dict:
+    def backtest(self, setting_values:dict, df) -> dict:
         print("\nModel.backtest():")
 
         # Enter the settings into the database
@@ -44,13 +39,6 @@ class Model:
         print(f"\tCreated setting with the ID {setting_id}")
 
         # Import the data for given the setting using the given api_handler (Alphavantage object)
-        df = Alphavantage.equity_daily(key=Alphavantage.get_key(api_handler.keys), ticker=setting_values["ticker"])
-        print("\tPrice Data:")
-        print(df)
-
-        # Modify the price_data_df based on the given config values indicators section
-        indicators = [''.join(setting_values["short"].split(" ")),''.join(setting_values["long"].split(" "))]
-        df = api_handler.technical_indicator(indicators,df)
         print("\tPrice Data + Indicator Data:")
         print(df)
     
@@ -58,6 +46,7 @@ class Model:
         aum = float(setting_values["starting_aum"])
         stop_loss = float(setting_values["stop_loss"])
         take_profit = float(setting_values["take_profit"])
+        indicators = [''.join(setting_values["short"].split(" ")),''.join(setting_values["long"].split(" "))]
 
         # Intiailize variables to store temp values to help the algorithm perform calculations
         open = False 
@@ -102,7 +91,6 @@ class Model:
                     print(i, ": Sell for", sale_price, " AUM:",aum, " Profitable: ",profitable)
                     
                     # Create sale trade entry
-
                     
                     
                     if profitable: print("\tProfit Captured Per Share Sold: ", sale_price-purchase_price) # If profitable, output the profit captured per share sold
@@ -129,7 +117,7 @@ class Model:
         # Return response dictionary
         return
     
-    def simulate(self): # NOTE: We can worry about this after we build backtest
+    def simulate(self): # NOTE: We can worry about this after we build backtest! This is for realtime simulation!
         # Similar to “test_configuration” but for real-time (simulated market) testing. 
         # This would use realtime price data which would be added to (or retrived from) the appropriate collection or database or dataframe in market
         # It would perform the required calculations based on the confiurations

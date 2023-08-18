@@ -26,7 +26,7 @@ setting_values={"user_id": 0, # TODO: Update user_handler.create() to return the
 df = api_handler.equity_daily(ticker=setting_values["ticker"])
 # Modify the price_data_df based on the given config values indicators section
 indicators = [''.join(setting_values["short"].split(" ")),''.join(setting_values["long"].split(" "))]
-df = api_handler.technical_indicator(indicators,df) # Add the tehcnical indicators data to the dataframe
+df = api_handler.technical_indicator(key=Alphavantage.get_key(api_handler.keys),indicators=indicators,df=df) # Add the tehcnical indicators data to the dataframe
 
 # Call the backtest function with the setting along with the configuration
 response = model_handler.backtest(setting_values, df)

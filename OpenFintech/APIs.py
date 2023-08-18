@@ -106,7 +106,7 @@ class Alphavantage:
     
     @staticmethod
     def technical_indicator(indicators: dict, df: pd.DataFrame):
-        i = len(df.columns)
+        i = len(df.columns) + 1
         for indicator in indicators:
             setting = indicator.split(" ")
             if "EMA" in indicator:

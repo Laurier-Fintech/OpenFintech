@@ -19,8 +19,8 @@ print("Loaded ENV variables and successfully initiated the DB, API, Config, and 
 # Populate settings dictionary to be passed into Model.backtest()
 setting_values={"user_id": 1, # TODO: Update user_handler.create() to return the created entry's ID
                 "starting_aum": 100000, 
-                "short": "EMA 5",
-                "long": "SMA 10",
+                "short": "EMA 3",
+                "long": "EMA 10",
                 "ticker": "MXI", # NOTE: Popped in backtest
                 "stop_loss": 10, #%
                 "take_profit": 0.0025,#%

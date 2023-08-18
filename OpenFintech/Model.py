@@ -45,7 +45,7 @@ class Model:
         # Modify the price_data_df based on the given config values indicators section
         df = api_handler.technical_indicator({setting_values["short"],setting_values["long"]},df)
         print(df)
-                
+        
         #print("Total buy signals generated:", signals_count)
 
         #df.to_csv("sample_model_data.csv", encoding='utf-8') 

@@ -36,7 +36,7 @@ create_setting_table = """CREATE TABLE settings (
         user_id int NOT NULL,
         date_created DATETIME DEFAULT now(),
 
-        equity_id int NOT NULL,
+        ticker varchar(50) NOT NULL,
 
         short varchar(50) DEFAULT NULL,
         long_ varchar(50) DEFAULT NULL,
@@ -51,7 +51,6 @@ create_setting_table = """CREATE TABLE settings (
         
         PRIMARY KEY (setting_id),
         FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-        FOREIGN KEY (equity_id) REFERENCES equities (equity_id) ON DELETE CASCADE ON UPDATE CASCADE
 );"""
 
 create_performance_table = """CREATE TABLE performances ( 
@@ -89,14 +88,13 @@ insert_complete_user = "INSERT INTO users (username, email, password, year, majo
 
 # Model Insertion Queries
 insert_setting_entry = """ INSERT INTO settings (
-        user_id, equity_id, short, long_, stop_loss, take_profit, starting_aum , chart_freq_mins)
+        user_id, ticker, short, long_, stop_loss, take_profit, starting_aum , chart_freq_mins)
         VALUES (%s,%s,%s,%s,%s,%s,%s,%s);
 """
 
 # Equity Insertion Query
 insert_equity_complete = "INSERT INTO equities (ticker, name, description, cik, country, currency, exchange, address, industry, sector) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 insert_equity_short = "INSERT INTO equities (ticker) VALUES (%s)"
-
 
 # Trade Insertion Query
 insert_trade_entry = """ INSERT INTO trades (

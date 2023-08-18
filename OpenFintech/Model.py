@@ -15,13 +15,12 @@ class Model:
     
     def create(self,values:dict): # Function used to create a settings entry
         # Convert values dict to a set
-        values=(values["user_id"],values["equity_id"], values["short"], values["long"],
-                values["stop_loss"],values["take_profit"],values["starting_aum"],
-                values["chart_freq_mins"])
-        self.db_handler.execute(queries.insert_setting_entry, values)
-        query_last = "SELECT LAST_INSERT_ID();"
-        config_id = self.db_handler.execute(query_last, query=True)[0][0]
-        return config_id
+        self.db_handler.execute(queries.insert_setting_entry, (
+            values["user_id"], values["ticker"],
+            values["short"], values["long"],
+            values["stop_loss"], values["take_profit"],
+            values["starting_aum"], values["chart_freq_mins"]))
+        return
 
     def buy(self, values:dict): # NOTE: Can add aditional features later on
         self.db_handler.execute(queries.insert_trade_entry, (
@@ -40,17 +39,12 @@ class Model:
     def backtest(self, setting_values:dict, api_handler:Alphavantage) -> dict:
         print("\nModel.backtest():")
 
-        # Replace ticker with the equity_id
-        ticker = setting_values.pop("ticker") # Remove ticker from the setting_values dict
-        response = api_handler.overview(ticker) # Retrive its last appropriate entry from the db (or request data from Alphavantage and create entry in DB)
-        setting_values["equity_id"] = response[0] # Add the equity_id to the setting_values dict
-        
-        # Create a entry to the settings table
+        # Enter the settings into the database
         setting_id = self.create(setting_values)
         print(f"\tCreated setting with the ID {setting_id}")
 
         # Import the data for given the setting using the given api_handler (Alphavantage object)
-        df = Alphavantage.equity_daily(key=Alphavantage.get_key(api_handler.keys), ticker=ticker)
+        df = Alphavantage.equity_daily(key=Alphavantage.get_key(api_handler.keys), ticker=setting_values["ticker"])
         print("\tPrice Data:")
         print(df)
 

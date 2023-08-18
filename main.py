@@ -1,6 +1,6 @@
 import os 
 from dotenv import load_dotenv
-from OpenFintech import MySQL, User, Alphavantage, Market, Model
+from OpenFintech import MySQL, User, Alphavantage, Model
 # TODO: Run create tables again (since I updated create trades table query/SQL command)
 
 # Setup the database (and handlers) required for the system
@@ -12,12 +12,11 @@ host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com" #NOTE: Host addres
 db_handler = MySQL(host=host,user=SQL_USER,password=SQL_PASS,database="main")
 user_handler = User(database=db_handler)
 api_handler = Alphavantage(database=db_handler,key=ALPHAVANTAGE_KEY)
-market_handler = Market(database=db_handler)
-model_handler = Model(database=db_handler, market=market_handler)
+model_handler = Model(database=db_handler)
 print("Loaded ENV variables and successfully initiated the DB, API, Config, and Market handlers")
 
 # Populate settings dictionary to be passed into Model.backtest()
-setting_values={"user_id": 1, # TODO: Update user_handler.create() to return the created entry's ID
+setting_values={"user_id": 0, # TODO: Update user_handler.create() to return the created entry's ID
                 "starting_aum": 100000, 
                 "short": "EMA 3",
                 "long": "EMA 10",

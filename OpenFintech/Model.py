@@ -11,98 +11,106 @@ import copy
 class Model:
     def __init__(self, database, market):
         self.db_handler = database
-        self.market_handler = market
+        self.market_handler = market # is this still required? Also, this has db_handler so do we really need to ask for extra db_handler?
         return
     
-    def create(self, values:dict)->int:
-        # Convert the dictionary of values given by the user (which can be variable) into a set for inserting into the database
-        ma_1, ma_2, ema_1, ema_2, rsi_1, rsi_2 = 0,0,0,0,0,0
-        keys = values.keys()
-        if "EMA" in keys:
-            ema_1=values["EMA"][0]
-            if len(values["EMA"])>1: ema_2=values["EMA"][1]
-        if "SMA" in keys:
-            ma_1=values["SMA"][0]
-            if len(values["SMA"])>1: ma_2=values["SMA"][1]
-        if "RSI" in keys:
-            rsi_1=values["RSI"][0]
-            if len(values["RSI"])>1: rsi_2=values["RSI"][1]
-        values = (values["user_id"],ma_1, ma_2, ema_1, ema_2, rsi_1, rsi_2)
-
-        # Execute MySQL statement to insert the configuration values into the AWS RDS
-        self.db_handler.execute(queries.insert_configuration_entry, values)
-        query_last = "SELECT LAST_INSERT_ID();"
-        config_id = self.db_handler.execute(query_last, query=True)[0][0]
-
-        return config_id
-
-    def createSetting(self,values:dict):
+    def create(self,values:dict): # Function used to create a settings entry
         # Convert values dict to a set
-        values=(values["user_id"],values["config_id"],values["equity_id"],
-                                            values["stop_loss"],values["starting_aum"],values["take_profit"],
-                                            values["chart_freq_mins"])
+        values=(values["user_id"],values["equity_id"], values["short"], values["long"],
+                values["stop_loss"],values["take_profit"],values["starting_aum"],
+                values["chart_freq_mins"])
         self.db_handler.execute(queries.insert_setting_entry, values)
         query_last = "SELECT LAST_INSERT_ID();"
         config_id = self.db_handler.execute(query_last, query=True)[0][0]
         return config_id
 
     # The testing and running of configuation relies on the Market model.
-    def backtest(self, setting_values:dict, config_values:dict, api_handler:Alphavantage) -> dict:
+    def backtest(self, setting_values:dict, api_handler:Alphavantage) -> dict:
         print("\nModel.backtest():")
 
-        # Create the configuration entry using this objects method
-        config_id = self.create(config_values)
-        
-        # Add the config_id to the setting (since these values will be passed onto the database)
-        setting_values["config_id"] = config_id 
-
-        # Get the equity_id for the given ticker from db
+        # Replace ticker with the equity_id
         ticker = setting_values.pop("ticker") # Remove ticker from the setting_values dict
         response = api_handler.overview(ticker) # Retrive its last appropriate entry from the db (or request data from Alphavantage and create entry in DB)
         setting_values["equity_id"] = response[0] # Add the equity_id to the setting_values dict
         
         # Create a entry to the settings table
-        setting_id = self.createSetting(setting_values)
+        setting_id = self.create(setting_values)
         print(f"\tCreated setting with the ID {setting_id}")
-        
 
         # Import the data for given the setting using the given api_handler (Alphavantage object)
-        df = api_handler.equity_intraday(api_handler.key,ticker,interval=setting_values["chart_freq_mins"])
+        df = Alphavantage.equity_daily(key=Alphavantage.get_key(api_handler.keys), ticker=ticker)
         print("\tPrice Data:")
         print(df)
 
         # Modify the price_data_df based on the given config values indicators section
-        indicators = copy.deepcopy(config_values)
-        del indicators["user_id"]
-        df = api_handler.technical_indicator(indicators,df).dropna()
-        print("After manipulating the dataframe with technical_indicator() method:")
+        indicators = [''.join(setting_values["short"].split(" ")),''.join(setting_values["long"].split(" "))]
+        df = api_handler.technical_indicator(indicators,df)
+        print("\tPrice Data + Indicator Data:")
         print(df)
+    
+        # Get additional required info from settings
+        aum = float(setting_values["starting_aum"])
+        stop_loss = float(setting_values["stop_loss"])
+        take_profit = float(setting_values["take_profit"])
+
+        # Intiailize variables to store temp values to help the algorithm perform calculations
+        open = False 
+        quantity, purchase_price, sale_price = 0, 0, 0
+        # Iterate over the data frame and perform the checks
+        for i, r in df.iterrows(): # TODO: CRUD to the trades table
+            # Get data from the current row (unit of time)
+            date, close, short, long = i, r["4. close"], r[f"6. {indicators[0]}"], r[f"7. {indicators[1]}"]
+
+            if open==False: # At the current unit of time, if there are no open positions....
+
+                if short>long: # Check if the short term mean (base) has passed the long term mean (upper), indicating a upwards change in the price action and a buy signal
+                    purchase_price = close # store the purchase price in a variable initialized outside the loop (for referencing in future iterations)
+                    quantity = aum / purchase_price # Calculate the maximum purchaseable shares (NOTE: This is a limitation of the current system by design)
+                    total = purchase_price * quantity # Calculate the total cost of the purchase 
+                    aum -= total # remove cost from balance (NOTE: leaving formula in although this would always be zero due to the limitation highlighted above)
+                    print(i, ": Buy @", purchase_price, " AUM:", aum)
+                    open = True # Update variable to indicate that a purchase has been made, i.e. position opened.
+
+            else: # When there is an open position.... 
+                
+                sell = False #NOTE: This boolean variable is used as a trigger to avoid creating a sell function and to avoid writing redundant code
+
+                if short<long: sell = True # If the short term mean has fell underneath the long term mean, indicating a downwards change in the price action, triger the sale of all open positions (NOTE: "all" due to the limitation of the system as discussed earlier)
+
+                else: # When holding, check if the current price, relative to the purchase price, triggers a stop loss or take profit
+                    if (close <= (purchase_price - (purchase_price*stop_loss))): sell = True # Conditional statement for stopping loss
+                    if (close >= (purchase_price + (purchase_price*take_profit))): sell = True # Conditional statement for taking profit
+
+                if sell: # Code to sell open positions/current holdings (transaction)
+                    sale_price = close
+                    total = quantity * sale_price # Get the total gained from the sale
+                    quantity = 0 # Update the quantity NOTE: Since this is our hypothetical market, when we sell, we assume we find a perfect buyer for all the shares we own at the closing price
+                    aum += total # add the total gained from the sale to the aum 
+                    # Differentitate between sales that lead to profits vs losses and handle each case differently (NOTE: Potential room for a future project)
+                    profitable = False if sale_price<purchase_price else True
+                    print(i, ": Sell for", sale_price, " AUM:",aum, " Profitable: ",profitable)
+                    if profitable: print("\tProfit Captured Per Share Sold: ", sale_price-purchase_price) # If profitable, output the profit captured per share sold
+                    open = False
+
+        # Add a log of the trades for the current session to the response dictoinary
         
-        # NOTE: Static implementation. TODO: Needs to be made dynamic so that it can work with any of the given settings
-        # Iterate over the dataframe
-        signals_count = 0
-        for i, r in df.iloc[1:].iterrows():
+        print(f"Final AUM: {aum}")
 
-            # Conditions for buying/opening a new trade
-            if r["EMA_5"] > r["SMA_10"] and df['EMA_5'][i-1] < df['SMA_10'][i-1]: # If "short term trend" dips above long term trend (indicating a dip above the mean) (dip is only when previous wasnt already above)
-                
-                # TODO: Check for false signals using social media sentiment analysis etc.
-                signals_count+=1
-                print("Buy",i,r)
-                # Open a position with all the AUM (calculate the quantity and create a trade entry)
-
-            # If sell by natural condition, clear the quantities at the current close price and update the balance (create a trade entry)
-            
-            # If hold (bought and in the trading range) (NOTE: can be linked back with line 87's second half):
-                # Check for stop loss or take profit conditions to exit trades
-
-                
-        print("Total buy signals generated:", signals_count)
 
         #df.to_csv("sample_model_data.csv", encoding='utf-8') 
-        # Check test.py for the implementation
+        # Add price data to the response dictionary
 
-        # Calculate performance data and create performance entry
+        # Calculate performance data
+        # Performance data should contain:
+        #       Ending_aum
+        #       percent_change
+        #       dollar_change
+        #       setting_id
+        # Add the required fields and then create a performance entry to the performance table (database)
+        # remove the fields not required for the response dictionary
+        # Pack performance data into the response dictionary
+
+        # Return response dictionary
         return
     
     def simulate(self): # NOTE: We can worry about this after we build backtest

@@ -31,29 +31,15 @@ create_users_table = """CREATE TABLE users (
         CHECK (year>=1 OR NULL)
 );"""
 
-create_config_table = """CREATE TABLE configs ( 
-        config_id int NOT NULL AUTO_INCREMENT,
-        user_id int NOT NULL,
-        date_created DATETIME DEFAULT now(),
-
-        ma_period_1 int DEFAULT 0,
-        ma_period_2 int DEFAULT 0,
-        ema_period_1 int DEFAULT 0,
-        ema_period_2 int DEFAULT 0,
-        rsi_length int DEFAULT 0,
-        ma_length int DEFAULT 0,
-        
-        PRIMARY KEY (config_id),
-        FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE
-);"""
-
 create_setting_table = """CREATE TABLE settings ( 
         setting_id int NOT NULL AUTO_INCREMENT,
         user_id int NOT NULL,
-        config_id int NOT NULL,
         date_created DATETIME DEFAULT now(),
 
         equity_id int NOT NULL,
+
+        short varchar(50) DEFAULT NULL,
+        long_ varchar(50) DEFAULT NULL,
 
         stop_loss float DEFAULT 0,
         starting_aum float DEFAULT 0,
@@ -65,7 +51,6 @@ create_setting_table = """CREATE TABLE settings (
         
         PRIMARY KEY (setting_id),
         FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-        FOREIGN KEY (config_id) REFERENCES configs (config_id) ON DELETE CASCADE ON UPDATE CASCADE,
         FOREIGN KEY (equity_id) REFERENCES equities (equity_id) ON DELETE CASCADE ON UPDATE CASCADE
 );"""
 
@@ -84,7 +69,6 @@ create_performance_table = """CREATE TABLE performances (
 
 create_trade_table = """CREATE TABLE trades ( 
         trade_id int NOT NULL AUTO_INCREMENT,
-        user_id int NOT NULL,
         setting_id int NOT NULL,
         date_created DATETIME DEFAULT now(),
 
@@ -105,17 +89,15 @@ insert_simple_user = "INSERT INTO users (username) VALUES (%s)"
 insert_complete_user = "INSERT INTO users (username, email, password, year, major) VALUES (%s,%s,%s,%s,%s)"
 
 # Model Insertion Queries
-insert_configuration_entry = """ INSERT INTO configs (
-        user_id, ma_period_1, ma_period_2, ema_period_1, ema_period_2, rsi_length, ma_length)
-        VALUES (%s,%s,%s,%s,%s,%s,%s);
-"""
 insert_setting_entry = """ INSERT INTO settings (
-        user_id, config_id, equity_id, stop_loss, starting_aum, take_profit, chart_freq_mins)
-        VALUES (%s,%s,%s,%s,%s,%s,%s);
+        user_id, equity_id, short, long_, stop_loss, take_profit, starting_aum , chart_freq_mins)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s);
 """
 
 # Equity Insertion Query
 insert_equity_complete = "INSERT INTO equities (ticker, name, description, cik, country, currency, exchange, address, industry, sector) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+insert_equity_short = "INSERT INTO equities (ticker) VALUES (%s)"
+
 
 # Trade Insertion Query
 insert_trade_entry = """ INSERT INTO trades (

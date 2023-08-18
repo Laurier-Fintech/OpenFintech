@@ -31,14 +31,21 @@ class Alphavantage:
                 # Request data from Alphavantage API, create new entry, and insert into the DB
                 url = f"https://www.alphavantage.co/query?function=OVERVIEW&symbol={ticker}&apikey={self.get_key(self.keys)}"
                 response = self._request(url)
-                self.db_handler.execute(queries.insert_equity_complete, values=
-                    (
-                        response["Symbol"],
-                        response["Name"],response["Description"],response["CIK"],
-                        response["Country"],response["Currency"],response["Exchange"],
-                        response["Address"],response["Industry"],response["Sector"],
+                try:
+                    self.db_handler.execute(queries.insert_equity_complete, values=
+                        (
+                            response["Symbol"],
+                            response["Name"],response["Description"],response["CIK"],
+                            response["Country"],response["Currency"],response["Exchange"],
+                            response["Address"],response["Industry"],response["Sector"],
+                        )
                     )
-                )
+                except:
+                    self.db_handler.execute(queries.insert_equity_short, values=
+                        (
+                            ticker,
+                        )
+                    )
                 result = self.db_handler.execute(queries.select_ticker_entry, values=(ticker,), query=True)[0]
             else: result = result[0] # If no refresh is required, grab the latest one to return
 
@@ -99,31 +106,14 @@ class Alphavantage:
     
     @staticmethod
     def technical_indicator(indicators: dict, df: pd.DataFrame):
+        i = len(df.columns) + 1
         for indicator in indicators:
-            if indicator == "SMA":
-                for param in indicators[indicator]:
-                    df[f'{indicator}_{param}'] = df['4. close'].rolling(param).mean()
-            elif indicator == "EMA":
-                for param in indicators[indicator]:
-                    df[f'{indicator}_{param}'] = df["4. close"].ewm(com=param).mean()
-            elif indicator == "RSI":
-                for param in indicators[indicator]:
-                    delta = df["4. close"].astype('float').diff()
-                    delta = delta[1:] 
-                    
-                    up = delta.clip(lower=0)
-                    down =  delta.clip(upper=0).abs()
-                    
-                    roll_up = up.ewm(com=param).mean()
-                    roll_down = down.ewm(com=param).mean()
-
-                    rs = roll_up / roll_down
-                    rsi = 100.0 - (100.0 / (1.0 + rs))
-
-                    rsi[:] = np.select([roll_down == 0, roll_up == 0, True], [100, 0, rsi])
-                    df[f'{indicator}_{param}'] = rsi
-            else:
-                raise Exception("Please provide a valid indicator, such as SMA, EMA, or RSI.")
+            if "EMA" in indicator:
+                df[f'{i}. {indicator}'] = df["4. close"].ewm(span=int(indicator[3:]), adjust=False).mean()
+            elif "SMA" in indicator:
+                df[f'{i}. {indicator}'] = df["4. close"].rolling(window=int(indicator[3:])).mean()
+            i+=1
+        df.dropna(inplace=True)
         return df
 
 if __name__=="__main__":

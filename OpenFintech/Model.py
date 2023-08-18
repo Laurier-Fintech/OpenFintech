@@ -29,6 +29,8 @@ class Model:
             values["price"],
             values["quantity"],
             values["total"]))
+        if values["type"]==0: print(values["trade_dt"], ": Buy @", values["price"])
+        else: print(values["trade_dt"], ": Sell @", values["price"])
         return
 
     # The testing and running of configuation relies on the Market model.
@@ -64,7 +66,6 @@ class Model:
                     quantity = aum / purchase_price # Calculate the maximum purchaseable shares (NOTE: This is a limitation of the current system by design)
                     total = purchase_price * quantity # Calculate the total cost of the purchase 
                     aum -= total # remove cost from balance (NOTE: leaving formula in although this would always be zero due to the limitation highlighted above)
-                    print(i, ": Buy @", purchase_price, " AUM:", aum)
                     
                     # Create buy trade entry
                     self.order({"setting_id": setting_id, "type": 0, "trade_dt": i, 
@@ -89,7 +90,6 @@ class Model:
                     aum += total # add the total gained from the sale to the aum 
                     # Differentitate between sales that lead to profits vs losses and handle each case differently (NOTE: Potential room for a future project)
                     profitable = False if sale_price<purchase_price else True
-                    print(i, ": Sell for", sale_price, " AUM:",aum, " Profitable: ",profitable)
                     
                     # Create sale trade entry
                     self.order({"setting_id": setting_id, "type": 1, "trade_dt": i, 

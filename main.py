@@ -13,9 +13,10 @@ api_handler = Alphavantage(database=db_handler,key=ALPHAVANTAGE_KEY)
 model_handler = Model(database=db_handler)
 print("Loaded ENV variables and successfully initiated the DB, API, Config, and Market handlers")
 
+user_id = user_handler.create(values=("Test",),simple=True)
 
-# Populate settings dictionary to be passed into Model.backtest() based 
-setting_values={"user_id": 1,
+# Populate settings dictionary to be passed into Model.backtest() (NOTE: Will be user input fields on the form) 
+setting_values={"user_id": user_id,
                 "starting_aum": 100000, 
                 "short": "EMA 5",
                 "long": "SMA 15",
@@ -32,7 +33,7 @@ df = api_handler.technical_indicator(indicators,df) # Add the tehcnical indicato
 
 # Call the backtest function with the setting along with the configuration
 response = model_handler.backtest(setting_values, df)
-print(response)
+print(response) # (NOTE: Parts of the response will be the output to be sent to the front end)
 
 # Disconnect the database
 db_handler.disconnect()

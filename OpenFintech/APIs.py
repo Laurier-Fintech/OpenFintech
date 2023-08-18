@@ -5,9 +5,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime as dt
 
-# TODO:     
-    # Ensure overview is returning the last entry to equity for a given ticker (else update the query in queries.py)
-    # Handling edge cases (where error occurs when the DB has no data and API fails ??)
+# TODO: Handling edge cases (where error occurs when the DB has no data and API fails ??)
 
 class Alphavantage: 
     def __init__(self, database:MySQL, key="", keys=[], refresh=30):
@@ -115,30 +113,3 @@ class Alphavantage:
             i+=1
         df.dropna(inplace=True)
         return df
-
-if __name__=="__main__":
-    import queries
-    import os 
-    from dotenv import load_dotenv
-    load_dotenv()
-    SQL_USER = os.getenv('MYSQL_USER')
-    SQL_PASS = os.getenv('MYSQL_PASS') 
-    host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com"
-    handler = MySQL(host=host,user=SQL_USER,password=SQL_PASS,database="main")
-    key="NDYBGSF1PGZROO4Q"
-    data = Alphavantage(handler, key="NDYBGSF1PGZROO4Q")
-    result = data.overview("META")
-    print(result)
-    handler.disconnect()
-
-    raw_df = data.equity_intraday(key=key, ticker="META")
-    print(raw_df)
-
-    indicators = {
-        "RSI": [10,5],
-        "EMA": [10,5],
-        "SMA": [10,5],
-    }
-    df_with_indicator = data.technical_indicator(indicators=indicators,df=raw_df)
-    print(df_with_indicator)
-    

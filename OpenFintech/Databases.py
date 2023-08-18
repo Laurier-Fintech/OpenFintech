@@ -1,6 +1,6 @@
 import mysql.connector
 
-class MongoDB: # TODO: Simplified implementation of our FinMongo code
+class MongoDB: # TODO: Simplified implementation of our FinMongo code from the backed up branch (not accessible to the public at the moment)
     def __init__():
         return
 
@@ -63,21 +63,3 @@ class MySQL:
         self.curr.execute("SHOW TABLES")
         for tableName in self.curr: tables+= f"\t{tableName}\n"
         return tables
-
-if __name__=="__main__":
-    import queries
-    import os 
-    from dotenv import load_dotenv
-    load_dotenv()
-    SQL_USER = os.getenv('MYSQL_USER')
-    SQL_PASS = os.getenv('MYSQL_PASS') 
-    host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com"
-    handler = MySQL(host=host,user=SQL_USER,password=SQL_PASS,database="main")
-    
-    handler.curr.execute(queries.create_users_table)
-    handler.curr.execute(queries.create_equity_table)
-    handler.curr.execute(queries.create_setting_table)
-    handler.curr.execute(queries.create_trade_table)
-    handler.curr.execute(queries.create_performance_table)
-
-    handler.disconnect()

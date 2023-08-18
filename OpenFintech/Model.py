@@ -1,7 +1,6 @@
 from . import queries
 
-# TODO:
-# Implement the __str__ function
+# TODO: Develop the __str__ function
 
 class Model:
     def __init__(self, database):

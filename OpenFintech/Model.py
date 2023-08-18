@@ -9,9 +9,8 @@ import copy
 # Implement the __str__ function
 
 class Model:
-    def __init__(self, database, market):
+    def __init__(self, database):
         self.db_handler = database
-        self.market_handler = market # is this still required? Also, this has db_handler so do we really need to ask for extra db_handler?
         return
     
     def create(self,values:dict): # Function used to create a settings entry
@@ -24,10 +23,11 @@ class Model:
         config_id = self.db_handler.execute(query_last, query=True)[0][0]
         return config_id
 
-    def buy():
+    def buy(self, values:dict):
+        self.db_handler.execute(queries.insert_trade_entry, ())
         return
     
-    def sell():
+    def sell(self):
         return
 
     # The testing and running of configuation relies on the Market model.
@@ -77,7 +77,8 @@ class Model:
                     print(i, ": Buy @", purchase_price, " AUM:", aum)
                     
                     # Create buy trade entry
-
+                    self.buy({"setting_id": setting_id, "type": 0, "trade_dt": i, 
+                              "price": purchase_price, "quantity":quantity, "total": total})
                     
                     open = True # Update variable to indicate that a purchase has been made, i.e. position opened.
 

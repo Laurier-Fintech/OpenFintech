@@ -80,7 +80,6 @@ create_trade_table = """CREATE TABLE trades (
         total float NOT NULL,
         
         PRIMARY KEY (trade_id),
-        FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
         FOREIGN KEY (setting_id) REFERENCES settings (setting_id) ON DELETE CASCADE ON UPDATE CASCADE
 );"""
 
@@ -101,7 +100,7 @@ insert_equity_short = "INSERT INTO equities (ticker) VALUES (%s)"
 
 # Trade Insertion Query
 insert_trade_entry = """ INSERT INTO trades (
-        user_id, setting_id, type, trade_dt, price, quantity, total) VALUES (%s,%s,%s,%s,%s,%s,%s);
+        setting_id, type, trade_dt, price, quantity, total) VALUES (%s,%s,%s,%s,%s,%s);
 """
 
 # Equities Selection Queries

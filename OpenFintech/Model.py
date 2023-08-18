@@ -43,8 +43,24 @@ class Model:
         print(df)
 
         # Modify the price_data_df based on the given config values indicators section
-        df = api_handler.technical_indicator({setting_values["short"],setting_values["long"]},df)
+        indicators = [''.join(setting_values["short"].split(" ")),''.join(setting_values["long"].split(" "))]
+        df = api_handler.technical_indicator(indicators,df)
         print(df)
+
+        aum = 100000
+        open = False 
+        quantity = 0 # shares currently in possession
+        purchase_price = 0
+        sale_price = 0
+        stop_loss = 10#%
+        take_profit = 0.0025#%
+
+        for i, r in df.iterrows():
+            # Get data from the current row (unit of time)
+            #date, close, short, long = i, r["4. close"], r["5. EMA5"], r["6. SMA10"]
+            pass
+
+
         
         #print("Total buy signals generated:", signals_count)
 

@@ -108,11 +108,10 @@ class Alphavantage:
     def technical_indicator(indicators: dict, df: pd.DataFrame):
         i = len(df.columns) + 1
         for indicator in indicators:
-            setting = indicator.split(" ")
             if "EMA" in indicator:
-                df[f'{i}. {setting[0]}{setting[1]}'] = df["4. close"].ewm(span=int(setting[1]), adjust=False).mean()
+                df[f'{i}. {indicator}'] = df["4. close"].ewm(span=int(indicator[3:]), adjust=False).mean()
             elif "SMA" in indicator:
-                df[f'{i}. {setting[0]}{setting[1]}'] = df["4. close"].rolling(window=int(setting[1])).mean()
+                df[f'{i}. {indicator}'] = df["4. close"].rolling(window=int(indicator[3:])).mean()
             i+=1
         df.dropna(inplace=True)
         return df

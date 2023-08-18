@@ -34,7 +34,7 @@ class MySQL:
                     # Check if the given values are in a set (required by MySQL connector)
                     if isinstance(values, tuple)!=True: raise Exception("Given values must be in a set to be executed.")
                     self.curr.execute(statement,values) # Bind values to statement and execute
-
+                
             if not query: 
                 self.conn.commit() # Commit new insertations/changes
                 success=True # Update success status to return True

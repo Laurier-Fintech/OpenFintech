@@ -2,6 +2,7 @@ from . import queries
 
 # TODO:
 # Implement the __str__ function
+# !!!FIX THE HARD CODEED RETURN IN MODEL FOR CREATING SETTINGS!!!
 
 class Model:
     def __init__(self, database):
@@ -9,15 +10,18 @@ class Model:
         return
     
     def create(self,values:dict): # Function used to create a settings entry
+        print("\tSetting values:")
+        print(f"\t{values}")
         # Convert values dict to a set
         self.db_handler.execute(queries.insert_setting_entry, (
             values["user_id"], values["ticker"],
             values["short"], values["long"],
             values["stop_loss"], values["take_profit"],
             values["starting_aum"], values["chart_freq_mins"]))
-        return
+        settings_id = 6
+        return settings_id
 
-    def buy(self, values:dict): # NOTE: Can add aditional features later on
+    def order(self, values:dict): # NOTE: Can add aditional features later on
         self.db_handler.execute(queries.insert_trade_entry, (
             values["setting_id"],
             values["type"],
@@ -25,9 +29,6 @@ class Model:
             values["price"],
             values["quantity"],
             values["total"]))
-        return
-    
-    def sell(self):
         return
 
     # The testing and running of configuation relies on the Market model.
@@ -66,7 +67,7 @@ class Model:
                     print(i, ": Buy @", purchase_price, " AUM:", aum)
                     
                     # Create buy trade entry
-                    self.buy({"setting_id": setting_id, "type": 0, "trade_dt": i, 
+                    self.order({"setting_id": setting_id, "type": 0, "trade_dt": i, 
                               "price": purchase_price, "quantity":quantity, "total": total})
                     
                     open = True # Update variable to indicate that a purchase has been made, i.e. position opened.
@@ -91,15 +92,14 @@ class Model:
                     print(i, ": Sell for", sale_price, " AUM:",aum, " Profitable: ",profitable)
                     
                     # Create sale trade entry
-                    
+                    self.order({"setting_id": setting_id, "type": 1, "trade_dt": i, 
+                              "price": purchase_price, "quantity":quantity, "total": total})
                     
                     if profitable: print("\tProfit Captured Per Share Sold: ", sale_price-purchase_price) # If profitable, output the profit captured per share sold
                     open = False
 
         # Add a log of the trades for the current session to the response dictoinary
-        
         print(f"Final AUM: {aum}")
-
 
         #df.to_csv("sample_model_data.csv", encoding='utf-8') 
         # Add price data to the response dictionary

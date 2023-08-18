@@ -103,3 +103,6 @@ insert_trade_entry = """ INSERT INTO trades (
 
 # Equities Selection Queries
 select_ticker_entry = "SELECT * FROM equities WHERE ticker=%s" # Enforce sort by the latest (so we get the last entry)
+
+# Performance entry query
+insert_performance_entry = "INSERT INTO performances (setting_id, dollar_change, percent_change, ending_aum) VALUES (%s, %s, %s, %s)"

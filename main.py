@@ -32,7 +32,7 @@ df = api_handler.technical_indicator(indicators,df) # Add the tehcnical indicato
 
 # Call the backtest function with the setting along with the configuration
 response = model_handler.backtest(setting_values, df)
-
+print(response)
 
 # Disconnect the database
 db_handler.disconnect()

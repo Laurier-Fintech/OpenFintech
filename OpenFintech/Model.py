@@ -102,20 +102,19 @@ class Model:
         print(f"Final AUM: {aum}")
 
         #df.to_csv("sample_model_data.csv", encoding='utf-8') 
-        # Add price data to the response dictionary
-
         # Calculate performance data
-        # Performance data should contain:
-        #       Ending_aum
-        #       percent_change
-        #       dollar_change
-        #       setting_id
-        # Add the required fields and then create a performance entry to the performance table (database)
+        response = {"price_data":df}
+        response["ending_aum"] = aum
+        response["dollar_change"] = response["ending_aum"] - setting_values["starting_aum"]
+        response["percent_change"] = (response["dollar_change"]/setting_values["starting_aum"])*100
+        
+        self.db_handler.execute(queries.insert_performance_entry, (setting_id,response["dollar_change"],response["percent_change"],response["ending_aum"]))
+        
         # remove the fields not required for the response dictionary
         # Pack performance data into the response dictionary
 
         # Return response dictionary
-        return
+        return response
     
     def simulate(self): # NOTE: We can worry about this after we build backtest! This is for realtime simulation!
         # Similar to “test_configuration” but for real-time (simulated market) testing. 

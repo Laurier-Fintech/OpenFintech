@@ -24,6 +24,12 @@ class Model:
         config_id = self.db_handler.execute(query_last, query=True)[0][0]
         return config_id
 
+    def buy():
+        return
+    
+    def sell():
+        return
+
     # The testing and running of configuation relies on the Market model.
     def backtest(self, setting_values:dict, api_handler:Alphavantage) -> dict:
         print("\nModel.backtest():")
@@ -95,6 +101,7 @@ class Model:
                     print(i, ": Sell for", sale_price, " AUM:",aum, " Profitable: ",profitable)
                     
                     # Create sale trade entry
+
                     
                     
                     if profitable: print("\tProfit Captured Per Share Sold: ", sale_price-purchase_price) # If profitable, output the profit captured per share sold

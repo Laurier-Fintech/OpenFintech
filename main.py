@@ -27,7 +27,8 @@ setting_values={"user_id": 1, # TODO: Update user_handler.create() to return the
                 "chart_freq_mins": 0} 
 
 # Call the backtest function with the setting along with the configuration
-model_handler.backtest(setting_values, api_handler)
+response = model_handler.backtest(setting_values, api_handler)
+
 
 # Disconnect the database
 db_handler.disconnect()

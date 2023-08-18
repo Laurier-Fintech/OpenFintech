@@ -69,6 +69,10 @@ class Model:
                     total = purchase_price * quantity # Calculate the total cost of the purchase 
                     aum -= total # remove cost from balance (NOTE: leaving formula in although this would always be zero due to the limitation highlighted above)
                     print(i, ": Buy @", purchase_price, " AUM:", aum)
+                    
+                    # Create buy trade entry
+
+                    
                     open = True # Update variable to indicate that a purchase has been made, i.e. position opened.
 
             else: # When there is an open position.... 
@@ -89,6 +93,10 @@ class Model:
                     # Differentitate between sales that lead to profits vs losses and handle each case differently (NOTE: Potential room for a future project)
                     profitable = False if sale_price<purchase_price else True
                     print(i, ": Sell for", sale_price, " AUM:",aum, " Profitable: ",profitable)
+                    
+                    # Create sale trade entry
+                    
+                    
                     if profitable: print("\tProfit Captured Per Share Sold: ", sale_price-purchase_price) # If profitable, output the profit captured per share sold
                     open = False
 

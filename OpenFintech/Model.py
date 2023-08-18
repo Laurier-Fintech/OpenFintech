@@ -1,8 +1,8 @@
 from . import queries
 
 # TODO:
-# Implement the __str__ function
 # !!!FIX THE HARD CODEED RETURN IN MODEL FOR CREATING SETTINGS!!!
+# Implement the __str__ function
 
 class Model:
     def __init__(self, database):
@@ -10,9 +10,6 @@ class Model:
         return
     
     def create(self,values:dict): # Function used to create a settings entry
-        print("\tSetting values:")
-        print(f"\t{values}")
-        # Convert values dict to a set
         self.db_handler.execute(queries.insert_setting_entry, (
             values["user_id"], values["ticker"],
             values["short"], values["long"],
@@ -33,7 +30,6 @@ class Model:
         else: print(values["trade_dt"], ": Sell @", values["price"])
         return
 
-    # The testing and running of configuation relies on the Market model.
     def backtest(self, setting_values:dict, df) -> dict:
         print("\nModel.backtest():")
 
@@ -98,22 +94,13 @@ class Model:
                     if profitable: print("\tProfit Captured Per Share Sold: ", sale_price-purchase_price) # If profitable, output the profit captured per share sold
                     open = False
 
-        # Add a log of the trades for the current session to the response dictoinary
-        print(f"Final AUM: {aum}")
-
-        #df.to_csv("sample_model_data.csv", encoding='utf-8') 
-        # Calculate performance data
+        # Create response package + calculate and create performance entry 
         response = {"price_data":df}
         response["ending_aum"] = aum
         response["dollar_change"] = response["ending_aum"] - setting_values["starting_aum"]
         response["percent_change"] = (response["dollar_change"]/setting_values["starting_aum"])*100
-        
         self.db_handler.execute(queries.insert_performance_entry, (setting_id,response["dollar_change"],response["percent_change"],response["ending_aum"]))
-        
-        # remove the fields not required for the response dictionary
-        # Pack performance data into the response dictionary
 
-        # Return response dictionary
         return response
     
     def simulate(self): # NOTE: We can worry about this after we build backtest! This is for realtime simulation!
@@ -127,6 +114,6 @@ class Model:
         # It should output performance and market data (including price data) as pandas df or a list of dictionaries?
         return
 
-    # Prints the market overview specific to the model and configurations. (can use SQL complex queries and create visualizations now)
+    # Prints an overview of the market/performances etc. (can use complex MySQL queries and create visualizations now)
     def __str__(self):
         return("working")

@@ -20,7 +20,7 @@ setting_values={"user_id": user_id,
                 "starting_aum": 100000, 
                 "short": "EMA 5",
                 "long": "SMA 15",
-                "ticker": "NIO", # NOTE: Popped in backtest # MXI
+                "ticker": "NIO",
                 "stop_loss": 10, #%
                 "take_profit": 0.5,#%
                 "chart_freq_mins": 0} 

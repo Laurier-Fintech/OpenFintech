@@ -1,7 +1,6 @@
 from . import queries
 
 # TODO:
-# !!!FIX THE HARD CODEED RETURN IN MODEL FOR CREATING SETTINGS!!!
 # Implement the __str__ function
 
 class Model:

@@ -57,9 +57,9 @@ class Model:
         open = False 
         quantity, purchase_price, sale_price = 0, 0, 0
         # Iterate over the data frame and perform the checks
-        for i, r in df.iterrows():
+        for i, r in df.iterrows(): # TODO: CRUD to the trades table
             # Get data from the current row (unit of time)
-            date, close, short, long = i, r["4. close"], r[f"5. {indicators[0]}"], r[f"6. {indicators[1]}"]
+            date, close, short, long = i, r["4. close"], r[f"6. {indicators[0]}"], r[f"7. {indicators[1]}"]
 
             if open==False: # At the current unit of time, if there are no open positions....
 
@@ -92,12 +92,25 @@ class Model:
                     if profitable: print("\tProfit Captured Per Share Sold: ", sale_price-purchase_price) # If profitable, output the profit captured per share sold
                     open = False
 
+        # Add a log of the trades for the current session to the response dictoinary
+        
+        print(f"Final AUM: {aum}")
+
+
         #df.to_csv("sample_model_data.csv", encoding='utf-8') 
-        # Check test.py for the implementation
+        # Add price data to the response dictionary
 
-        # Calculate performance data and create performance entry
+        # Calculate performance data
+        # Performance data should contain:
+        #       Ending_aum
+        #       percent_change
+        #       dollar_change
+        #       setting_id
+        # Add the required fields and then create a performance entry to the performance table (database)
+        # remove the fields not required for the response dictionary
+        # Pack performance data into the response dictionary
 
-        # Return performance data
+        # Return response dictionary
         return
     
     def simulate(self): # NOTE: We can worry about this after we build backtest

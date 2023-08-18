@@ -45,29 +45,59 @@ class Model:
         # Modify the price_data_df based on the given config values indicators section
         indicators = [''.join(setting_values["short"].split(" ")),''.join(setting_values["long"].split(" "))]
         df = api_handler.technical_indicator(indicators,df)
+        print("\tPrice Data + Indicator Data:")
         print(df)
+    
+        # Get additional required info from settings
+        aum = float(setting_values["starting_aum"])
+        stop_loss = float(setting_values["stop_loss"])
+        take_profit = float(setting_values["take_profit"])
 
-        aum = 100000
+        # Intiailize variables to store temp values to help the algorithm perform calculations
         open = False 
-        quantity = 0 # shares currently in possession
-        purchase_price = 0
-        sale_price = 0
-        stop_loss = 10#%
-        take_profit = 0.0025#%
-
+        quantity, purchase_price, sale_price = 0, 0, 0
+        # Iterate over the data frame and perform the checks
         for i, r in df.iterrows():
             # Get data from the current row (unit of time)
-            #date, close, short, long = i, r["4. close"], r["5. EMA5"], r["6. SMA10"]
-            pass
+            date, close, short, long = i, r["4. close"], r[f"5. {indicators[0]}"], r[f"6. {indicators[1]}"]
 
+            if open==False: # At the current unit of time, if there are no open positions....
 
-        
-        #print("Total buy signals generated:", signals_count)
+                if short>long: # Check if the short term mean (base) has passed the long term mean (upper), indicating a upwards change in the price action and a buy signal
+                    purchase_price = close # store the purchase price in a variable initialized outside the loop (for referencing in future iterations)
+                    quantity = aum / purchase_price # Calculate the maximum purchaseable shares (NOTE: This is a limitation of the current system by design)
+                    total = purchase_price * quantity # Calculate the total cost of the purchase 
+                    aum -= total # remove cost from balance (NOTE: leaving formula in although this would always be zero due to the limitation highlighted above)
+                    print(i, ": Buy @", purchase_price, " AUM:", aum)
+                    open = True # Update variable to indicate that a purchase has been made, i.e. position opened.
+
+            else: # When there is an open position.... 
+                
+                sell = False #NOTE: This boolean variable is used as a trigger to avoid creating a sell function and to avoid writing redundant code
+
+                if short<long: sell = True # If the short term mean has fell underneath the long term mean, indicating a downwards change in the price action, triger the sale of all open positions (NOTE: "all" due to the limitation of the system as discussed earlier)
+
+                else: # When holding, check if the current price, relative to the purchase price, triggers a stop loss or take profit
+                    if (close <= (purchase_price - (purchase_price*stop_loss))): sell = True # Conditional statement for stopping loss
+                    if (close >= (purchase_price + (purchase_price*take_profit))): sell = True # Conditional statement for taking profit
+
+                if sell: # Code to sell open positions/current holdings (transaction)
+                    sale_price = close
+                    total = quantity * sale_price # Get the total gained from the sale
+                    quantity = 0 # Update the quantity NOTE: Since this is our hypothetical market, when we sell, we assume we find a perfect buyer for all the shares we own at the closing price
+                    aum += total # add the total gained from the sale to the aum 
+                    # Differentitate between sales that lead to profits vs losses and handle each case differently (NOTE: Potential room for a future project)
+                    profitable = False if sale_price<purchase_price else True
+                    print(i, ": Sell for", sale_price, " AUM:",aum, " Profitable: ",profitable)
+                    if profitable: print("\tProfit Captured Per Share Sold: ", sale_price-purchase_price) # If profitable, output the profit captured per share sold
+                    open = False
 
         #df.to_csv("sample_model_data.csv", encoding='utf-8') 
         # Check test.py for the implementation
 
         # Calculate performance data and create performance entry
+
+        # Return performance data
         return
     
     def simulate(self): # NOTE: We can worry about this after we build backtest

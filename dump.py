@@ -73,4 +73,4 @@ for i, r in df.iterrows():
             open = False
 
 print(f"Final AUM: {aum}")
-#plt.show()
+plt.show()

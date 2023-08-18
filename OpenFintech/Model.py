@@ -43,30 +43,8 @@ class Model:
         print(df)
 
         # Modify the price_data_df based on the given config values indicators section
-        #indicators = copy.deepcopy(config_values)
-        #del indicators["user_id"]
-        #df = api_handler.technical_indicator(indicators,df).dropna()
-        #print("After manipulating the dataframe with technical_indicator() method:")
-        #print(df)
-        
-        # NOTE: Static implementation. TODO: Needs to be made dynamic so that it can work with any of the given settings
-        # Iterate over the dataframe
-        #signals_count = 0
-        #for i, r in df.iloc[1:].iterrows():
-
-            # Conditions for buying/opening a new trade
-        #    if r["EMA_5"] > r["SMA_10"] and df['EMA_5'][i-1] < df['SMA_10'][i-1]: # If "short term trend" dips above long term trend (indicating a dip above the mean) (dip is only when previous wasnt already above)
-                
-        #        # TODO: Check for false signals using social media sentiment analysis etc.
-        #        signals_count+=1
-        #        print("Buy",i,r)
-        #        # Open a position with all the AUM (calculate the quantity and create a trade entry)
-
-            # If sell by natural condition, clear the quantities at the current close price and update the balance (create a trade entry)
-            
-            # If hold (bought and in the trading range) (NOTE: can be linked back with line 87's second half):
-                # Check for stop loss or take profit conditions to exit trades
-
+        df = api_handler.technical_indicator({setting_values["short"],setting_values["long"]},df)
+        print(df)
                 
         #print("Total buy signals generated:", signals_count)
 

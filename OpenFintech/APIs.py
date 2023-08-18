@@ -106,37 +106,15 @@ class Alphavantage:
     
     @staticmethod
     def technical_indicator(indicators: dict, df: pd.DataFrame):
-
+        i = len(df.columns)
         for indicator in indicators:
-            
-            if indicator == "SMA":
-                for param in indicators[indicator]:
-                    df[f'{indicator}_{param}'] = df['4. close'].rolling(param).mean()
-            
-            elif indicator == "EMA":
-                for param in indicators[indicator]:
-                    df[f'{indicator}_{param}'] = df["4. close"].ewm(com=param).mean()
-            
-            elif indicator == "RSI":
-                for param in indicators[indicator]:
-                    delta = df["4. close"].astype('float').diff()
-                    delta = delta[1:] 
-                    
-                    up = delta.clip(lower=0)
-                    down =  delta.clip(upper=0).abs()
-                    
-                    roll_up = up.ewm(com=param).mean()
-                    roll_down = down.ewm(com=param).mean()
-
-                    rs = roll_up / roll_down
-                    rsi = 100.0 - (100.0 / (1.0 + rs))
-
-                    rsi[:] = np.select([roll_down == 0, roll_up == 0, True], [100, 0, rsi])
-                    df[f'{indicator}_{param}'] = rsi
-            
-            else:
-                raise Exception("Please provide a valid indicator, such as SMA, EMA, or RSI.")
-        
+            setting = indicator.split(" ")
+            if "EMA" in indicator:
+                df[f'{i}. {setting[0]}{setting[1]}'] = df["4. close"].ewm(span=int(setting[1]), adjust=False).mean()
+            elif "SMA" in indicator:
+                df[f'{i}. {setting[0]}{setting[1]}'] = df["4. close"].rolling(window=int(setting[1])).mean()
+            i+=1
+        df.dropna(inplace=True)
         return df
 
 if __name__=="__main__":

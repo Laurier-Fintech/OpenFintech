@@ -69,7 +69,6 @@ create_performance_table = """CREATE TABLE performances (
 
 create_trade_table = """CREATE TABLE trades ( 
         trade_id int NOT NULL AUTO_INCREMENT,
-        user_id int NOT NULL,
         setting_id int NOT NULL,
         date_created DATETIME DEFAULT now(),
 

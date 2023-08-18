@@ -1,6 +1,7 @@
 import os 
 from dotenv import load_dotenv
 from OpenFintech import MySQL, User, Alphavantage, Market, Model
+# TODO: Run create tables again (since I updated create trades table query/SQL command)
 
 # Setup the database (and handlers) required for the system
 load_dotenv() # Load ENV variables and set them down below

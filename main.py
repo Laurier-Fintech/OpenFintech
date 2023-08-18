@@ -17,11 +17,11 @@ print("Loaded ENV variables and successfully initiated the DB, API, Config, and 
 # Populate settings dictionary to be passed into Model.backtest() based 
 setting_values={"user_id": 1,
                 "starting_aum": 100000, 
-                "short": "EMA 3",
-                "long": "EMA 10",
-                "ticker": "MXI", # NOTE: Popped in backtest
+                "short": "EMA 5",
+                "long": "SMA 15",
+                "ticker": "NIO", # NOTE: Popped in backtest # MXI
                 "stop_loss": 10, #%
-                "take_profit": 0.0025,#%
+                "take_profit": 0.5,#%
                 "chart_freq_mins": 0} 
 
 # Get the price data for the setting values using the OpenFintech Alphvantage Package

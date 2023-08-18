@@ -10,24 +10,23 @@ class Model:
         return
     
     def create(self,values:dict): # Function used to create a settings entry
-        self.db_handler.execute(queries.insert_setting_entry, (
+        lastrowid = self.db_handler.execute(queries.insert_setting_entry, (
             values["user_id"], values["ticker"],
             values["short"], values["long"],
             values["stop_loss"], values["take_profit"],
             values["starting_aum"], values["chart_freq_mins"]))
-        settings_id = 6
-        return settings_id
+        return lastrowid
 
     def order(self, values:dict): # NOTE: Can add aditional features later on
-        self.db_handler.execute(queries.insert_trade_entry, (
+        lastrowid = self.db_handler.execute(queries.insert_trade_entry, (
             values["setting_id"],
             values["type"],
             values["trade_dt"],
             values["price"],
             values["quantity"],
             values["total"]))
-        if values["type"]==0: print(values["trade_dt"], ": Buy @", values["price"])
-        else: print(values["trade_dt"], ": Sell @", values["price"])
+        if values["type"]==0: print(f"(#{lastrowid})",values["trade_dt"], ": Buy @", values["price"])
+        else: print(f"(#{lastrowid})",values["trade_dt"], ": Sell @", values["price"])
         return
 
     def backtest(self, setting_values:dict, df) -> dict:

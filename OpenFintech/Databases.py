@@ -45,6 +45,7 @@ class MySQL:
             print(e) # Can call destructor or handle error differently in the future
             pass
 
+        if success: return self.curr.lastrowid
         return success
 
     # Function that closes the currsor and disconnects the MySQL connection

@@ -1,63 +1,75 @@
-## **Alphavantage Library: A Comprehensive Guide**
+**OpenFintech: Diving Deep into the Mean Reversion Strategy and the Backtesting Model**
 
-### **Implementation Guidelines**:
+---
 
-Instantiate the `Alphavantage` class:
+### **1. Introduction**
 
-```python
-from OpenFintech import Alphavantage
+OpenFintech is a pioneering project designed with the primary objective of allowing users to create custom high-frequency trading algorithms and get an experience of financial technology. 
 
-database_instance = ...  # You'll need to create and configure a MySQL database instance
-av_instance = Alphavantage(database=database_instance, key="YOUR_API_KEY")
-```
+> **Note**: The terms “features” and “components” within this documentation are used interchangeably.
 
-### **Usage Examples**:
+---
 
-#### 1. **Overview of a Ticker**:
+### **2. The Heart of OpenFintech: Mean Reversion Strategy**
 
-Get a general overview of a particular ticker, for instance, "AAPL" for Apple Inc.
+#### **2.1. Conceptualizing Mean Reversion**
 
-```python
-ticker_data = av_instance.overview(ticker="AAPL")
-print(ticker_data)
-```
+Mean reversion is the cornerstone of the strategies offered by OpenFintech. It is premised on the theory that asset prices, volatility, and historical returns will eventually revert to the long-run mean of the entire dataset. In the financial realm, this mean can manifest in various contexts, such as a stock's P/E ratio or the average return of an industry sector. 
 
-#### 2. **Lookup a Ticker**:
+[Learn More About Mean Reversion](https://www.notion.so/Mean-Reversion-27f263c5c0ff43848c5c384ebe766a6e?pvs=21)
 
-Check if a particular ticker exists and retrieve associated details.
+#### **2.2. Potential Risks**
 
-```python
-lookup_data = av_instance.lookup(key="YOUR_API_KEY", ticker="AAPL", check=True)
-print(lookup_data)
-```
+It's crucial to note that a return to the norm isn't always guaranteed. Unexpected market highs or lows could signal a shift in the usual trend. Events that might trigger such shifts include product launches or, on the flip side, recalls and lawsuits.
 
-#### 3. **Equity Daily Data**:
+---
 
-Retrieve daily stock metrics for a ticker, for example, "MSFT" for Microsoft.
+### **3. The Brain Behind the Operations: Model.py and Backtesting**
 
-```python
-equity_data = av_instance.equity_daily(key="YOUR_API_KEY", ticker="MSFT")
-print(equity_data)
-```
+At the core of OpenFintech's algorithmic strategies is the `Model.py` file, which focuses on backtesting the strategies to provide users with realistic and insightful simulations.
 
-#### 4. **Equity Intraday Data**:
+#### **3.1. Strategies Offered**
 
-Fetch intraday stock metrics for a ticker, such as "GOOGL" for Alphabet Inc. with 10-minute intervals.
+1. **Simple Moving Average (SMA) with Different Periods**:
+   - Logic: Short-term deviations from long-term trends revert to the mean.
+   - Parameters: 
+     - Moving average 1 (period as int)
+     - Moving average 2 (period as int)
 
-```python
-intraday_data = av_instance.equity_intraday(key="YOUR_API_KEY", ticker="GOOGL", interval=10)
-print(intraday_data)
-```
+2. **MACD Crossover with Different Periods**:
+   - Logic: Buy/sell signals based on MACD and signal line crossovers.
+   - Parameters: 
+     - EMA 1 (period as int)
+     - EMA 2 (period as int)
+     - EMA 3 (signal line as int)
 
-#### 5. **Technical Indicators**:
+3. **RSI Divergence**:
+   - Logic: Buy/sell signals based on RSI trends compared to price movements.
+   - Parameters: 
+     - Uptrend level (int)
+     - Downtrend level (int)
 
-Add technical indicators to a DataFrame containing stock data.
+#### **3.2. Backtesting Explained**
 
-```python
-df = ...  # Assuming this is a pandas DataFrame with stock data
-indicators = ["SMA50","EMA20"]  # Calculate 50-period SMA and 20-period EMA
-enhanced_df = av_instance.technical_indicator(indicators=indicators, df=df)
-print(enhanced_df)
-```
+Backtesting is a core function in `Model.py`. By leveraging historical data, users can simulate how their chosen algorithm would have performed in past market conditions. This helps in refining the algorithm, understanding its strengths, and pinpointing potential weaknesses.
 
-Always remember, when invoking methods associated with the Alphavantage API, ensure the possession of a legitimate API key or a collection of such keys.
+---
+
+### **4. Who Is OpenFintech For?**
+
+OpenFintech is tailored for:
+
+- **Students** who have a keen interest in:
+  - Delving deeper into trading algorithms.
+  - Grasping the basics of high-frequency trading strategies.
+  - Undertaking both backtesting and simulated live testing of their algorithmic trading strategy.
+
+---
+
+### **5. Conclusion**
+
+OpenFintech, with its emphasis on the mean reversion strategy, provides an unparalleled platform for budding financial analysts and enthusiasts to test, refine, and understand the nuances of algorithmic trading. Whether you're a student or an expert, OpenFintech's extensive features ensure that you're equipped with the tools needed to delve deep into the world of algorithmic trading.
+
+Happy Trading!
+
+---

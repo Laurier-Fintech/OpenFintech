@@ -13,7 +13,7 @@ api_handler = Alphavantage(database=db_handler,key=ALPHAVANTAGE_KEY)
 model_handler = Model(database=db_handler)
 print("Loaded ENV variables and successfully initiated the DB, API, Config, and Market handlers")
 
-user_id = user_handler.create(values=("Test",),simple=True)
+user_id = user_handler.create(values=("Sample",),simple=True)
 
 # Populate settings dictionary to be passed into Model.backtest() (NOTE: Will be user input fields on the form) 
 setting_values={"user_id": user_id,

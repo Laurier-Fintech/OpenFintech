@@ -1,10 +1,8 @@
-**OpenFintech: Diving Deep into the Mean Reversion Strategy and the Backtesting Model**
-
----
+# **📦 OpenFintech: Algorithmic Trading System**
 
 ### **1. Introduction**
 
-OpenFintech is a pioneering project designed with the primary objective of allowing users to create custom high-frequency trading algorithms and get an experience of financial technology. 
+OpenFintech is a pioneering project designed with the primary objective of allowing users to create custom high-frequency trading algorithms and introducting them to financial technology as a field 💻.
 
 > **Note**: The terms “features” and “components” within this documentation are used interchangeably.
 
@@ -14,7 +12,7 @@ OpenFintech is a pioneering project designed with the primary objective of allow
 
 #### **2.1. Conceptualizing Mean Reversion**
 
-Mean reversion is the cornerstone of the strategies offered by OpenFintech. It is premised on the theory that asset prices, volatility, and historical returns will eventually revert to the long-run mean of the entire dataset. In the financial realm, this mean can manifest in various contexts, such as a stock's P/E ratio or the average return of an industry sector. 
+Mean reversion is the cornerstone of the strategies offered by OpenFintech. It is premised on the theory that asset prices, volatility, and historical returns will eventually revert to the long-run mean of the entire dataset. In the financial realm, this mean can manifest in various contexts, such as a stock's P/E ratio or the average return of an industry sector.
 
 [Learn More About Mean Reversion](https://www.notion.so/Mean-Reversion-27f263c5c0ff43848c5c384ebe766a6e?pvs=21)
 
@@ -31,21 +29,22 @@ At the core of OpenFintech's algorithmic strategies is the `Model.py` file, whic
 #### **3.1. Strategies Offered**
 
 1. **Simple Moving Average (SMA) with Different Periods**:
+
    - Logic: Short-term deviations from long-term trends revert to the mean.
-   - Parameters: 
+   - Parameters:
      - Moving average 1 (period as int)
      - Moving average 2 (period as int)
-
 2. **MACD Crossover with Different Periods**:
+
    - Logic: Buy/sell signals based on MACD and signal line crossovers.
-   - Parameters: 
+   - Parameters:
      - EMA 1 (period as int)
      - EMA 2 (period as int)
      - EMA 3 (signal line as int)
-
 3. **RSI Divergence**:
+
    - Logic: Buy/sell signals based on RSI trends compared to price movements.
-   - Parameters: 
+   - Parameters:
      - Uptrend level (int)
      - Downtrend level (int)
 

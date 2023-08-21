@@ -1,12 +1,6 @@
 from AlphavantageLFT import Alphavantage
-import pymongo
 
-ALPHAVANTAGE_KEY = "XOW4K6WRTDX8S951"
-
-#mongodb+srv://team:<etY3iF17dX3N0z0Y>@cluster0.wnrni0p.mongodb.net/
-
-
-myclient = pymongo.MongoClient("mongodb+srv://openfintech:<y6SsA8iKefK1T1us>@cluster0.wnrni0p.mongodb.net/?retryWZrites=true&w=majority")
+myclient = pymongo.MongoClient()
 mydb = myclient["openfintech"]
 mycol = mydb["price"]
 

@@ -13,6 +13,34 @@ CREATE TABLE IF NOT EXISTS users (
 """
 user_create = """INSERT INTO users(username, email, password, year, major) VALUES(:username, :email, :password, :year, :major)"""
 
+settings_tbl_create = """
+CREATE TABLE IF NOT EXISTS settings ( 
+    setting_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    date_created DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    ticker TEXT NOT NULL,
+
+    short TEXT DEFAULT NULL,
+    long_ TEXT DEFAULT NULL,
+
+    stop_loss REAL DEFAULT 0,
+    starting_aum REAL DEFAULT 0,
+    take_profit REAL DEFAULT 0,
+
+    FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+"""
+settings_create = """INSERT INTO settings(user_id, ticker, short, long_, stop_loss, starting_aum, take_profit) VALUES(:user_id, :ticker, :short, :long_, :stop_loss, :starting_aum, :take_profit)"""
+
+
+
+
+
+
+
+
+
 
 
 

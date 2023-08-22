@@ -6,7 +6,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name="OpenFintech",
-    version="0.1.2",
+    version="0.1.3",
     author = 'Laurier Fintech',
     author_email = 'team@wlufintech.com',
     url = 'https://github.com/Laurier-Fintech/OpenFintech',
@@ -16,8 +16,6 @@ setup(
     install_requires=[
           'requests',
           'pandas',
-          'numpy',
-          'mysql-connector-python',
           'python-dotenv',
     ]
 )

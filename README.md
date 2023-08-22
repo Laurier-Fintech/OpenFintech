@@ -2,7 +2,7 @@
 
 ### **1. Introduction**
 
-OpenFintech is a pioneering project designed with the primary objective of allowing users to create custom high-frequency trading algorithms and introducting them to financial technology as a field 💻. This project also includes wrappers for MySQL, MongoDB (in-development), and Alphavantage (a financial information API)*.*
+OpenFintech is a pioneering project designed with the primary objective of allowing users to create custom high-frequency trading algorithms and introducting them to financial technology as a field 💻. This project also includes wrappers for SQLite3, MySQL, MongoDB (in-development), and Alphavantage (a financial information API)*.*
 
 #### **1.1. Who Is OpenFintech For?**
 
@@ -56,75 +56,49 @@ Here's a step-by-step guide to using the OpenFintech package:
    After installation, create a Python script and import the required classes from the OpenFintech package.
 
    ```python
-   from OpenFintech import MySQL, Alphavantage, Model, User
+   from OpenFintech import Model
    ```
 3. **Variable Configuration**:
    Before proceeding, set up the necessary variables for your database and API configurations. It's recommended to use environment variables to store these values securely.
 
    ```python
-   SQL_USER, SQL_PASS, ALPHAVANTAGE_KEY = "username", "password", "apikey"
-   host = "hosturl"
+   ALPHAVANTAGE_KEY = "username"
    ```
 4. **Initialization**:
    With the above variables, initiate the various handlers:
 
-   - Database handler for MySQL
-   - User handler
-   - API handler for Alphavantage
    - Model handler
 
    ```python
-   db_handler = MySQL(host=host, user=SQL_USER, password=SQL_PASS, database="main")
-   user_handler = User(database=db_handler)
-   api_handler = Alphavantage(database=db_handler, key=ALPHAVANTAGE_KEY)
-   model_handler = Model(database=db_handler)
+   handler = Model()
    ```
-5. **User Creation**:
-   Use the `create` method from the `user_handler` to create a new user and retrieve their ID.
-
-   ```python
-   user_id = user_handler.create(values=("Harri",), simple=True)
-   ```
-6. **Setting Backtesting Parameters**:
+5. **Setting Backtesting Parameters**:
    Define a dictionary for backtesting settings. This dictionary will contain parameters like starting amount, short and long strategies, stock ticker, and more.
 
    ```python
    setting_values = {
-       "user_id": user_id,
+       "user_id": 1,
        "starting_aum": 100000,
        "short": "EMA 5",
        "long": "SMA 15",
        "ticker": "NIO",
-       "stop_loss": 10, #%
+       "stop_loss": 0.10, #%
        "take_profit": 0.5,#%
        "chart_freq_mins": 0
    }
    ```
-7. **Fetching Price Data**:
-   With the settings in place, fetch the daily equity data for the given ticker using the Alphavantage package.
+8. **Backtesting**:
+   Call the backtest function from the model handler with the previously defined settings and the alphavantage key
 
    ```python
-   df = api_handler.equity_daily(key=Alphavantage.get_key(api_handler.keys), ticker=setting_values["ticker"])
-   ```
-8. **Applying Technical Indicators**:
-   Based on your backtesting settings, apply the relevant technical indicators to the fetched data.
-
-   ```python
-   indicators = [''.join(setting_values["short"].split(" ")), ''.join(setting_values["long"].split(" "))]
-   df = api_handler.technical_indicator(indicators, df)
-   ```
-9. **Backtesting**:
-   Call the backtest function from the model handler with the previously defined settings and the modified price data.
-
-   ```python
-   response = model_handler.backtest(setting_values, df)
+   response = handler.backtest(setting_values, ALPHAVANTAGE_KEY)
    print(response)
    ```
 10. **Clean Up**:
     After completing all operations, make sure to close the connection to the database.
 
 ```python
-   db_handler.disconnect()
+   handler.disconnect()
    print("Disconnected database connection.")
 ```
 

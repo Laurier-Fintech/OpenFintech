@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
     CHECK (year >= 1 OR year IS NULL)
 );
 """
-user_create = """INSERT INTO users(username, email, password, year, major) VALUES(:username, :email, :password, :year, :major)"""
+create_user = """INSERT INTO users(username, email, password, year, major) VALUES(:username, :email, :password, :year, :major)"""
 
 settings_tbl_create = """
 CREATE TABLE IF NOT EXISTS settings ( 
@@ -31,10 +31,25 @@ CREATE TABLE IF NOT EXISTS settings (
     FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 """
-settings_create = """INSERT INTO settings(user_id, ticker, short, long_, stop_loss, starting_aum, take_profit) VALUES(:user_id, :ticker, :short, :long_, :stop_loss, :starting_aum, :take_profit)"""
+create_setting = """INSERT INTO settings(user_id, ticker, short, long_, stop_loss, starting_aum, take_profit) VALUES(:user_id, :ticker, :short, :long_, :stop_loss, :starting_aum, :take_profit)"""
 
+trades_tbl_create = """
+CREATE TABLE IF NOT EXISTS trades ( 
+    trade_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    setting_id INTEGER NOT NULL,
+    date_created DATETIME DEFAULT CURRENT_TIMESTAMP,
 
+    type INTEGER NOT NULL,
+    trade_dt DATETIME NOT NULL,
 
+    price REAL NOT NULL,
+    quantity REAL NOT NULL,
+    total REAL NOT NULL,
+
+    FOREIGN KEY (setting_id) REFERENCES settings (setting_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+"""
+create_trade = """INSERT INTO trades(setting_id, type, trade_dt, price, quantity, total) VALUES(:setting_id, :type, :trade_dt, :price, :quantity, :total)"""
 
 
 

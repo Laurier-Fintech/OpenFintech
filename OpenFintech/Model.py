@@ -1,4 +1,5 @@
 from .Databases import SQLite3
+from . import Alphavantage
 from . import queries
 
 # TODO: Develop the __str__ function
@@ -19,22 +20,25 @@ class Model:
         else: print(f"(#{lastrowid})",values["trade_dt"], ": Sell @", values["price"])
         return lastrowid
 
-    def backtest(self, setting_values:dict, df) -> dict:
+    def backtest(self, setting_values:dict, ALPHAVANTAGE_KEY) -> dict:
         print("\nModel.backtest():")
 
         # Enter the settings into the database
         setting_id = self.create(setting_values)
         print(f"\tCreated setting with the ID {setting_id}")
 
-        # Import the data for given the setting using the given api_handler (Alphavantage object)
-        print("\tPrice Data + Indicator Data:")
-        print(df)
-    
         # Get additional required info from settings
         aum = float(setting_values["starting_aum"])
         stop_loss = float(setting_values["stop_loss"])
         take_profit = float(setting_values["take_profit"])
         indicators = [''.join(setting_values["short"].split(" ")),''.join(setting_values["long_"].split(" "))]
+        # Get the price data for the setting values using the OpenFintech Alphvantage Package
+        df = Alphavantage.equity_daily(key=ALPHAVANTAGE_KEY,ticker=setting_values["ticker"])
+        # Modify the price_data_df based on the given config values indicators section
+        df = Alphavantage.technical_indicator(indicators,df) # Add the tehcnical indicators data to the dataframe
+        # Import the data for given the setting using the given api_handler (Alphavantage object)
+        print("\tPrice Data + Indicator Data:")
+        print(df)
 
         # Intiailize variables to store temp values to help the algorithm perform calculations
         open = False 

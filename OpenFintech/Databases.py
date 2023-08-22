@@ -77,8 +77,8 @@ class SQLite3:
         if len(values)>0: self.curr.execute(statement,values)
         else: self.curr.execute(statement)
         self.conn.commit()
-        if query: result = True #TODO: Set to the last entry's ID
-        else: result = self.curr.fetchall()
+        if query: result = self.curr.fetchall() 
+        else: result = self.curr.lastrowid
         return result
     
     def download(self):
@@ -90,7 +90,3 @@ class SQLite3:
         self.curr.close()
         self.conn.close()
         return 
-    
-    @staticmethod
-    def initiatie(): # Given a bunch of create table queries, create tables lol
-        return

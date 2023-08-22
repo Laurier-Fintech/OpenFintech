@@ -21,7 +21,7 @@ df = Alphavantage.equity_daily(key=ALPHAVANTAGE_KEY,ticker=setting_values["ticke
 indicators = [''.join(setting_values["short"].split(" ")),''.join(setting_values["long_"].split(" "))]
 df = Alphavantage.technical_indicator(indicators,df) # Add the tehcnical indicators data to the dataframe
 
-handler = Model()
+handler = Model("Test.db")
 # Call the backtest function with the setting along with the configuration
 response = handler.backtest(setting_values, df)
 print(response) # (NOTE: Parts of the response will be the output to be sent to the front end)

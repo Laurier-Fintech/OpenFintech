@@ -1,3 +1,12 @@
+# NOTE: SQLITE3 QUERIES
+
+
+
+
+
+
+
+# NOTE: MYSQL QUERIES
 # Table Creation Queries
 create_equity_table = """CREATE TABLE equities (
         equity_id int NOT NULL AUTO_INCREMENT,

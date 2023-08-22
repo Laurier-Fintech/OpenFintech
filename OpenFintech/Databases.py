@@ -1,4 +1,5 @@
 import mysql.connector
+import sqlite3
 
 class MongoDB: # TODO: Simplified implementation of our FinMongo code from the backed up branch (not accessible to the public at the moment)
     def __init__():
@@ -63,3 +64,22 @@ class MySQL:
         self.curr.execute("SHOW TABLES")
         for tableName in self.curr: tables+= f"\t{tableName}\n"
         return tables
+    
+
+
+class SQLite3:
+    def __init__(self):
+        return
+    
+    def execute(self):
+        return
+    
+    def disconnect(self):
+        return
+    
+    def download(self):
+        return
+    
+    @staticmethod
+    def initiatie(): # Given a bunch of create table queries, create tables lol
+        return

@@ -1,39 +1,20 @@
 import os 
 from dotenv import load_dotenv
-from OpenFintech import MySQL, Alphavantage, Model, User
+from OpenFintech import Model
 
-# Setup the database (and handlers) required for the system
 load_dotenv() # Load ENV variables and set them down below
-SQL_USER, SQL_PASS, ALPHAVANTAGE_KEY = os.getenv('MYSQL_USER'), os.getenv('MYSQL_PASS'), os.getenv('ALPHAVANTAGE_KEY') 
-host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com" #NOTE: Host address is set to the OpenFintech AWS Server.
-# Initiate all the handlers
-db_handler = MySQL(host=host,user=SQL_USER,password=SQL_PASS,database="main") 
-user_handler = User(database=db_handler)
-model_handler = Model(database=db_handler)
-print("Loaded ENV variables and successfully initiated the DB, API, Config, and Market handlers")
-
-user_id = user_handler.create(values=("Sample",),simple=True)
-
 # Populate settings dictionary to be passed into Model.backtest() (NOTE: Will be user input fields on the form) 
-setting_values={"user_id": user_id,
+setting_values={"user_id": 1,
                 "starting_aum": 100000, 
                 "short": "EMA 5",
-                "long": "SMA 15",
-                "ticker": "NIO",
-                "stop_loss": 10, #%
+                "long_": "SMA 15",
+                "ticker": "AAPL",
+                "stop_loss": 0.05, #%
                 "take_profit": 0.5,#%
                 "chart_freq_mins": 0} 
-
-# Get the price data for the setting values using the OpenFintech Alphvantage Package
-df = Alphavantage.equity_daily(key=ALPHAVANTAGE_KEY,ticker=setting_values["ticker"])
-# Modify the price_data_df based on the given config values indicators section
-indicators = [''.join(setting_values["short"].split(" ")),''.join(setting_values["long"].split(" "))]
-df = Alphavantage.technical_indicator(indicators,df) # Add the tehcnical indicators data to the dataframe
-
+handler = Model("Test.db")
 # Call the backtest function with the setting along with the configuration
-response = model_handler.backtest(setting_values, df)
-print(response) # (NOTE: Parts of the response will be the output to be sent to the front end)
+response = handler.backtest(setting_values, os.getenv('ALPHAVANTAGE_KEY'))
+handler.handler.disconnect() # Closes the database
 
-# Disconnect the database
-db_handler.disconnect()
-print("Disconnected database connection.")
+print(response) # (NOTE: Parts of the response will be the output to be sent to the front end)

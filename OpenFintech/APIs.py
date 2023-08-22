@@ -1,11 +1,11 @@
-from .Databases import MySQL
 from . import queries
 import requests
 import pandas as pd
-import numpy as np
 from datetime import datetime as dt
 
-# TODO: Handling edge cases (where error occurs when the DB has no data and API fails ??)
+# TODO: 
+#   - Update the Alphavantage class to work with SQLite3 instead of MySQl
+#   - Handling edge cases (where error occurs when the DB has no data and API fails ??)
 
 class Alphavantage: 
     def __init__(self, database:MySQL, key="", keys=[], refresh=30):

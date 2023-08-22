@@ -51,6 +51,20 @@ CREATE TABLE IF NOT EXISTS trades (
 """
 create_trade = """INSERT INTO trades(setting_id, type, trade_dt, price, quantity, total) VALUES(:setting_id, :type, :trade_dt, :price, :quantity, :total)"""
 
+performance_tbl_create = """
+CREATE TABLE IF NOT EXISTS performances ( 
+    performance_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    setting_id INTEGER NOT NULL,
+    date_created DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    dollar_change REAL DEFAULT 0,
+    percent_change REAL DEFAULT 0,
+    ending_aum REAL DEFAULT 0,
+
+    FOREIGN KEY (setting_id) REFERENCES settings (setting_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+"""
+create_performance = """INSERT INTO performances(setting_id, dollar_change, percent_change, ending_aum) VALUES(:setting_id, :dollar_change, :percent_change, :ending_aum)"""
 
 
 

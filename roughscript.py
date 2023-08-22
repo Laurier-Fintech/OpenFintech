@@ -2,13 +2,16 @@ from OpenFintech import SQLite3, queries
 from datetime import datetime as dt
 
 handler = SQLite3(name="Test.db")
-result = handler.execute(queries.trades_tbl_create,query=False)
-result = handler.execute(queries.create_trade, values={
-    'setting_id':1,'type':1,'trade_dt':dt.now(),'price':10, 'quantity':10,'total':100
+result = handler.execute(queries.performance_tbl_create,query=False)
+result = handler.execute(queries.create_performance, values={
+    'setting_id': 1,  # Assuming 1 as an example
+    'dollar_change': 5.0,
+    'percent_change': 5.0,
+    'ending_aum': 1050.0
 })
 print(result)
 
 
-result=handler.execute("SELECT * FROM trades")
+result=handler.execute("SELECT * FROM performances")
 print(result)
 handler.disconnect()

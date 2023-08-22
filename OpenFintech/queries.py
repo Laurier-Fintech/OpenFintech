@@ -1,5 +1,17 @@
 # NOTE: SQLITE3 QUERIES
-
+user_tbl_create = """
+CREATE TABLE IF NOT EXISTS users (
+    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date_created DATETIME DEFAULT CURRENT_TIMESTAMP,
+    username TEXT UNIQUE NOT NULL,
+    email TEXT UNIQUE DEFAULT NULL,
+    password TEXT DEFAULT NULL,
+    year INTEGER DEFAULT NULL,
+    major TEXT DEFAULT NULL,
+    CHECK (year >= 1 OR year IS NULL)
+);
+"""
+user_create = """INSERT INTO users(username, email, password, year, major) VALUES(:username, :email, :password, :year, :major)"""
 
 
 

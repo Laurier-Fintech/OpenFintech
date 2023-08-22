@@ -67,14 +67,6 @@ CREATE TABLE IF NOT EXISTS performances (
 create_performance = """INSERT INTO performances(setting_id, dollar_change, percent_change, ending_aum) VALUES(:setting_id, :dollar_change, :percent_change, :ending_aum)"""
 
 
-
-
-
-
-
-
-
-
 # NOTE: MYSQL QUERIES
 # Table Creation Queries
 create_equity_table = """CREATE TABLE equities (

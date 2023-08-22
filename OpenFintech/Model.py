@@ -6,6 +6,7 @@ from . import queries
 class Model:
     def __init__(self, database=':memory:'):
         self.handler = SQLite3(name=database)
+        for statement in [queries.user_tbl_create, queries.settings_tbl_create, queries.trades_tbl_create, queries.performance_tbl_create]: self.handler.execute(statement)
         return
     
     def create(self,values:dict): # Function used to create a settings entry
@@ -33,7 +34,7 @@ class Model:
         aum = float(setting_values["starting_aum"])
         stop_loss = float(setting_values["stop_loss"])
         take_profit = float(setting_values["take_profit"])
-        indicators = [''.join(setting_values["short"].split(" ")),''.join(setting_values["long"].split(" "))]
+        indicators = [''.join(setting_values["short"].split(" ")),''.join(setting_values["long_"].split(" "))]
 
         # Intiailize variables to store temp values to help the algorithm perform calculations
         open = False 
@@ -83,11 +84,14 @@ class Model:
                     open = False
 
         # Create response package
+        response = {}
         response["ending_aum"] = aum
         response["dollar_change"] = response["ending_aum"] - setting_values["starting_aum"]
         response["percent_change"] = (response["dollar_change"]/setting_values["starting_aum"])*100
+        response["setting_id"] = setting_id
         self.handler.execute(queries.create_performance, values=response)
-        response = {"price_data":df}
+        del response['setting_id']
+        response["price_data"] = df
 
         return response
     

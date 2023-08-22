@@ -65,8 +65,6 @@ class MySQL:
         for tableName in self.curr: tables+= f"\t{tableName}\n"
         return tables
     
-
-
 class SQLite3:
     def __init__(self, name=":memory:"):
         self.conn:sqlite3.Connection = sqlite3.connect(name)

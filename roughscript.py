@@ -1,5 +1,4 @@
 from OpenFintech import SQLite3, queries
-from datetime import datetime as dt
 
 handler = SQLite3(name="Test.db")
 result = handler.execute(queries.performance_tbl_create)

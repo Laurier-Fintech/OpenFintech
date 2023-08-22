@@ -1,31 +1,22 @@
+from .Databases import SQLite3
 from . import queries
 
 # TODO: Develop the __str__ function
 
 class Model:
-    def __init__(self, database):
-        self.db_handler = database
+    def __init__(self, database=':memory:'):
+        self.handler = SQLite3(name=database)
         return
     
     def create(self,values:dict): # Function used to create a settings entry
-        lastrowid = self.db_handler.execute(queries.insert_setting_entry, (
-            values["user_id"], values["ticker"],
-            values["short"], values["long"],
-            values["stop_loss"], values["take_profit"],
-            values["starting_aum"], values["chart_freq_mins"]))
+        lastrowid = self.handler.execute(queries.create_setting, values=values)
         return lastrowid
 
     def order(self, values:dict): # NOTE: Can add aditional features later on
-        lastrowid = self.db_handler.execute(queries.insert_trade_entry, (
-            values["setting_id"],
-            values["type"],
-            values["trade_dt"],
-            values["price"],
-            values["quantity"],
-            values["total"]))
+        lastrowid = self.handler.execute(queries.create_trade, values=values)
         if values["type"]==0: print(f"(#{lastrowid})",values["trade_dt"], ": Buy @", values["price"])
         else: print(f"(#{lastrowid})",values["trade_dt"], ": Sell @", values["price"])
-        return
+        return lastrowid
 
     def backtest(self, setting_values:dict, df) -> dict:
         print("\nModel.backtest():")
@@ -91,12 +82,12 @@ class Model:
                     if profitable: print("\tProfit Captured Per Share Sold: ", sale_price-purchase_price) # If profitable, output the profit captured per share sold
                     open = False
 
-        # Create response package + calculate and create performance entry 
-        response = {"price_data":df}
+        # Create response package
         response["ending_aum"] = aum
         response["dollar_change"] = response["ending_aum"] - setting_values["starting_aum"]
         response["percent_change"] = (response["dollar_change"]/setting_values["starting_aum"])*100
-        self.db_handler.execute(queries.insert_performance_entry, (setting_id,response["dollar_change"],response["percent_change"],response["ending_aum"]))
+        self.handler.execute(queries.create_performance, values=response)
+        response = {"price_data":df}
 
         return response
     

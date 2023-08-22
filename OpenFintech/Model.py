@@ -8,6 +8,13 @@ class Model:
     def __init__(self, database=':memory:'):
         self.handler = SQLite3(name=database)
         for statement in [queries.user_tbl_create, queries.settings_tbl_create, queries.trades_tbl_create, queries.performance_tbl_create]: self.handler.execute(statement)
+        self.handler.execute(queries.create_user, values={
+            'username': 'Test',
+            'email': None,
+            'password': None,
+            'year': None,
+            'major': None
+        })
         return
     
     def create(self,values:dict): # Function used to create a settings entry

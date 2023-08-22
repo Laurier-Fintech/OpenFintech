@@ -9,7 +9,6 @@ host = "openfintech.cbbhaex7aera.us-east-2.rds.amazonaws.com" #NOTE: Host addres
 # Initiate all the handlers
 db_handler = MySQL(host=host,user=SQL_USER,password=SQL_PASS,database="main") 
 user_handler = User(database=db_handler)
-api_handler = Alphavantage(database=db_handler,key=ALPHAVANTAGE_KEY)
 model_handler = Model(database=db_handler)
 print("Loaded ENV variables and successfully initiated the DB, API, Config, and Market handlers")
 
@@ -26,10 +25,10 @@ setting_values={"user_id": user_id,
                 "chart_freq_mins": 0} 
 
 # Get the price data for the setting values using the OpenFintech Alphvantage Package
-df = api_handler.equity_daily(key=Alphavantage.get_key(api_handler.keys),ticker=setting_values["ticker"])
+df = Alphavantage.equity_daily(key=ALPHAVANTAGE_KEY,ticker=setting_values["ticker"])
 # Modify the price_data_df based on the given config values indicators section
 indicators = [''.join(setting_values["short"].split(" ")),''.join(setting_values["long"].split(" "))]
-df = api_handler.technical_indicator(indicators,df) # Add the tehcnical indicators data to the dataframe
+df = Alphavantage.technical_indicator(indicators,df) # Add the tehcnical indicators data to the dataframe
 
 # Call the backtest function with the setting along with the configuration
 response = model_handler.backtest(setting_values, df)

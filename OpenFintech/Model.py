@@ -1,48 +1,44 @@
+from .Databases import SQLite3
+from . import Alphavantage
 from . import queries
 
 # TODO: Develop the __str__ function
 
 class Model:
-    def __init__(self, database):
-        self.db_handler = database
+    def __init__(self, database=':memory:'):
+        self.handler = SQLite3(name=database)
+        for statement in [queries.user_tbl_create, queries.settings_tbl_create, queries.trades_tbl_create, queries.performance_tbl_create]: self.handler.execute(statement)
         return
     
     def create(self,values:dict): # Function used to create a settings entry
-        lastrowid = self.db_handler.execute(queries.insert_setting_entry, (
-            values["user_id"], values["ticker"],
-            values["short"], values["long"],
-            values["stop_loss"], values["take_profit"],
-            values["starting_aum"], values["chart_freq_mins"]))
+        lastrowid = self.handler.execute(queries.create_setting, values=values)
         return lastrowid
 
     def order(self, values:dict): # NOTE: Can add aditional features later on
-        lastrowid = self.db_handler.execute(queries.insert_trade_entry, (
-            values["setting_id"],
-            values["type"],
-            values["trade_dt"],
-            values["price"],
-            values["quantity"],
-            values["total"]))
+        lastrowid = self.handler.execute(queries.create_trade, values=values)
         if values["type"]==0: print(f"(#{lastrowid})",values["trade_dt"], ": Buy @", values["price"])
         else: print(f"(#{lastrowid})",values["trade_dt"], ": Sell @", values["price"])
-        return
+        return lastrowid
 
-    def backtest(self, setting_values:dict, df) -> dict:
+    def backtest(self, setting_values:dict, ALPHAVANTAGE_KEY) -> dict:
         print("\nModel.backtest():")
 
         # Enter the settings into the database
         setting_id = self.create(setting_values)
         print(f"\tCreated setting with the ID {setting_id}")
 
-        # Import the data for given the setting using the given api_handler (Alphavantage object)
-        print("\tPrice Data + Indicator Data:")
-        print(df)
-    
         # Get additional required info from settings
         aum = float(setting_values["starting_aum"])
         stop_loss = float(setting_values["stop_loss"])
         take_profit = float(setting_values["take_profit"])
-        indicators = [''.join(setting_values["short"].split(" ")),''.join(setting_values["long"].split(" "))]
+        indicators = [''.join(setting_values["short"].split(" ")),''.join(setting_values["long_"].split(" "))]
+        # Get the price data for the setting values using the OpenFintech Alphvantage Package
+        df = Alphavantage.equity_daily(key=ALPHAVANTAGE_KEY,ticker=setting_values["ticker"])
+        # Modify the price_data_df based on the given config values indicators section
+        df = Alphavantage.technical_indicator(indicators,df) # Add the tehcnical indicators data to the dataframe
+        # Import the data for given the setting using the given api_handler (Alphavantage object)
+        print("\tPrice Data + Indicator Data:")
+        print(df)
 
         # Intiailize variables to store temp values to help the algorithm perform calculations
         open = False 
@@ -91,12 +87,15 @@ class Model:
                     if profitable: print("\tProfit Captured Per Share Sold: ", sale_price-purchase_price) # If profitable, output the profit captured per share sold
                     open = False
 
-        # Create response package + calculate and create performance entry 
-        response = {"price_data":df}
+        # Create response package
+        response = {}
         response["ending_aum"] = aum
         response["dollar_change"] = response["ending_aum"] - setting_values["starting_aum"]
         response["percent_change"] = (response["dollar_change"]/setting_values["starting_aum"])*100
-        self.db_handler.execute(queries.insert_performance_entry, (setting_id,response["dollar_change"],response["percent_change"],response["ending_aum"]))
+        response["setting_id"] = setting_id
+        self.handler.execute(queries.create_performance, values=response)
+        del response['setting_id']
+        response["price_data"] = df
 
         return response
     

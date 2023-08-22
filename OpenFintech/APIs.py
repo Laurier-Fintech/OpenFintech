@@ -8,7 +8,7 @@ from datetime import datetime as dt
 #   - Handling edge cases (where error occurs when the DB has no data and API fails ??)
 
 class Alphavantage: 
-    def __init__(self, database:MySQL, key="", keys=[], refresh=30):
+    def __init__(self, database, key="", keys=[], refresh=30):
         self.db_handler = database
     
         # Setup key/keys

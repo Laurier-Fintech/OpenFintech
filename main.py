@@ -31,7 +31,7 @@ plt.plot(df['4. close'], label='Close', marker='o', color='blue')
 plt.plot(df[f'6. {setting_values["short"].replace(" ", "")}'], label=setting_values["short"].replace(" ", ""), linestyle='--', color='red')
 plt.plot(df[f'7. {setting_values["long_"].replace(" ", "")}'], label=setting_values["long_"].replace(" ", ""), linestyle='--', color='green')
 
-# Finish adding general graph proerties (that may act on price data) and ..
+# Finish adding general graph properties (that may act on price data) and ..
 plt.xticks(rotation=45)
 plt.tight_layout()
 plt.grid(True)
@@ -39,5 +39,7 @@ plt.xlabel('Date')
 plt.ylabel('Price')
 plt.legend()
 plt.show() # Display the graph 
+
+print(response["trade_data"])
 
 # TODO: Save the graph as a JPEG (as this system will be used to simplify the graph displaying process)

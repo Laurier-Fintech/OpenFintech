@@ -1,6 +1,7 @@
 from .Databases import SQLite3
 from . import Alphavantage
 from . import queries
+import pandas as pd
 
 # TODO: Develop the __str__ function
 
@@ -50,6 +51,11 @@ class Model:
         # Intiailize variables to store temp values to help the algorithm perform calculations
         open = False 
         quantity, purchase_price, sale_price = 0, 0, 0
+        
+        # Setup variables for the trade history df
+        trade_data = []
+
+
         # Iterate over the data frame and perform the checks
         for i, r in df.iterrows(): # TODO: CRUD to the trades table
             # Get data from the current row (unit of time)
@@ -64,8 +70,10 @@ class Model:
                     aum -= total # remove cost from balance (NOTE: leaving formula in although this would always be zero due to the limitation highlighted above)
                     
                     # Create buy trade entry
-                    self.order({"setting_id": setting_id, "type": 0, "trade_dt": i, 
-                              "price": purchase_price, "quantity":quantity, "total": total})
+                    data = {"setting_id": setting_id, "type": 0, "trade_dt": i, 
+                              "price": purchase_price, "quantity":quantity, "total": total}
+                    trade_data.append(data)
+                    self.order(data)
                     
                     open = True # Update variable to indicate that a purchase has been made, i.e. position opened.
 
@@ -88,9 +96,12 @@ class Model:
                     profitable = False if sale_price<purchase_price else True
                     
                     # Create sale trade entry
-                    self.order({"setting_id": setting_id, "type": 1, "trade_dt": i, 
-                              "price": purchase_price, "quantity":quantity, "total": total})
-                    
+                    data = {"setting_id": setting_id, "type": 1, "trade_dt": i, 
+                              "price": purchase_price, "quantity":quantity, "total": total}
+                    trade_data.append(data)
+                    self.order(data)
+
+
                     if profitable: print("\tProfit Captured Per Share Sold: ", sale_price-purchase_price) # If profitable, output the profit captured per share sold
                     open = False
 
@@ -103,6 +114,8 @@ class Model:
         self.handler.execute(queries.create_performance, values=response)
         del response['setting_id']
         response["price_data"] = df
+        # Add the trade data to the response package
+        response["trade_data"] = pd.DataFrame(trade_data)
 
         return response
     

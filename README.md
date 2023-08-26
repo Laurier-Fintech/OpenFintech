@@ -62,7 +62,7 @@ Here's a step-by-step guide to using the OpenFintech package:
    Before proceeding, set up the necessary variables for your database and API configurations. It's recommended to use environment variables to store these values securely.
 
    ```python
-   ALPHAVANTAGE_KEY = "username"
+   ALPHAVANTAGE_KEY = "RANDOM KEY" # get your own key here https://www.alphavantage.co/support/#api-key
    ```
 4. **Initialization**:
    With the above variables, initiate the various handlers:
@@ -70,7 +70,7 @@ Here's a step-by-step guide to using the OpenFintech package:
    - Model handler
 
    ```python
-   handler = Model()
+   handler = Model() # or provide a db_name.db
    ```
 5. **Setting Backtesting Parameters**:
    Define a dictionary for backtesting settings. This dictionary will contain parameters like starting amount, short and long strategies, stock ticker, and more.

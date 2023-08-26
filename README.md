@@ -2,7 +2,7 @@
 
 ### **1. Introduction**
 
-OpenFintech is a pioneering project designed with the primary objective of allowing users to create custom high-frequency trading algorithms and introducting them to financial technology as a field 💻. This project also includes wrappers for SQLite3, MySQL, MongoDB (in-development), and Alphavantage (a financial information API)*.*
+OpenFintech is a pioneering project designed with the primary objective of allowing users to create custom high-frequency trading algorithms and introducting them to financial technology as a field 💻. This project also includes wrappers for SQLite3 and the Alphavantage API (a financial information API)*.*
 
 #### **1.1. Who Is OpenFintech For?**
 
@@ -87,15 +87,15 @@ Here's a step-by-step guide to using the OpenFintech package:
        "chart_freq_mins": 0
    }
    ```
-8. **Backtesting**:
+6. **Backtesting**:
    Call the backtest function from the model handler with the previously defined settings and the alphavantage key
 
    ```python
    response = handler.backtest(setting_values, ALPHAVANTAGE_KEY)
    print(response)
    ```
-10. **Clean Up**:
-    After completing all operations, make sure to close the connection to the database.
+7. **Clean Up**:
+   After completing all operations, make sure to close the connection to the database.
 
 ```python
    handler.disconnect()
@@ -108,7 +108,7 @@ Note: Always ensure that sensitive data such as passwords and API keys are store
 
 ### **5. Output**
 
-The output of Model.backtest contains the price data as a pandas df and the performance of the settings provided to the algorithm.
+The output of Model.backtest contains the price data and the trade data as a pandas df along with the performance of the settings provided to the algorithm.
 
 - {'price_data':             1. open  2. high    3. low  4. close    5. volume     6. EMA5    7. SMA15
   2023-04-18  187.150   187.69  183.5775    184.31   92067016.0  185.355453  189.188667
@@ -121,7 +121,7 @@ The output of Model.backtest contains the price data as a pandas df and the perf
   2023-08-15  238.730   240.50  232.6100    232.96   88197599.0  240.486410  252.422667
   2023-08-16  228.020   233.97  225.3800    225.60  112484520.0  235.524273  249.839333
   2023-08-17  226.060   226.74  218.8300    219.22  120718417.0  230.089516  247.406667
-  2023-08-18  214.120   217.58  212.3600    215.49  136276584.0  225.223010  244.010000 
+  2023-08-18  214.120   217.58  212.3600    215.49  136276584.0  225.223010  244.010000
 - [86 rows x 7 columns], 'ending_aum': 152490.91942089135, 'dollar_change': 52490.919420891354, 'percent_change': 52.49091942089136}
 
 ---

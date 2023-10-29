@@ -10,7 +10,7 @@ setting_values={"user_id": 1,
                 "starting_aum": 100000, 
                 "short": "EMA 5",
                 "long_": "SMA 15",
-                "ticker": "AAPL",
+                "ticker": "GOOGL",
                 "stop_loss": 0.05, #%
                 "take_profit": 0.5,#%
                 "chart_freq_mins": 0} 
@@ -18,6 +18,9 @@ handler = Model()
 # Call the backtest function with the setting along with the configuration
 response = handler.backtest(setting_values, os.getenv('ALPHAVANTAGE_KEY'))
 handler.handler.disconnect() # Closes the database
+
+
+print(response)
 
 df: pd.DataFrame = response["price_data"]
 

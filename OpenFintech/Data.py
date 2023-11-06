@@ -51,13 +51,6 @@ class CandleContainer:
         self.candleList.clear()
         
 # NOTE: The data structures below are i.e. a replacement to having the database
-class Candle:
-    def __init__(self):
-        return
-    
-class CandleContainer: 
-    def __init__(self):
-        return
     
 class FinancialInstrument:
     def __init__(self):

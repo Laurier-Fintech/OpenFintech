@@ -69,8 +69,16 @@ class DataAcquisition:
     def _request(): # Could use an internal request method that simplifies things (check out the old Alphavantage wrapper code)
         return
 
-    def requestDataFromAPI(self): # declare return type, parameters should be for our functionality
-        return
+    def requestDataFromAPI(self, ticker, interval, outputsize='full'): # declare return type, parameters should be for our functionality
+        params = {
+            'function': 'TIMESERIES' + interval.upper(),
+            'symbol': ticker,
+            'apikey': self.key,
+            'outputsize': outputsize
+        }
+        response = requests.get(url=f"https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={ticker}&interval={interval}min&apikey={self.key}", params=params)
+        response.raise_for_status()
+        return response.json()
     
     def convertDataToCandleContainer(self): # return type is a candle container
         return

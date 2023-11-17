@@ -9,8 +9,9 @@ class Candle:
         self.close_price = close_price
         self.volume = volume
         self.datetime = datetime
-        self.duration_seconds = duration_seconds
-
+        self.duration_seconds = durationSeconds
+        
+        
 class CandleContainer:
     def __init__(self):
         self.candleList: Deque[Candle] = deque()
@@ -60,6 +61,23 @@ class FinancialInstrument:
 class Indicator:
     def __init__(self):
         return
+    
+    def returnIndicators(self):
+        return self.indicators
+
+import pandas as pd
+class SMA(Indicator):
+
+    def __init__(self, candle_container: CandleContainer, nCandles: int):
+        super().__init__(candle_container)
+
+        self.df = pd.DataFrame({ 'open_price' : candle.open_price, 'close_price' : candle.close_price } for candle in candle_container.candleList)
+
+        self.nCandles = nCandles
+
+    def runCalcOnCandleContainer(self):
+        self.indicators = self.df.rolling(self.nCandles).mean()['open_price'].to_list()
+
 
 # NOTE: This class was previously a part of the API wrapper
 class DataAcquisition: 

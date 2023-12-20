@@ -1,5 +1,6 @@
 from collections import deque 
 from typing import Deque
+import pandas as pd
 
 class Candle:
     def __init__(self, open_price: float, high: float, low: float, close_price: float, volume: int, datetime: str, durationSeconds: float):
@@ -58,13 +59,67 @@ class FinancialInstrument:
 
 # NOTE: The class below was previously a static method within the Alphavantage API wrapper
 class Indicator:
-    def __init__(self, candle_container: CandleContainer):
+    def __init__(self, candle_container: CandleContainer, open_or_close = 'open'):
         self.candle_container = candle_container
+        self.open_or_close = open_or_close
         self.indicators = []
+        return
+    
+    def runCalcOnCandleContainer(self):
         return
     
     def returnIndicators(self):
         return self.indicators
+
+    def returnIndicators(self):
+        return self.indicators
+
+class BollingerBands(Indicator):
+    def __init__(self, candle_container: CandleContainer, nCandles = 20, open_or_close = 'open'):
+        super().__init__(candle_container, open_or_close)
+
+
+        self.sma = SMA(self.candle_container, self.nCandles, self.open_or_close).indicators[-1] # want a 20-day moving average - may need to adjust # of candles depending on candle frequency
+        
+        self.nCandles = nCandles
+
+    def runCalcOnCandleContainer(self):
+
+        self.df = pd.DataFrame({'open_price' : candle.open_price, 'close_price' : candle.close_price} for candle in self.candle_container.candleList)
+        sd = self.df.std()[f'{self.open_or_close}_price']
+
+        upper_band = self.sma + 2*sd
+        middle_band = self.sma
+        lower_band = self.sma - 2*sd
+
+        self.indicators = [upper_band, middle_band, lower_band]
+
+class NormalizedPrices(Indicator):
+    def __init__(self, candle_container: CandleContainer, nCandles, open_or_close = 'open'):
+        super().__init__(candle_container, open_or_close)
+
+        self.df = pd.DataFrame({'open_price' : candle.open_price, 'close_price' : candle.close_price} for candle in candle_container.candleList)
+
+        self.nCandles = nCandles
+
+    def runCalcOnCandleContainer(self):
+        dfcol = self.df[f'{self.open_or_close}_price']
+        mean = dfcol.mean()
+        sd = dfcol.std()
+        normalizedCol = (dfcol - mean)/sd
+        self.indicators = normalizedCol.to_list()
+        
+
+class SMA(Indicator):
+    def __init__(self, candle_container: CandleContainer, nCandles: int, open_or_close = 'open'):
+        super().__init__(candle_container, open_or_close)
+        
+        self.nCandles = nCandles
+
+    def runCalcOnCandleContainer(self):
+        self.df = pd.DataFrame({'open_price' : candle.open_price, 'close_price' : candle.close_price} for candle in self.candle_container.candleList)
+        self.indicators = self.df.rolling(self.nCandles).mean()[f'{self.open_or_close}_price'].to_list()
+
 
 # NOTE: This class was previously a part of the API wrapper
 class DataAcquisition: 

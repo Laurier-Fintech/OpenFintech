@@ -11,8 +11,7 @@ class Candle:
         self.volume = volume
         self.datetime = datetime
         self.duration_seconds = durationSeconds
-        
-        
+
 class CandleContainer:
     def __init__(self):
         self.candleList: Deque[Candle] = deque()
@@ -68,6 +67,9 @@ class Indicator:
     
     def runCalcOnCandleContainer(self):
         return
+    
+    def returnIndicators(self):
+        return self.indicators
 
     def returnIndicators(self):
         return self.indicators

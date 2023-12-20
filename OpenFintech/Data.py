@@ -9,7 +9,7 @@ class Candle:
         self.close_price = close_price
         self.volume = volume
         self.datetime = datetime
-        self.duration_seconds = duration_seconds
+        self.duration_seconds = durationSeconds
 
 class CandleContainer:
     def __init__(self):
@@ -58,8 +58,13 @@ class FinancialInstrument:
 
 # NOTE: The class below was previously a static method within the Alphavantage API wrapper
 class Indicator:
-    def __init__(self):
+    def __init__(self, candle_container: CandleContainer):
+        self.candle_container = candle_container
+        self.indicators = []
         return
+    
+    def returnIndicators(self):
+        return self.indicators
 
 # NOTE: This class was previously a part of the API wrapper
 class DataAcquisition: 

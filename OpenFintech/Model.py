@@ -18,6 +18,7 @@ class MeanReversion(Algorithm):
     def runAlgorithmOnCandleContainer(self, candle_container, short_ma, long_ma, stop_loss, take_profit, assets):
         signals = []
         open_position = False
+        position_type = None  # 'Buy' or 'Sell'
         purchase_price = None
         quantity = 0
         aum = assets
@@ -33,8 +34,7 @@ class MeanReversion(Algorithm):
 
             short_ma_value = short_ma.calculatedValues[i]
             long_ma_value = long_ma.calculatedValues[i]
-
-            sell = False
+            sell = False  # Declare sell here
 
             if not open_position:
                 if short_ma_value > long_ma_value:
@@ -46,9 +46,8 @@ class MeanReversion(Algorithm):
                     data = {"type": "Buy", "price": purchase_price, "quantity": quantity, "total": total}
                     signals.append(data)
                     open_position = True
-
+                    position_type = "Buy"
             else:
-                sell = False
                 if short_ma_value < long_ma_value:
                     sell = True
                 elif (current_price <= purchase_price * (1 - stop_loss)) or (current_price >= purchase_price * (1 + take_profit)):
@@ -58,14 +57,16 @@ class MeanReversion(Algorithm):
                     sale_price = current_price
                     total = quantity * sale_price
                     aum += total
-                    quantity = 0
+                    profitable = sale_price > purchase_price
 
-                    data = {"type": "Sell", "price": sale_price, "quantity": quantity, "total": total}
+                    data = {"type": "Close " + position_type, "price": sale_price, "quantity": quantity, "total": total}
                     signals.append(data)
                     open_position = False
+                    position_type = None
+                    quantity = 0
 
             if not sell and open_position:
-                signals.append({"type": "Hold"})
+                signals.append({"type": "Hold " + position_type})
 
         return signals, aum
 
@@ -164,7 +165,7 @@ class TrendFollowing(Algorithm):
             else:
                 signals.append(None)
 
-        return signals
+        return signals, aum
 
     def runAlgorithmOnCandle(self, candle, short_ma, long_ma):
         if short_ma > long_ma:

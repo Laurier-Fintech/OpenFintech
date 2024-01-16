@@ -15,24 +15,26 @@ class MeanReversion(Algorithm):
     def runAlgorithmOnCandle(self):
         return
     
-    def runAlgorithmOnCandleContainer(self, candle_container, short_ma, long_ma, stop_loss, take_profit):
+    def runAlgorithmOnCandleContainer(self, candle_container, short_ma, long_ma, stop_loss, take_profit, assets):
         signals = []
         open_position = False
         purchase_price = None
         quantity = 0
-        aum = 10000  # Assuming an initial amount of assets under management
+        aum = assets
 
         for i in range(len(candle_container)):
             current_candle = candle_container[i]
             current_price = current_candle.close
 
             # Check if enough data is available for MA calculations
-            if i < max(short_ma.nCandles, long_ma.nCandles):
+            if i < max(short_ma.periodLength, long_ma.periodLength):
                 signals.append(None)
                 continue
 
-            short_ma_value = short_ma.indicators[i]
-            long_ma_value = long_ma.indicators[i]
+            short_ma_value = short_ma.calculatedValues[i]
+            long_ma_value = long_ma.calculatedValues[i]
+
+            sell = False
 
             if not open_position:
                 if short_ma_value > long_ma_value:
@@ -57,22 +59,21 @@ class MeanReversion(Algorithm):
                     total = quantity * sale_price
                     aum += total
                     quantity = 0
-                    profitable = sale_price > purchase_price
 
-                    data = {"type": "Sell", "price": sale_price, "quantity": quantity, "total": total, "profitable": profitable}
+                    data = {"type": "Sell", "price": sale_price, "quantity": quantity, "total": total}
                     signals.append(data)
                     open_position = False
 
             if not sell and open_position:
                 signals.append({"type": "Hold"})
 
-        return signals
+        return signals, aum
 
 class TrendFollowing(Algorithm):
     def __init__(self):
         super().__init__()
     
-    def runAlgorithmOnCandleContainer(self, candle_container, short_ma, long_ma, stop_loss, take_profit):
+    def runAlgorithmOnCandleContainer(self, candle_container, short_ma, long_ma, stop_loss, take_profit, assets):
         """
         candle_container: CandleContainer
         short_ma: Indicator
@@ -94,46 +95,71 @@ class TrendFollowing(Algorithm):
         signals = []
         position = None  # None, 'Buy', or 'Sell'
         entry_price = None
+        quantity = 0
+        aum = assets
 
         for i in range(len(candle_container)):
             current_candle = candle_container[i]
-            current_price = current_candle.close  # Assuming we're considering the close price for decision
+            current_price = current_candle.close
 
             # Check if enough data is available for MA calculations
-            if i < max(short_ma.nCandles, long_ma.nCandles):
+            if i < max(short_ma.periodLength, long_ma.periodLength):
                 signals.append(None)
                 continue
 
-            short_ma_value = short_ma.indicators[i]
-            long_ma_value = long_ma.indicators[i]
+            short_ma_value = short_ma.calculatedValues[i]
+            long_ma_value = long_ma.calculatedValues[i]
 
-            # Buy/long Logic
+            # Buy Logic
             if short_ma_value > long_ma_value and (position is None or position == 'Sell'):
                 if position == 'Sell':
                     # Close Sell position
-                    signals.append('Close Sell')
+                    sale_price = current_price
+                    total = quantity * sale_price
+                    aum += total
+                    signals.append({"type": "Close Sell", "price": sale_price, "quantity": quantity, "total": total})
+                    quantity = 0
+
                 # Open Buy position
-                signals.append('Buy')
-                position = 'Buy'
                 entry_price = current_price
-            # Sell/short Logic
+                quantity = aum / entry_price
+                total = entry_price * quantity
+                aum -= total
+                signals.append({"type": "Buy", "price": entry_price, "quantity": quantity, "total": total})
+                position = 'Buy'
+
+            # Sell Logic
             elif short_ma_value < long_ma_value and (position is None or position == 'Buy'):
                 if position == 'Buy':
                     # Close Buy position
-                    signals.append('Close Buy')
+                    sale_price = current_price
+                    total = quantity * sale_price
+                    aum += total
+                    signals.append({"type": "Close Buy", "price": sale_price, "quantity": quantity, "total": total})
+                    quantity = 0
+
                 # Open Sell position
-                signals.append('Sell')
-                position = 'Sell'
                 entry_price = current_price
+                quantity = aum / entry_price  # Assuming short selling is allowed
+                total = entry_price * quantity
+                aum -= total  # Assuming margin trading or short selling
+                signals.append({"type": "Sell", "price": entry_price, "quantity": quantity, "total": total})
+                position = 'Sell'
+
             # Check for stop loss or take profit
             elif position is not None:
                 if (position == 'Buy' and (current_price <= entry_price * (1 - stop_loss) or current_price >= entry_price * (1 + take_profit))) or \
                    (position == 'Sell' and (current_price >= entry_price * (1 + stop_loss) or current_price <= entry_price * (1 - take_profit))):
-                    signals.append('Close ' + position)
+                    # Close position
+                    sale_price = current_price
+                    total = quantity * sale_price
+                    aum += total
+                    signals.append({"type": "Close " + position, "price": sale_price, "quantity": quantity, "total": total})
                     position = None
                     entry_price = None
+                    quantity = 0
                 else:
-                    signals.append('Hold ' + position)
+                    signals.append({"type": "Hold " + position})
 
             else:
                 signals.append(None)

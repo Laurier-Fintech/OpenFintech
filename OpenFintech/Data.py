@@ -22,6 +22,9 @@ class CandleContainer:
     def count(self) -> int:
         return len(self.candleList)
     
+    def __len__(self):
+        return self.count()
+    
     def __getitem__(self, index: int) -> Candle:
         return self.candleList[index]
 
@@ -67,23 +70,23 @@ class Indicator:
     def __init__(self, candle_container: CandleContainer, open_or_close = 'open'):
         self.candle_container = candle_container
         self.open_or_close = open_or_close
-        self.indicators = []
+        self.calculatedValues = []
         return
     
     def runCalcOnCandleContainer(self):
         return
     
-    def returnIndicators(self):
-        return self.indicators
+    def returnCalculatedValues(self):
+        return self.calculatedValues
 
 class BollingerBands(Indicator):
-    def __init__(self, candle_container: CandleContainer, nCandles = 20, open_or_close = 'open'):
+    def __init__(self, candle_container: CandleContainer, periodLength = 20, open_or_close = 'open'):
         super().__init__(candle_container, open_or_close)
 
 
-        self.sma = SMA(self.candle_container, self.nCandles, self.open_or_close).indicators[-1] # want a 20-day moving average - may need to adjust # of candles depending on candle frequency
+        self.sma = SMA(self.candle_container, self.periodLength, self.open_or_close).calculatedValues[-1] # want a 20-day moving average - may need to adjust # of candles depending on candle frequency
         
-        self.nCandles = nCandles
+        self.periodLength = periodLength
 
     def runCalcOnCandleContainer(self):
 
@@ -94,33 +97,33 @@ class BollingerBands(Indicator):
         middle_band = self.sma
         lower_band = self.sma - 2*sd
 
-        self.indicators = [upper_band, middle_band, lower_band]
+        self.calculatedValues = [upper_band, middle_band, lower_band]
 
 class NormalizedPrices(Indicator):
-    def __init__(self, candle_container: CandleContainer, nCandles, open_or_close = 'open'):
+    def __init__(self, candle_container: CandleContainer, periodLength, open_or_close = 'open'):
         super().__init__(candle_container, open_or_close)
 
         self.df = pd.DataFrame({'open_price' : candle.open, 'close_price' : candle.close} for candle in candle_container.candleList)
 
-        self.nCandles = nCandles
+        self.periodLength = periodLength
 
     def runCalcOnCandleContainer(self):
         dfcol = self.df[f'{self.open_or_close}_price']
         mean = dfcol.mean()
         sd = dfcol.std()
         normalizedCol = (dfcol - mean)/sd
-        self.indicators = normalizedCol.to_list()
+        self.calculatedValues = normalizedCol.to_list()
         
 
 class SMA(Indicator):
-    def __init__(self, candle_container: CandleContainer, nCandles: int, open_or_close = 'open'):
+    def __init__(self, candle_container: CandleContainer, periodLength: int, open_or_close = 'open'):
         super().__init__(candle_container, open_or_close)
         
-        self.nCandles = nCandles
+        self.periodLength = periodLength
 
     def runCalcOnCandleContainer(self):
         self.df = pd.DataFrame({'open_price' : candle.open, 'close_price' : candle.close} for candle in self.candle_container.candleList)
-        self.indicators = self.df.rolling(self.nCandles).mean()[f'{self.open_or_close}_price'].to_list()
+        self.calculatedValues = self.df.rolling(self.periodLength).mean()[f'{self.open_or_close}_price'].to_list()
 
 
 # NOTE: This class was previously a part of the API wrapper
@@ -146,7 +149,7 @@ class DataAcquisition:
             params = {
                 'function': 'TIME_SERIES_INTRADAY',
                 'symbol': ticker,
-                'interval': f'{interval}min', # '1min', '5min', '15min', '30min', '60min
+                'interval': f'{interval}', # '1min', '5min', '15min', '30min', '60min
                 'outputsize': outputsize,
                 'apikey': self.key,
             }

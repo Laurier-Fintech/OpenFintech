@@ -107,9 +107,11 @@ class TrendFollowing(Algorithm):
 
             short_ma_value = short_ma.calculatedValues[i]
             long_ma_value = long_ma.calculatedValues[i]
+            long_ma_prev_value = long_ma.calculatedValues[i - 1]
+            long_ma_derivative = long_ma_value - long_ma_prev_value
 
             # Buy Logic
-            if short_ma_value > long_ma_value and (position is None or position == 'Sell'):
+            if short_ma_value > long_ma_value and long_ma_derivative > 0 and (position is None or position == 'Sell'):
                 if position == 'Sell':
                     # Close Sell position
                     sale_price = current_price
@@ -127,7 +129,7 @@ class TrendFollowing(Algorithm):
                 position = 'Buy'
 
             # Sell Logic
-            elif short_ma_value < long_ma_value and (position is None or position == 'Buy'):
+            elif short_ma_value < long_ma_value and long_ma_derivative < 0 and (position is None or position == 'Buy'):
                 if position == 'Buy':
                     # Close Buy position
                     sale_price = current_price

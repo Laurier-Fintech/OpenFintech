@@ -48,16 +48,13 @@ class MeanReversion(Algorithm):
                     open_position = True
                     position_type = "Buy"
             else:
-                if short_ma_value < long_ma_value:
+                stop_loss_point = purchase_price * (1 - stop_loss)
+                take_profit_point = purchase_price * (1 + take_profit)
+                if short_ma_value < long_ma_value or (current_price <= stop_loss_point) or (current_price >= take_profit_point):
                     sell = True
-                elif (current_price <= purchase_price * (1 - stop_loss)) or (current_price >= purchase_price * (1 + take_profit)):
-                    sell = True
-
-                if sell:
                     sale_price = current_price
                     total = quantity * sale_price
                     aum += total
-                    profitable = sale_price > purchase_price
 
                     data = {"type": "Close " + position_type, "price": sale_price, "quantity": quantity, "total": total}
                     signals.append(data)

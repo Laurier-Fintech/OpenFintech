@@ -6,7 +6,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name="OpenFintech",
-    version="0.1.6",
+    version="0.1.9",
     author = 'Laurier Fintech',
     author_email = 'team@wlufintech.com',
     url = 'https://github.com/Laurier-Fintech/OpenFintech',

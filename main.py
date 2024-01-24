@@ -1,48 +1,47 @@
-import os 
-from dotenv import load_dotenv
-from OpenFintech import Model
-import pandas as pd
-import matplotlib.pyplot as plt
+from OpenFintech import *
 
-load_dotenv() # Load ENV variables and set them down below
-# Populate settings dictionary to be passed into Model.backtest() (NOTE: Will be user input fields on the form) 
-setting_values={"user_id": 1,
-                "starting_aum": 100000, 
-                "short": "EMA 5",
-                "long_": "SMA 15",
-                "ticker": "GOOGL",
-                "stop_loss": 0.05, #%
-                "take_profit": 0.5,#%
-                "chart_freq_mins": 0} 
-handler = Model()
-# Call the backtest function with the setting along with the configuration
-response = handler.backtest(setting_values, os.getenv('ALPHAVANTAGE_KEY'))
-handler.handler.disconnect() # Closes the database
+# Example of how to use the OpenFintech library
 
+# Initialize the API wrapper
+apiKey = "6HZIS76ZQIS16EIG"
+data_acq = DataAcquisition(apiKey)
 
-print(response)
+# Request data from the API
+ticker_symbol = 'AAPL'
+timeframe = 'daily' # options: 'daily' or {time}min, e.g. '1min', '5min', '15min', '30min', '60min
+tickerData = data_acq.requestDataFromAPI(ticker_symbol, timeframe)
 
-df: pd.DataFrame = response["price_data"]
+# Convert the data to a FinancialInstrument
+ticker_finInst = data_acq.convertDataToFinancialInstrument(tickerData)
 
-print(df)
+# Run calculations on the FinancialInstrument
+shortMA = SMA(candle_container = ticker_finInst.candle_container, periodLength = 5)
+longMA = SMA(candle_container = ticker_finInst.candle_container, periodLength = 10)
 
-# Set general graph properties (the dates are used as the default X domain)
-plt.figure(figsize=(12, 6))
+shortMA.runCalcOnCandleContainer()
+longMA.runCalcOnCandleContainer()
 
-# Add the data to the graph
-plt.plot(df['4. close'], label='Close', marker='o', color='blue')
-plt.plot(df[f'6. {setting_values["short"].replace(" ", "")}'], label=setting_values["short"].replace(" ", ""), linestyle='--', color='red')
-plt.plot(df[f'7. {setting_values["long_"].replace(" ", "")}'], label=setting_values["long_"].replace(" ", ""), linestyle='--', color='green')
+# Run an algorithm on the FinancialInstrument
+tr_algo = TrendFollowing()
+tr_backtest_data = tr_algo.runAlgorithmOnCandleContainer(
+                                    candle_container = ticker_finInst.candle_container,
+                                    short_ma = shortMA,
+                                    long_ma = longMA,
+                                    stop_loss = 0.05,
+                                    take_profit = 0.1,
+                                    assets = 10000
+                                    )
 
-# Finish adding general graph properties (that may act on price data) and ..
-plt.xticks(rotation=45)
-plt.tight_layout()
-plt.grid(True)
-plt.xlabel('Date')
-plt.ylabel('Price')
-plt.legend()
-plt.show() # Display the graph 
+print(tr_backtest_data)
 
-print(response["trade_data"])
+mr_algo = MeanReversion()
+mr_backtest_data = mr_algo.runAlgorithmOnCandleContainer(
+                                    candle_container = ticker_finInst.candle_container,
+                                    short_ma = shortMA,
+                                    long_ma = longMA,
+                                    stop_loss = 0.05,
+                                    take_profit = 0.1,
+                                    assets = 10000
+                                    )
 
-# TODO: Save the graph as a JPEG (as this system will be used to simplify the graph displaying process)
+print(mr_backtest_data)

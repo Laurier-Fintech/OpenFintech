@@ -58,7 +58,6 @@ class CandleContainer:
         self.candleList.clear()
         
 # NOTE: The data structures below are i.e. a replacement to having the database
-    
 class FinancialInstrument:
     def __init__(self, ticker: str, candle_container: CandleContainer):
         self.ticker = ticker
@@ -114,7 +113,6 @@ class NormalizedPrices(Indicator):
         normalizedCol = (dfcol - mean)/sd
         self.calculatedValues = normalizedCol.to_list()
         
-
 class SMA(Indicator):
     def __init__(self, candle_container: CandleContainer, periodLength: int, open_or_close = 'open'):
         super().__init__(candle_container, open_or_close)

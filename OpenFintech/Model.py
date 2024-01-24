@@ -71,6 +71,9 @@ class TrendFollowing(Algorithm):
     def __init__(self):
         super().__init__()
     
+    def runAlgorithmOnCandle(self, candle, short_ma, long_ma):
+        return
+
     def runAlgorithmOnCandleContainer(self, candle_container, short_ma, long_ma, stop_loss, take_profit, assets):
         """
         candle_container: CandleContainer
@@ -165,11 +168,3 @@ class TrendFollowing(Algorithm):
                 signals.append(None)
 
         return signals, aum
-
-    def runAlgorithmOnCandle(self, candle, short_ma, long_ma):
-        if short_ma > long_ma:
-            return 'Buy'
-        elif short_ma < long_ma:
-            return 'Sell'
-        else:
-            return 'Hold'

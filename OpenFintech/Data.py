@@ -133,7 +133,7 @@ class EMA(Indicator):
         self.calculatedValues = self.df.ewm(self.periodLength, adjust=False).mean()[f'{self.open_or_close}_price'].to_list()
 
 # NOTE: This class was previously a part of the API wrapper
-class DataAcquisition: 
+class DataAcquisition:
     def __init__(self, key: str):
         self.key = key
         return

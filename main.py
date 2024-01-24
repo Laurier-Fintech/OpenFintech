@@ -3,11 +3,11 @@ from OpenFintech import *
 # Example of how to use the OpenFintech library
 
 # Initialize the API wrapper
-apiKey = "6HZIS76ZQIS16EIG"
+apiKey = "demo"
 data_acq = DataAcquisition(apiKey)
 
 # Request data from the API
-ticker_symbol = 'AAPL'
+ticker_symbol = 'IBM'
 timeframe = 'daily' # options: 'daily' or {time}min, e.g. '1min', '5min', '15min', '30min', '60min
 tickerData = data_acq.requestDataFromAPI(ticker_symbol, timeframe)
 

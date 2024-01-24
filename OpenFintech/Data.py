@@ -127,6 +127,7 @@ class EMA(Indicator):
     def __init__(self, candle_container: CandleContainer, periodLength: int, open_or_close = 'open'):
         super().__init__(candle_container, open_or_close)
         self.periodLength = periodLength
+
     def runCalcOnCandleContainer(self):
         self.df = pd.DataFrame({'open_price' : candle.open, 'close_price' : candle.close} for candle in self.candle_container.candleList)
         self.calculatedValues = self.df.ewm(self.periodLength, adjust=False).mean()[f'{self.open_or_close}_price'].to_list()
@@ -147,9 +148,9 @@ class DataAcquisition:
             params = {
                 'function': 'TIME_SERIES_DAILY',
                 'symbol': ticker,
-                'outputsize': 'compact',
                 'apikey': self.key,
             }
+            if self.key!="demo": params['outputsize']='compact'
         else:
             params = {
                 'function': 'TIME_SERIES_INTRADAY',
@@ -158,7 +159,7 @@ class DataAcquisition:
                 'outputsize': outputsize,
                 'apikey': self.key,
             }
-        
+
         response = requests.get(url="https://www.alphavantage.co/query", params=params)
         response.raise_for_status()
         return response.json()

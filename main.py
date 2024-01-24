@@ -1,4 +1,5 @@
 from OpenFintech import *
+import pandas as pd
 
 # Example of how to use the OpenFintech library
 
@@ -31,8 +32,6 @@ tr_backtest_data = tr_algo.runAlgorithmOnCandleContainer(
                                     take_profit = 0.1,
                                     assets = 10000
                                     )
-
-print(tr_backtest_data)
 
 mr_algo = MeanReversion()
 mr_backtest_data = mr_algo.runAlgorithmOnCandleContainer(

@@ -123,6 +123,13 @@ class SMA(Indicator):
         self.df = pd.DataFrame({'open_price' : candle.open, 'close_price' : candle.close} for candle in self.candle_container.candleList)
         self.calculatedValues = self.df.rolling(self.periodLength).mean()[f'{self.open_or_close}_price'].to_list()
 
+class EMA(Indicator):
+    def __init__(self, candle_container: CandleContainer, periodLength: int, open_or_close = 'open'):
+        super().__init__(candle_container, open_or_close)
+        self.periodLength = periodLength
+    def runCalcOnCandleContainer(self):
+        self.df = pd.DataFrame({'open_price' : candle.open, 'close_price' : candle.close} for candle in self.candle_container.candleList)
+        self.calculatedValues = self.df.ewm(self.periodLength, adjust=False).mean()[f'{self.open_or_close}_price'].to_list()
 
 # NOTE: This class was previously a part of the API wrapper
 class DataAcquisition: 

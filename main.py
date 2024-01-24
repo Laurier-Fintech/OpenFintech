@@ -15,7 +15,7 @@ tickerData = data_acq.requestDataFromAPI(ticker_symbol, timeframe)
 ticker_finInst = data_acq.convertDataToFinancialInstrument(tickerData)
 
 # Run calculations on the FinancialInstrument
-shortMA = SMA(candle_container = ticker_finInst.candle_container, periodLength = 5)
+shortMA = EMA(candle_container = ticker_finInst.candle_container, periodLength = 5)
 longMA = SMA(candle_container = ticker_finInst.candle_container, periodLength = 10)
 
 shortMA.runCalcOnCandleContainer()

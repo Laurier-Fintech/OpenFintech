@@ -29,7 +29,7 @@ class MeanReversion(Algorithm):
 
             # Check if enough data is available for MA calculations
             if i < max(short_ma.periodLength, long_ma.periodLength):
-                signals.append(None)
+                signals.append({"date":current_candle.datetime,"type":None})
                 continue
 
             short_ma_value = short_ma.calculatedValues[i]
@@ -43,7 +43,7 @@ class MeanReversion(Algorithm):
                     total = purchase_price * quantity
                     aum -= total
 
-                    data = {"type": "Buy", "price": purchase_price, "quantity": quantity, "total": total}
+                    data = {"date":current_candle.datetime,"type": "Buy", "price": purchase_price, "quantity": quantity, "total": total}
                     signals.append(data)
                     open_position = True
                     position_type = "Buy"
@@ -56,14 +56,14 @@ class MeanReversion(Algorithm):
                     total = quantity * sale_price
                     aum += total
 
-                    data = {"type": "Close " + position_type, "price": sale_price, "quantity": quantity, "total": total}
+                    data = {"date":current_candle.datetime,"type": "Close " + position_type, "price": sale_price, "quantity": quantity, "total": total}
                     signals.append(data)
                     open_position = False
                     position_type = None
                     quantity = 0
 
             if not sell and open_position:
-                signals.append({"type": "Hold " + position_type})
+                signals.append({"date":current_candle.datetime,"type": "Hold " + position_type})
 
         return signals, aum
 
@@ -105,7 +105,7 @@ class TrendFollowing(Algorithm):
 
             # Check if enough data is available for MA calculations
             if i < max(short_ma.periodLength, long_ma.periodLength):
-                signals.append(None)
+                signals.append({"date":current_candle.datetime,"type":None})
                 continue
 
             short_ma_value = short_ma.calculatedValues[i]
@@ -120,7 +120,7 @@ class TrendFollowing(Algorithm):
                     sale_price = current_price
                     total = quantity * sale_price
                     aum += total
-                    signals.append({"type": "Close Sell", "price": sale_price, "quantity": quantity, "total": total})
+                    signals.append({"date":current_candle.datetime,"type": "Close Sell", "price": sale_price, "quantity": quantity, "total": total})
                     quantity = 0
 
                 # Open Buy position
@@ -128,7 +128,7 @@ class TrendFollowing(Algorithm):
                 quantity = aum / entry_price
                 total = entry_price * quantity
                 aum -= total
-                signals.append({"type": "Buy", "price": entry_price, "quantity": quantity, "total": total})
+                signals.append({"date":current_candle.datetime,"type": "Buy", "price": entry_price, "quantity": quantity, "total": total})
                 position = 'Buy'
 
             # Sell Logic
@@ -138,7 +138,7 @@ class TrendFollowing(Algorithm):
                     sale_price = current_price
                     total = quantity * sale_price
                     aum += total
-                    signals.append({"type": "Close Buy", "price": sale_price, "quantity": quantity, "total": total})
+                    signals.append({"date":current_candle.datetime,"type": "Close Buy", "price": sale_price, "quantity": quantity, "total": total})
                     quantity = 0
 
                 # Open Sell position
@@ -146,7 +146,7 @@ class TrendFollowing(Algorithm):
                 quantity = aum / entry_price  # Assuming short selling is allowed
                 total = entry_price * quantity
                 aum -= total  # Assuming margin trading or short selling
-                signals.append({"type": "Sell", "price": entry_price, "quantity": quantity, "total": total})
+                signals.append({"date":current_candle.datetime,"type": "Sell", "price": entry_price, "quantity": quantity, "total": total})
                 position = 'Sell'
 
             # Check for stop loss or take profit
@@ -157,14 +157,14 @@ class TrendFollowing(Algorithm):
                     sale_price = current_price
                     total = quantity * sale_price
                     aum += total
-                    signals.append({"type": "Close " + position, "price": sale_price, "quantity": quantity, "total": total})
+                    signals.append({"date":current_candle.datetime,"type": "Close " + position, "price": sale_price, "quantity": quantity, "total": total})
                     position = None
                     entry_price = None
                     quantity = 0
                 else:
-                    signals.append({"type": "Hold " + position})
+                    signals.append({"date":current_candle.datetime,"type": "Hold " + position})
 
             else:
-                signals.append(None)
+                signals.append({"date":current_candle.datetime,"type":None})
 
         return signals, aum

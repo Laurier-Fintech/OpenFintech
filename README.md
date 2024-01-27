@@ -59,11 +59,5 @@ Contributions are welcome! Please read our contributing guidelines to get starte
 ## License
 This project is licensed under the Apache License - see the LICENSE file for details.
 
-## Authors and Acknowledgment
-- Harri Sivakumar
-- Ken Wu
-- Basil Ahmad
-- Acknowledgments to other contributors and organizations.
-
 ## FAQs/Contact Information
 For any queries, please reach out to us at team@wlufintech.com.

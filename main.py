@@ -1,13 +1,14 @@
 from OpenFintech import *
+import pandas as pd
 
 # Example of how to use the OpenFintech library
 
 # Initialize the API wrapper
-apiKey = "6HZIS76ZQIS16EIG"
+apiKey = "demo"
 data_acq = DataAcquisition(apiKey)
 
 # Request data from the API
-ticker_symbol = 'AAPL'
+ticker_symbol = 'IBM'
 timeframe = 'daily' # options: 'daily' or {time}min, e.g. '1min', '5min', '15min', '30min', '60min
 tickerData = data_acq.requestDataFromAPI(ticker_symbol, timeframe)
 
@@ -15,7 +16,7 @@ tickerData = data_acq.requestDataFromAPI(ticker_symbol, timeframe)
 ticker_finInst = data_acq.convertDataToFinancialInstrument(tickerData)
 
 # Run calculations on the FinancialInstrument
-shortMA = SMA(candle_container = ticker_finInst.candle_container, periodLength = 5)
+shortMA = EMA(candle_container = ticker_finInst.candle_container, periodLength = 5)
 longMA = SMA(candle_container = ticker_finInst.candle_container, periodLength = 10)
 
 shortMA.runCalcOnCandleContainer()
@@ -31,8 +32,6 @@ tr_backtest_data = tr_algo.runAlgorithmOnCandleContainer(
                                     take_profit = 0.1,
                                     assets = 10000
                                     )
-
-print(tr_backtest_data)
 
 mr_algo = MeanReversion()
 mr_backtest_data = mr_algo.runAlgorithmOnCandleContainer(

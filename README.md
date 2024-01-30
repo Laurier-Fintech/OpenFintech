@@ -7,13 +7,13 @@ OpenFintech is a financial analysis library designed for Python developers and f
 To install OpenFintech, follow these steps:
 
 1. Ensure you have Python installed on your system.
-2. Clone the repository:
+2. Install the OpenFintech PyPi pckage:
    ```bash
-   git clone https://github.com/your-username/OpenFintech.git
+   pip install OpenFintech
    ```
-3. Install required dependencies:
+3. Update OpenFintech if already installed:
    ```bash
-   pip install -r requirements.txt
+   pip install OpenFintech --upgrade
    ```
 
 ## Usage

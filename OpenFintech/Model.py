@@ -66,6 +66,46 @@ class MeanReversion(Algorithm):
                 signals.append({"date":current_candle.datetime,"type": "Hold " + position_type})
 
         return signals, aum
+    
+    def profitPredictionMeanReversionWithSMA(self, candle_container, short_ma, long_ma, stop_loss, take_profit, assets):
+        """ 
+        Entry: If the short-term SMA crosses above the long-term SMA, indicating a potential mean reversion opportunity, 
+        it simulates entering a buy position at the current price.
+        Exit: It simulates exiting the position and taking profit in two scenarios:
+            - The short-term SMA crosses back below the long-term SMA, indicating the mean reversion opportunity might be over.
+            - The current price hits the predefined stop loss or take profit levels.
+        
+        Profit Calculation: Profit per trade is calculated as the difference between the exit price and the entry price, 
+        multiplied by the quantity of assets bought. The total profit is the sum of profits from each trade.
+        """
+        aum = assets
+        total_profit = 0
+        position_open = False
+        entry_price = None
+
+        short_ma.runCalcOnCandleContainer()
+        long_ma.runCalcOnCandleContainer()
+
+        for i in range(len(candle_container)):
+            if i < max(short_ma.periodLength, long_ma.periodLength):
+                continue 
+
+            current_price = candle_container[i].close
+            short_ma_value = short_ma.calculatedValues[i]
+            long_ma_value = long_ma.calculatedValues[i]
+
+            # Entry condition: Short-term SMA crosses above Long-term SMA (mean reversion opportunity)
+            if not position_open and short_ma_value > long_ma_value:
+                entry_price = current_price
+                position_open = True
+            # Exit conditions: Short-term SMA crosses below Long-term SMA, or stop loss/take profit triggered
+            elif position_open and (short_ma_value < long_ma_value or current_price <= entry_price * (1 - stop_loss) or current_price >= entry_price * (1 + take_profit)):
+                profit_per_unit = current_price - entry_price
+                total_profit += profit_per_unit * (aum / entry_price)  # Assuming all-in on each buy
+                position_open = False
+
+        return f"Total Profit using Mean Reversion with SMA: {total_profit}\n"
+
 
 class TrendFollowing(Algorithm):
     def __init__(self):
@@ -168,3 +208,46 @@ class TrendFollowing(Algorithm):
                 signals.append({"date":current_candle.datetime,"type":None})
 
         return signals, aum
+    
+    def profitPredictionTrendFollowing(self, candle_container, short_ma, long_ma, stop_loss, take_profit, assets):
+        """
+        Buy Logic: If the short-term SMA is above the long-term SMA and the long-term SMA is trending upwards (positive derivative), 
+        it simulates buying at the current price, anticipating the trend will continue.
+        Sell Logic: It simulates selling in two scenarios:
+            - The short-term SMA falls below the long-term SMA while the long-term SMA trends downwards (negative derivative), suggesting the end of an uptrend.
+            - The price hits predefined stop loss or take profit levels.
+        
+        Profit Calculation: profit is calculated based on the difference between buy and sell prices, adjusted for the total assets managed.
+        """
+        short_ma.runCalcOnCandleContainer()
+        long_ma.runCalcOnCandleContainer()
+        
+        aum = assets
+        total_profit = 0
+        position_open = False
+        entry_price = None
+        
+        for i in range(len(candle_container)):
+            if i < max(short_ma.periodLength, long_ma.periodLength):
+                continue
+
+            current_price = candle_container[i].close
+            short_ma_value = short_ma.calculatedValues[i]
+            long_ma_value = long_ma.calculatedValues[i]
+            long_ma_prev_value = long_ma.calculatedValues[i - 1] if i > 0 else long_ma.calculatedValues[i]
+            long_ma_derivative = long_ma_value - long_ma_prev_value
+
+            # Adjusted Buy Logic: Buy if the short MA is above the long MA and the derivative of the long MA is positive
+            if not position_open and short_ma_value > long_ma_value and long_ma_derivative > 0:
+                entry_price = current_price
+                position_open = True
+
+            # Adjusted Sell Logic: Sell if the short MA is below the long MA and the derivative of the long MA is negative
+            elif position_open and (short_ma_value < long_ma_value and long_ma_derivative < 0 or 
+                                    current_price <= entry_price * (1 - stop_loss) or 
+                                    current_price >= entry_price * (1 + take_profit)):
+                profit_per_unit = current_price - entry_price
+                total_profit += profit_per_unit * (aum / entry_price)  # Assuming all-in on each buy
+                position_open = False
+
+        return f"Total Profit using Trend Following with SMA: {total_profit}\n"

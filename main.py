@@ -33,6 +33,19 @@ tr_backtest_data = tr_algo.runAlgorithmOnCandleContainer(
                                     assets = 10000
                                     )
 
+print('\n')
+
+profit_predict_tr = tr_algo.profitPredictionTrendFollowing(
+                                    candle_container = ticker_finInst.candle_container,
+                                    short_ma = shortMA,
+                                    long_ma = longMA,
+                                    stop_loss = 0.05,
+                                    take_profit = 0.1,
+                                    assets = 10000
+)
+
+print(profit_predict_tr)
+
 mr_algo = MeanReversion()
 mr_backtest_data = mr_algo.runAlgorithmOnCandleContainer(
                                     candle_container = ticker_finInst.candle_container,
@@ -44,3 +57,14 @@ mr_backtest_data = mr_algo.runAlgorithmOnCandleContainer(
                                     )
 
 print(mr_backtest_data)
+
+
+profit_predict_mr = mr_algo.profitPredictionMeanReversionWithSMA(candle_container = ticker_finInst.candle_container,
+                                    short_ma = shortMA,
+                                    long_ma = longMA,
+                                    stop_loss = 0.05,
+                                    take_profit = 0.1,
+                                    assets = 10000
+                                    )
+    
+print(profit_predict_mr)

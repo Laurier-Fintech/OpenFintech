@@ -63,6 +63,17 @@ class FinancialInstrument:
         self.ticker = ticker
         self.candle_container = candle_container
         return
+    def getCandlesticks(self) -> dict: 
+        candles = {}
+        for i in range(len(self.candle_container)):
+            current_candle = self.candle_container[i]
+            candles[current_candle.datetime] = {
+            "Open": current_candle.open,
+            "High": current_candle.high,
+            "Low": current_candle.low,
+            "Close": current_candle.close
+            }
+        return candles
 
 # NOTE: The class below was previously a static method within the Alphavantage API wrapper
 class Indicator:

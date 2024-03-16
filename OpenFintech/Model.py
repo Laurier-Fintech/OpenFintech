@@ -10,6 +10,8 @@ class Algorithm:
 
 class MeanReversion(Algorithm):
     def __init__(self):
+        self.transactions = []
+        self.aum = 0
         return
     
     def runAlgorithmOnCandle(self):
@@ -65,11 +67,14 @@ class MeanReversion(Algorithm):
             if not sell and open_position:
                 signals.append({"date":current_candle.datetime,"type": "Hold " + position_type})
 
-        return signals, aum
+        self.transactions = signals
+        self.aum = aum
 
 class TrendFollowing(Algorithm):
     def __init__(self):
         super().__init__()
+        self.transactions = []
+        self.aum = 0
     
     def runAlgorithmOnCandle(self, candle, short_ma, long_ma):
         return
@@ -167,4 +172,5 @@ class TrendFollowing(Algorithm):
             else:
                 signals.append({"date":current_candle.datetime,"type":None})
 
-        return signals, aum
+        self.transactions = signals
+        self.aum = aum

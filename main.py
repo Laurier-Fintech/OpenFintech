@@ -24,23 +24,35 @@ longMA.runCalcOnCandleContainer()
 
 # Run an algorithm on the FinancialInstrument
 tr_algo = TrendFollowing()
-tr_backtest_data = tr_algo.runAlgorithmOnCandleContainer(
-                                    candle_container = ticker_finInst.candle_container,
-                                    short_ma = shortMA,
-                                    long_ma = longMA,
-                                    stop_loss = 0.05,
-                                    take_profit = 0.1,
-                                    assets = 10000
-                                    )
+tr_algo.runAlgorithmOnCandleContainer(
+    candle_container = ticker_finInst.candle_container,
+    short_ma = shortMA,
+    long_ma = longMA,
+    stop_loss = 0.05,
+    take_profit = 0.1,
+    assets = 10000
+)
 
 mr_algo = MeanReversion()
-mr_backtest_data = mr_algo.runAlgorithmOnCandleContainer(
-                                    candle_container = ticker_finInst.candle_container,
-                                    short_ma = shortMA,
-                                    long_ma = longMA,
-                                    stop_loss = 0.05,
-                                    take_profit = 0.1,
-                                    assets = 10000
-                                    )
+mr_algo.runAlgorithmOnCandleContainer(
+    candle_container = ticker_finInst.candle_container,
+    short_ma = shortMA,
+    long_ma = longMA,
+    stop_loss = 0.05,
+    take_profit = 0.1,
+    assets = 10000
+)
 
-print(mr_backtest_data)
+#accessing candlestick data 
+print ("Candle stick data: \n" , ticker_finInst.getCandlesticks())
+
+#accessing transactions done with trend following trading algorithm
+print ("\nTransactions made with trend following trading algorithm:")
+for i in range(len(tr_algo.transactions)):
+    print(tr_algo.transactions[i])
+
+#accessing transactions done with mean reversion trading algorithm
+print ("\nTransactions made with mean reversion trading algorithm:")
+for i in range(len(mr_algo.transactions)):
+    print(mr_algo.transactions[i])
+    
